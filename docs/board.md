@@ -48,6 +48,7 @@ translations, article review). No red, no uncommitted work.
 | 2026-07-09 | GT-102 | Theme tagging is a keyword heuristic plus override file, not Deutschland-Vocabulary mapping | That repo is scanned-PDF flashcards (Bangla), machine-unusable. Overrides live in db/seed/theme-overrides.json. |
 | 2026-07-09 | GT-107 | DocumentStore seam: Firestore adapter plus a dev-file adapter (DATA_STORE env, default firestore) | No Firebase credentials and no Java for the emulator on this machine. Same converter-validated single write path either way; connecting the real project is a one-env-var flip. e2e runs hermetically on dev-file. |
 | 2026-07-09 | GT-D1 | Default models moved to gemini-3.5-flash (fast) and gemini-pro-latest (deep) | gemini-2.5-flash began returning intermittent sunset 404s mid-batch during enrichment; successors verified live against the models API. Env overrides unchanged. |
+| 2026-07-09 | GT-403 | No token streaming for brain responses | Every runtime call is JSON-mode with schema validation (strategy Section 8); validated JSON cannot stream token by token. Pending states cover perceived latency; revisit if free-prose turns are added. Details in docs/perf.md. |
 
 ## Phase 0: Foundation
 
@@ -124,7 +125,7 @@ translations, article review). No red, no uncommitted work.
 |-------|-------|--------|--------|-------|
 | GT-401 | End-to-end placeholder pass | done | gt-401-e2e-pass | All five journeys green and self-contained (store reset per journey). Flow gaps closed en route: unit-test UI with deterministic placeholder tests, retention remediation surfaced on Today, skill rotation wired across sessions, B1 exam page. |
 | GT-402 | Adapter contract and integrity audit | done | gt-402-integrity-audit | All four sweeps documented in docs/audit-phase4.md; two read-validation findings remediated in-issue; guards enforce sweeps 1/2/5 on every CI run. |
-| GT-403 | Performance pass | open | | |
+| GT-403 | Performance pass | done | gt-403-perf | Budgets documented and met (step transition 29ms vs 200ms budget, CLS ~0); CI ceilings enforced in perf.spec.ts. Streaming test case recorded as a deviation (JSON-mode calls cannot token-stream). |
 | GT-404 | Accessibility pass | open | | |
 
 ## Phase 5: Media Generation (final)
