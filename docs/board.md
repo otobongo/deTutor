@@ -20,6 +20,11 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Owner TODOs (non-blocking for Phase 0, needed before later phases)
 
+- [ ] **Enable pay-as-you-go billing for the Gemini API key** (AI Studio -> plan/billing). All 266
+      images generated fine, but every TTS model on the current plan has a tiny daily quota:
+      audio stands at 55 of 2,565 clips. Once upgraded, one command finishes the batch
+      (quota-aware, resumable): `npm run generate:audio -- --level A1` then A2/B1.
+
 - [ ] Create the real Firebase project and drop its config values into `.env.local`
       (Phase 0 builds and tests against dummy values and converters only).
 - [x] GEMINI_API_KEY supplied 2026-07-09 (lives in .env.local only; never committed).
