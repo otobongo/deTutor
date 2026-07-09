@@ -57,7 +57,7 @@ real Firebase config and the Gemini key. No red, no uncommitted work.
 | GT-107 | Onboarding and placement UI flow | open | | |
 | GT-108 | Daily lesson engine | open | | |
 | GT-109 | Gemini client wrapper and system prompt module | done | gt-109-gemini-client | Prompt embedded verbatim with a byte-equality sync test in CI; transport seam keeps SDK calls testable; owner must verify model ids and supply GEMINI_API_KEY before first real call. |
-| GT-110 | Model tiering, fast default with high-thinking escalation | open | | |
+| GT-110 | Model tiering, fast default with high-thinking escalation | done | gt-110-model-tiering | callSite is a closed union; ESCALATION_MAP is the only path to deep (4 mapped sites); tier logged per call. |
 
 ## Phase 2: Four Skills in Placeholder Mode
 

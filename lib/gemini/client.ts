@@ -26,17 +26,59 @@ export interface ChatMessage {
   readonly text: string;
 }
 
+export type GeminiTier = 'fast' | 'deep';
+
+// Every Gemini call names its call site; the escalation map below is the ONLY
+// path to the deep tier (GT-110). Adding a deep call site means adding it
+// here with a justification, nowhere else.
+export type GeminiCallSite =
+  | 'scenario-turn'
+  | 'echo-assessment'
+  | 'reading-generation'
+  | 'listening-evaluation'
+  | 'listening-nuance-b1'
+  | 'writing-correction'
+  | 'remediation-generation'
+  | 'unit-test-generation'
+  | 'weekly-summary';
+
+export const ESCALATION_MAP: Readonly<Record<GeminiCallSite, GeminiTier>> = {
+  'scenario-turn': 'fast',
+  'echo-assessment': 'fast',
+  'reading-generation': 'fast',
+  'listening-evaluation': 'fast',
+  // B1 nuance explanation weighs idiom, register, and implied meaning (GT-206).
+  'listening-nuance-b1': 'deep',
+  // Categorized correction quality drives the grammar log and weighting (GT-213).
+  'writing-correction': 'deep',
+  'remediation-generation': 'fast',
+  // Generated tests must be valid, balanced, and answer-keyed (GT-301).
+  'unit-test-generation': 'deep',
+  // Weekly pattern synthesis across the full error log (GT-309).
+  'weekly-summary': 'deep',
+};
+
+export interface GeminiCallLogEntry {
+  readonly callSite: GeminiCallSite;
+  readonly tier: GeminiTier;
+  readonly model: string;
+  readonly jsonMode: boolean;
+}
+
+export type GeminiCallLogger = (entry: GeminiCallLogEntry) => void;
+
 export interface ChatOptions {
+  readonly callSite: GeminiCallSite;
   // Scenario/context layer appended to the canonical prompt (never replacing it).
   readonly context?: string;
 }
 
 export interface GeminiClient {
-  chat(messages: readonly ChatMessage[], options?: ChatOptions): Promise<string>;
+  chat(messages: readonly ChatMessage[], options: ChatOptions): Promise<string>;
   generateJson<Schema extends z.ZodType>(
     messages: readonly ChatMessage[],
     schema: Schema,
-    options?: ChatOptions,
+    options: ChatOptions,
   ): Promise<z.infer<Schema>>;
 }
 
@@ -73,16 +115,35 @@ function categorize(error: unknown): GeminiError {
   return new GeminiError('network', `Gemini call failed: ${message}`, error);
 }
 
-export function createGeminiClient(transport: GeminiTransport, model: string): GeminiClient {
+export interface GeminiModelPair {
+  readonly fast: string;
+  readonly deep: string;
+}
+
+const defaultLogger: GeminiCallLogger = (entry) => {
+  // Structured line for cost observability; one entry per transport call.
+  console.info(
+    `[gemini] site=${entry.callSite} tier=${entry.tier} model=${entry.model} json=${entry.jsonMode}`,
+  );
+};
+
+export function createGeminiClient(
+  transport: GeminiTransport,
+  models: GeminiModelPair,
+  logger: GeminiCallLogger = defaultLogger,
+): GeminiClient {
   async function callOnce(
     messages: readonly ChatMessage[],
-    options: ChatOptions | undefined,
+    options: ChatOptions,
     jsonMode: boolean,
   ): Promise<string> {
+    const tier = ESCALATION_MAP[options.callSite];
+    const model = models[tier];
+    logger({ callSite: options.callSite, tier, model, jsonMode });
     try {
       return await transport.generate({
         model,
-        systemInstruction: systemInstructionWith(options?.context),
+        systemInstruction: systemInstructionWith(options.context),
         messages,
         jsonMode,
       });
@@ -147,7 +208,10 @@ export function getGeminiClient(): GeminiClient {
   }
   if (!cachedClient) {
     const config = getConfig();
-    cachedClient = createGeminiClient(sdkTransport(config.geminiApiKey), config.models.fast);
+    cachedClient = createGeminiClient(sdkTransport(config.geminiApiKey), {
+      fast: config.models.fast,
+      deep: config.models.deep,
+    });
   }
   return cachedClient;
 }
