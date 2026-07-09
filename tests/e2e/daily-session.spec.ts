@@ -63,6 +63,11 @@ test('a full daily session runs from Today to completion', async ({ page }) => {
   await expect(page.getByTestId('session-complete')).toBeVisible();
   await page.getByTestId('back-to-today').click();
   await expect(page).toHaveURL(/\/today/);
+
+  // GT-308: the completed session appears in Progress with its stored numbers.
+  await page.goto('/progress');
+  await expect(page.getByTestId('session-reports')).toBeVisible();
+  await expect(page.getByTestId('report-new-words').first()).not.toHaveText('');
 });
 
 test('Practice lists all four skills', async ({ page }) => {
