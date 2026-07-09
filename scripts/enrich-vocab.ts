@@ -73,8 +73,13 @@ async function enrichLevelFile(level: 'a1' | 'a2' | 'b1'): Promise<void> {
   );
   const pending = words.filter((word) => word.ipa === null);
   console.log(`${level}: ${pending.length} of ${words.length} words need enrichment`);
+  let failures = 0;
 
   for (let start = 0; start < pending.length; start += BATCH_SIZE) {
+    if (failures >= 10) {
+      console.error(`${level}: too many failed batches; stopping this level.`);
+      break;
+    }
     const batch = pending.slice(start, start + BATCH_SIZE);
     try {
       const enriched = await enrichBatch(batch);
@@ -86,8 +91,10 @@ async function enrichLevelFile(level: 'a1' | 'a2' | 'b1'): Promise<void> {
           `(${enriched.size}/${batch.length} in batch)`,
       );
     } catch (error) {
-      console.error(`${level}: batch at ${start} failed (${String(error)}); rerun to resume here.`);
-      throw error;
+      // A stubborn batch must not sink the run: skip it and keep going; the
+      // next invocation retries skipped words automatically (ipa still null).
+      failures += 1;
+      console.error(`${level}: batch at ${start} failed (${String(error)}); skipping.`);
     }
   }
 }
