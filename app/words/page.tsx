@@ -40,7 +40,7 @@ export default async function WordsPage({
   const flaggedCount = Object.values(audit).filter((entry) => !entry.ok).length;
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 p-8">
+    <main className="mx-auto flex min-h-screen w-full shell-width flex-col gap-6 p-8">
       <h1 className="text-3xl font-semibold">Word review</h1>
       <p data-testid="words-summary">
         {words.length} words shown. Translation audit: {Object.keys(audit).length} checked,{' '}
@@ -78,18 +78,18 @@ export default async function WordsPage({
                   <td className="border-b px-2 py-1 font-medium">
                     {word.article ? `${word.article} ` : ''}
                     {word.german}
-                    <span className="ml-1 text-xs opacity-60">{word.cefrLevel}</span>
+                    <span className="ml-1 text-xs text-ink-subtle">{word.cefrLevel}</span>
                   </td>
                   <td className="border-b px-2 py-1">{word.translation}</td>
                   <td className="border-b px-2 py-1 text-xs">{word.ipa ?? 'pending'}</td>
                   <td className="border-b px-2 py-1 text-xs">{word.exampleDe ?? 'pending'}</td>
                   <td className="border-b px-2 py-1 text-xs">
                     {verdict === undefined ? (
-                      <span className="opacity-60">unchecked</span>
+                      <span className="text-ink-subtle">unchecked</span>
                     ) : verdict.ok ? (
-                      <span className="text-green-700 dark:text-green-400">✓</span>
+                      <span className="text-success">✓</span>
                     ) : (
-                      <span className="text-red-700 dark:text-red-400">was: {verdict.stored}</span>
+                      <span className="text-error">was: {verdict.stored}</span>
                     )}
                   </td>
                 </tr>

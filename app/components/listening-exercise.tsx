@@ -40,7 +40,7 @@ export function ListeningExercise({
       <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
-          className="rounded bg-gray-900 px-3 py-1 text-sm text-white dark:bg-gray-100 dark:text-gray-900"
+          className="rounded-md bg-action px-3 py-1 text-sm text-action-inverse"
           onClick={() => play(clip.full, rate)}
           data-testid={`listening-play-${clip.full.clipId}`}
         >
@@ -59,7 +59,7 @@ export function ListeningExercise({
           <button
             key={segment.clipId}
             type="button"
-            className="rounded border px-2 py-1 text-xs"
+            className="rounded-md border bg-surface px-2 py-1 text-xs"
             onClick={() => play(segment, rate)}
             data-testid={`listening-segment-${segment.clipId}`}
           >
@@ -69,7 +69,7 @@ export function ListeningExercise({
       </div>
 
       {clip.full.captionsRequired && playCount > 0 ? (
-        <p className="text-sm italic opacity-80" data-testid="listening-captions">
+        <p className="text-sm italic text-ink-muted" data-testid="listening-captions">
           {clip.full.captionText}
         </p>
       ) : null}
@@ -87,14 +87,14 @@ export function ListeningExercise({
         </label>
         <textarea
           id="listening-response"
-          className="min-h-24 rounded border px-3 py-2"
+          className="min-h-24 rounded-md border bg-surface px-3 py-2"
           value={response}
           onChange={(event) => setResponse(event.target.value)}
           data-testid="listening-response"
         />
         <button
           type="submit"
-          className="self-start rounded bg-blue-700 px-4 py-2 text-white disabled:opacity-40"
+          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
           disabled={response.trim().length === 0 || submitting}
           data-testid="listening-submit"
         >

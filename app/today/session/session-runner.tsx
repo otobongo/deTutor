@@ -61,7 +61,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
         </p>
         <button
           type="button"
-          className="self-start rounded bg-blue-700 px-4 py-2 text-white"
+          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
           onClick={() => router.push('/today')}
           data-testid="back-to-today"
         >
@@ -82,7 +82,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
         )}
         <button
           type="button"
-          className="self-start rounded bg-blue-700 px-4 py-2 text-white"
+          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
           onClick={() => void advance()}
           data-testid="warmup-continue"
         >
@@ -98,7 +98,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
       <section className="flex flex-col gap-4" data-testid="step-vocab-view">
         <h2 className="text-xl font-medium">
           New vocabulary: {step.theme} ({Math.min(echoIndex + 1, echoWords.length)} of{' '}
-          {echoWords.length} echoed, {payload.dayWords.length} in today&apos;s set)
+          {echoWords.length} echoed, {payload.dayWords.length} in today&apos;s set)
         </h2>
         {word && payload.wordAudio[word.id] ? (
           <EchoFlow
@@ -117,7 +117,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
             </div>
             <button
               type="button"
-              className="self-start rounded bg-blue-700 px-4 py-2 text-white"
+              className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
               onClick={() => void advance()}
               data-testid="vocab-continue"
             >
@@ -133,7 +133,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
     return (
       <section className="flex flex-col gap-4" data-testid="step-grammar-view">
         <h2 className="text-xl font-medium">Grammar focus: {payload.grammarItem.name}</h2>
-        <p className="text-sm opacity-80">
+        <p className="text-sm text-ink-muted">
           One rule per session. Try producing one sentence that uses it:
         </p>
         <form
@@ -145,7 +145,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
           }}
         >
           <input
-            className="w-full rounded border px-3 py-2"
+            className="w-full rounded-md border bg-surface px-3 py-2"
             value={grammarProduction}
             onChange={(event) => setGrammarProduction(event.target.value)}
             aria-label="Your sentence"
@@ -153,7 +153,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
           />
           <button
             type="submit"
-            className="rounded bg-blue-700 px-4 py-2 text-white disabled:opacity-40"
+            className="rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
             disabled={grammarProduction.trim().length === 0}
             data-testid="grammar-continue"
           >
@@ -198,7 +198,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
               </p>
               <button
                 type="button"
-                className="self-start rounded bg-blue-700 px-4 py-2 text-white"
+                className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
                 onClick={() => void advance()}
                 data-testid="skill-continue"
               >
@@ -215,7 +215,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
     return (
       <section className="flex flex-col gap-4" data-testid="step-skill-view">
         <h2 className="text-xl font-medium">Skill practice: {step.slot} (tile drill)</h2>
-        <p className="text-sm opacity-80">Build: {payload.tileItem.translation}</p>
+        <p className="text-sm text-ink-muted">Build: {payload.tileItem.translation}</p>
         <div className="flex flex-wrap gap-2">
           {payload.tileItem.tiles
             .filter((tile) => !tileOrder.includes(tile))
@@ -223,7 +223,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
               <button
                 key={tile}
                 type="button"
-                className="rounded border px-3 py-1"
+                className="rounded-md border bg-surface px-3 py-1"
                 onClick={() => setTileOrder([...tileOrder, tile])}
                 data-testid={`tile-${tile}`}
               >
@@ -235,14 +235,14 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
         <div className="flex gap-2">
           <button
             type="button"
-            className="rounded border px-3 py-1"
+            className="rounded-md border bg-surface px-3 py-1"
             onClick={() => setTileOrder([])}
           >
             Reset
           </button>
           <button
             type="button"
-            className="rounded bg-blue-700 px-4 py-2 text-white disabled:opacity-40"
+            className="rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
             disabled={tileOrder.length !== payload.tileItem.tiles.length}
             onClick={() => {
               const result = gradeTileOrder(payload.tileItem, tileOrder, new Date().toISOString());
@@ -264,7 +264,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
             </p>
             <button
               type="button"
-              className="self-start rounded bg-blue-700 px-4 py-2 text-white"
+              className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
               onClick={() => void advance()}
               data-testid="skill-continue"
             >
@@ -287,13 +287,13 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
           max={10}
           value={grammarScore}
           onChange={(event) => setGrammarScore(Number(event.target.value))}
-          className="w-24 rounded border px-3 py-2"
+          className="w-24 rounded-md border bg-surface px-3 py-2"
           data-testid="wrapup-grammar-score"
         />
       </label>
       <button
         type="button"
-        className="self-start rounded bg-blue-700 px-4 py-2 text-white"
+        className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
         onClick={() => void advance({ grammarScore })}
         data-testid="wrapup-finish"
       >

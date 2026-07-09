@@ -89,17 +89,19 @@ export function OnboardingWizard({
             return (
               <div
                 key={option.id}
-                className={`flex flex-col gap-2 rounded-lg border p-4 ${
-                  voice === option.id ? 'border-blue-700 ring-2 ring-blue-700' : ''
+                className={`flex flex-col gap-2 rounded-lg border bg-surface p-4 ${
+                  voice === option.id
+                    ? 'border-[var(--color-ink)] ring-2 ring-[var(--color-ink)]'
+                    : ''
                 }`}
               >
                 <p className="font-medium">
-                  {option.name} <span className="text-sm opacity-70">({option.group})</span>
+                  {option.name} <span className="text-sm text-ink-muted">({option.group})</span>
                 </p>
                 {sample ? <AudioPlayer asset={sample} label="Play sample" /> : null}
                 <button
                   type="button"
-                  className="rounded bg-blue-700 px-3 py-1 text-sm text-white"
+                  className="rounded-md bg-action px-3 py-1 text-sm text-action-inverse"
                   onClick={() => setVoice(option.id)}
                   data-testid={`choose-voice-${option.id}`}
                 >
@@ -111,7 +113,7 @@ export function OnboardingWizard({
         </div>
         <button
           type="button"
-          className="self-start rounded bg-gray-900 px-4 py-2 text-white disabled:opacity-40 dark:bg-gray-100 dark:text-gray-900"
+          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
           disabled={voice === null}
           onClick={() => setStage('dialect')}
           data-testid="voice-continue"
@@ -128,13 +130,13 @@ export function OnboardingWizard({
         <h2 id="dialect-heading" className="text-xl font-medium">
           Dialect preference
         </h2>
-        <p className="text-sm opacity-80">
+        <p className="text-sm text-ink-muted">
           Standard Hochdeutsch is the default. Berlin mode adds labeled Berlin expressions.
         </p>
         <div className="flex gap-3">
           <button
             type="button"
-            className={`rounded border px-4 py-2 ${dialect === 'hochdeutsch' ? 'border-blue-700 ring-2 ring-blue-700' : ''}`}
+            className={`rounded-md border bg-surface px-4 py-2 ${dialect === 'hochdeutsch' ? 'border-[var(--color-ink)] ring-2 ring-[var(--color-ink)]' : ''}`}
             onClick={() => setDialect('hochdeutsch')}
             data-testid="dialect-hochdeutsch"
           >
@@ -142,7 +144,7 @@ export function OnboardingWizard({
           </button>
           <button
             type="button"
-            className={`rounded border px-4 py-2 ${dialect === 'berlin' ? 'border-blue-700 ring-2 ring-blue-700' : ''}`}
+            className={`rounded-md border bg-surface px-4 py-2 ${dialect === 'berlin' ? 'border-[var(--color-ink)] ring-2 ring-[var(--color-ink)]' : ''}`}
             onClick={() => setDialect('berlin')}
             data-testid="dialect-berlin"
           >
@@ -151,7 +153,7 @@ export function OnboardingWizard({
         </div>
         <button
           type="button"
-          className="self-start rounded bg-gray-900 px-4 py-2 text-white dark:bg-gray-100 dark:text-gray-900"
+          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
           onClick={() => setStage('placement')}
           data-testid="dialect-continue"
         >
@@ -177,7 +179,7 @@ export function OnboardingWizard({
               <button
                 key={option}
                 type="button"
-                className="rounded border px-3 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="rounded-md border bg-surface px-3 py-2 text-left hover:bg-surface-2"
                 onClick={() => answerProbe(option)}
                 data-testid="probe-option"
               >
@@ -194,7 +196,7 @@ export function OnboardingWizard({
             }}
           >
             <input
-              className="rounded border px-3 py-2"
+              className="rounded-md border bg-surface px-3 py-2"
               value={textAnswer}
               onChange={(event) => setTextAnswer(event.target.value)}
               aria-label="Your answer"
@@ -202,7 +204,7 @@ export function OnboardingWizard({
             />
             <button
               type="submit"
-              className="rounded bg-gray-900 px-4 py-2 text-white dark:bg-gray-100 dark:text-gray-900"
+              className="rounded-md bg-action px-4 py-2 text-action-inverse"
               data-testid="probe-text-submit"
             >
               Answer
@@ -228,13 +230,13 @@ export function OnboardingWizard({
             ? 'We will build your German from the ground up, starting with sounds and greetings.'
             : 'You already have a foundation, so we skip what you have demonstrated and start where the work begins.'}
         </p>
-        <p className="text-sm opacity-80" data-testid="profile-summary">
+        <p className="text-sm text-ink-muted" data-testid="profile-summary">
           Voice: {outcome.profile.settings.voice}. Dialect: {outcome.profile.settings.dialect}. You
           can change both in Settings later.
         </p>
         <button
           type="button"
-          className="self-start rounded bg-blue-700 px-4 py-2 text-white"
+          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
           onClick={() => router.push('/today')}
           data-testid="start-day-1"
         >

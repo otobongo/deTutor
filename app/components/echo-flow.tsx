@@ -33,13 +33,13 @@ export function EchoFlow({
 
       {state.stage === 'present-1' || state.stage === 'present-2' ? (
         <div className="flex flex-col gap-2">
-          <p className="text-sm opacity-80">
+          <p className="text-sm text-ink-muted">
             Listen ({state.stage === 'present-1' ? 'first' : 'second'} time), then repeat it aloud.
           </p>
           <AudioPlayer asset={audio} label="Play" />
           <button
             type="button"
-            className="self-start rounded bg-gray-900 px-3 py-1 text-sm text-white dark:bg-gray-100 dark:text-gray-900"
+            className="self-start rounded-md bg-action px-3 py-1 text-sm text-action-inverse"
             onClick={presented}
             data-testid="echo-heard"
           >
@@ -58,7 +58,7 @@ export function EchoFlow({
           }}
         >
           <input
-            className="rounded border px-3 py-2"
+            className="rounded-md border bg-surface px-3 py-2"
             value={production}
             onChange={(event) => setProduction(event.target.value)}
             placeholder="Type (or say) it yourself"
@@ -67,7 +67,7 @@ export function EchoFlow({
           />
           <button
             type="submit"
-            className="rounded bg-blue-700 px-3 py-1 text-white disabled:opacity-40"
+            className="rounded-md bg-action px-3 py-1 text-action-inverse disabled:opacity-40"
             disabled={production.trim().length === 0}
             data-testid="echo-produce"
           >
@@ -78,11 +78,11 @@ export function EchoFlow({
 
       {state.stage === 'fast-pass' ? (
         <div className="flex flex-col gap-2">
-          <p className="text-sm opacity-80">Faster second pass: listen and repeat once more.</p>
+          <p className="text-sm text-ink-muted">Faster second pass: listen and repeat once more.</p>
           <AudioPlayer asset={audio} label="Play (faster)" rate={1.3} />
           <button
             type="button"
-            className="self-start rounded bg-gray-900 px-3 py-1 text-sm text-white dark:bg-gray-100 dark:text-gray-900"
+            className="self-start rounded-md bg-action px-3 py-1 text-sm text-action-inverse"
             onClick={() => {
               setState((current) => advanceEcho(current, { type: 'fast-pass-done' }));
               onDone(state.production ?? '');

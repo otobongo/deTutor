@@ -123,7 +123,7 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
             <button
               key={option + optionIndex}
               type="button"
-              className="rounded border px-3 py-2"
+              className="rounded-md border bg-surface px-3 py-2"
               data-testid="unit-test-option"
               data-correct={optionIndex === currentItem.correctIndex}
               onClick={() => answerObjective(optionIndex === currentItem.correctIndex)}
@@ -141,7 +141,10 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
       <section className="flex flex-col gap-4" data-testid="unit-test-production">
         <h2 className="text-xl font-medium">Writing</h2>
         <p>{test.writing.instruction}</p>
-        <textarea className="min-h-24 rounded border px-3 py-2" aria-label="Your text" />
+        <textarea
+          className="min-h-24 rounded-md border bg-surface px-3 py-2"
+          aria-label="Your text"
+        />
         {test.writing.contentPoints.map((point, index) => (
           <label key={point} className="flex items-center gap-2 text-sm">
             <input
@@ -176,7 +179,7 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
         ))}
         <button
           type="button"
-          className="self-start rounded bg-blue-700 px-4 py-2 text-white disabled:opacity-40"
+          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
           disabled={busy}
           onClick={() => void submit()}
           data-testid="unit-test-submit"
@@ -203,7 +206,7 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
             <button
               key={option + optionIndex}
               type="button"
-              className="rounded border px-3 py-2"
+              className="rounded-md border bg-surface px-3 py-2"
               data-testid="retake-option"
               data-correct={optionIndex === item.correctIndex}
               onClick={() => {
@@ -243,7 +246,7 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
             ? Object.entries(progress.remediation)
                 .filter(([, status]) => status === 'pending')
                 .map(([skill]) => (
-                  <div key={skill} className="flex flex-col gap-2 rounded border p-3">
+                  <div key={skill} className="flex flex-col gap-2 rounded-md border bg-surface p-3">
                     <p data-testid={`remediation-${skill}`}>
                       Remediation for <span className="capitalize">{skill}</span>: drill{' '}
                       {test.unitId} grammar ({payload.unit.grammarItemIds.join(', ')}), then retake
@@ -251,7 +254,7 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
                     </p>
                     <button
                       type="button"
-                      className="self-start rounded bg-blue-700 px-3 py-1 text-white disabled:opacity-40"
+                      className="self-start rounded-md bg-action px-3 py-1 text-action-inverse disabled:opacity-40"
                       disabled={busy}
                       onClick={() => void startRetake(skill as Skill)}
                       data-testid={`remediate-and-retake-${skill}`}

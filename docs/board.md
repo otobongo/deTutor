@@ -34,6 +34,17 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **Design system applied (2026-07-10, owner-supplied).** docs/design-system.md (LiD Prep
+      tokens) is now the authoritative styling spec: full token layer with Cal x Readwise
+      (default) and High Contrast themes, light/dark scales in CSS, Tailwind v4 bridge,
+      pre-hydration mode script (first visit follows prefers-color-scheme), header theme/mode
+      controls, fonts via next/font (Google Sans Flex not self-hosted; spec fallbacks apply),
+      highlight mark treatments ready for reading content. All components swept from hardcoded
+      palette to tokens. Decisions: CSS-selector theming instead of per-token JS writes (same
+      contract, less machinery); article colors kept as mode-aware pedagogy tokens
+      (--article-der/die/das) with dark-mode shades clearing 4.5:1. axe WCAG AA green on the new
+      tokens across all five audited flows.
+
 - [x] **Corpus translation audit (done 2026-07-10, owner-triggered).** The image audit's blind
       spot (it validated images against stored translations, not against the German words) let
       vocabforge's rare-sense glosses through: Hund was "mine car", Zug was "strain", sehr was

@@ -30,10 +30,10 @@ export default async function TodayPage() {
 
   if (!payload) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-4 p-8">
+      <main className="mx-auto flex min-h-screen w-full readable-width flex-col gap-4 p-8">
         <h1 className="text-3xl font-semibold">Today</h1>
         <p>No learner profile yet. Complete onboarding first.</p>
-        <Link className="text-blue-700 underline" href="/">
+        <Link className="text-ink underline" href="/">
           Go to onboarding
         </Link>
       </main>
@@ -41,7 +41,7 @@ export default async function TodayPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-8">
+    <main className="mx-auto flex min-h-screen w-full readable-width flex-col gap-6 p-8">
       <h1 className="text-3xl font-semibold">Today</h1>
       <p data-testid="today-summary">
         Unit {payload.unit.id.toUpperCase()}: {payload.unit.theme}. Your daily plan, 15 to 20
@@ -49,7 +49,7 @@ export default async function TodayPage() {
       </p>
       {payload.decayedUnitIds.length > 0 ? (
         <p
-          className="rounded border border-yellow-600 p-3 text-sm"
+          className="rounded-md border border-[var(--color-warning)] p-3 text-sm"
           role="status"
           data-testid="remediation-notice"
         >
@@ -65,7 +65,7 @@ export default async function TodayPage() {
         ))}
       </ol>
       <Link
-        className="self-start rounded bg-blue-700 px-4 py-2 text-white"
+        className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
         href="/today/session"
         data-testid="start-session"
       >

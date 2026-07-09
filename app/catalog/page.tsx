@@ -68,7 +68,7 @@ export default function CatalogPage() {
   const flagged = cards.filter((card) => card.audit && !card.audit.match);
   const audited = cards.filter((card) => card.audit !== null);
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 p-8">
+    <main className="mx-auto flex min-h-screen w-full shell-width flex-col gap-6 p-8">
       <h1 className="text-3xl font-semibold">Image catalog</h1>
       <p data-testid="catalog-summary">
         {cards.length} generated images. Vision audit: {audited.length} checked, {flagged.length}{' '}
@@ -82,8 +82,8 @@ export default function CatalogPage() {
           {cards.map((card) => (
             <li
               key={card.key}
-              className={`flex flex-col gap-1 rounded-lg border p-2 ${
-                card.audit && !card.audit.match ? 'border-red-600 border-2' : ''
+              className={`flex flex-col gap-1 rounded-lg border bg-surface p-2 ${
+                card.audit && !card.audit.match ? 'border-2 border-error' : ''
               }`}
               data-testid="catalog-card"
               data-flagged={card.audit ? String(!card.audit.match) : 'unaudited'}
@@ -96,17 +96,15 @@ export default function CatalogPage() {
                 loading="lazy"
               />
               <p className="text-sm font-medium">{card.german}</p>
-              <p className="text-xs opacity-80">
+              <p className="text-xs text-ink-muted">
                 {card.translation} · {card.level} · {card.style}
               </p>
               {card.audit ? (
-                <p
-                  className={`text-xs ${card.audit.match ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}
-                >
+                <p className={`text-xs ${card.audit.match ? 'text-success' : 'text-error'}`}>
                   {card.audit.match ? '✓ verified' : `✗ audit saw: ${card.audit.seen}`}
                 </p>
               ) : (
-                <p className="text-xs opacity-60">not audited yet</p>
+                <p className="text-xs text-ink-subtle">not audited yet</p>
               )}
             </li>
           ))}
