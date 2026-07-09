@@ -28,7 +28,7 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 
 | Issue | Title | Status | Branch | Notes |
 |-------|-------|--------|--------|-------|
-| GT-001 | Repository scaffold and CLAUDE.md | in-progress | gt-001-repo-scaffold | |
+| GT-001 | Repository scaffold and CLAUDE.md | done | gt-001-repo-scaffold | CLAUDE.md adapter-law content test lands with the GT-008 harness. |
 | GT-002 | Firebase wiring and environment configuration | open | | |
 | GT-003 | Firestore schema, curriculum entities | open | | |
 | GT-004 | Firestore schema, learner state | open | | |
