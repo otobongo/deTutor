@@ -77,7 +77,9 @@ const guards = [
     name: 'media-adapter',
     pattern:
       /generativelanguage\.googleapis\.com|@google\/genai|from '@\/lib\/media\/(gemini|placeholder)-provider'/,
-    allow: ['lib/media/', 'lib/gemini/'],
+    // The two batch generation scripts are the PRD 7.6 exception: they call
+    // media APIs directly and are never imported by app code.
+    allow: ['lib/media/', 'lib/gemini/', 'scripts/generate-images.ts', 'scripts/generate-audio.ts'],
     describe:
       'All media access goes through lib/media (the adapter law). Import from @/lib/media only.',
   },

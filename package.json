@@ -17,7 +17,9 @@
     "seed:curriculum": "tsx db/seed/run-seed-curriculum.ts",
     "ingest:vocab": "tsx scripts/ingest-vocab.ts",
     "seed:vocab": "tsx db/seed/run-seed-vocab.ts",
-    "enrich:vocab": "tsx scripts/enrich-vocab.ts"
+    "enrich:vocab": "tsx scripts/enrich-vocab.ts",
+    "generate:images": "tsx scripts/generate-images.ts",
+    "generate:audio": "tsx scripts/generate-audio.ts"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",

@@ -19,8 +19,11 @@ export type DataStoreName = (typeof DATA_STORES)[number];
 // TODO(GT-501): verify the Nano Banana 2 identifier when image generation is wired.
 const DEFAULT_MODEL_FAST = 'gemini-3.5-flash';
 const DEFAULT_MODEL_DEEP = 'gemini-pro-latest';
-const DEFAULT_MODEL_LIVE = 'gemini-live-2.5-flash-preview';
-const DEFAULT_MODEL_IMAGE = 'nano-banana-2';
+const DEFAULT_MODEL_LIVE = 'gemini-2.5-flash-native-audio-latest';
+// The PRD's "Nano Banana 2" maps to the current GA flash image model; the
+// pro/4K tier is explicitly out of scope (PRD Section 8).
+const DEFAULT_MODEL_IMAGE = 'gemini-3.1-flash-image';
+const DEFAULT_MODEL_TTS = 'gemini-3.1-flash-tts-preview';
 
 const envSchema = z.object({
   FIREBASE_PROJECT_ID: z.string().min(1),
@@ -33,6 +36,7 @@ const envSchema = z.object({
   GEMINI_MODEL_DEEP: z.string().min(1).default(DEFAULT_MODEL_DEEP),
   GEMINI_MODEL_LIVE: z.string().min(1).default(DEFAULT_MODEL_LIVE),
   IMAGE_MODEL: z.string().min(1).default(DEFAULT_MODEL_IMAGE),
+  GEMINI_MODEL_TTS: z.string().min(1).default(DEFAULT_MODEL_TTS),
 });
 
 export interface AppConfig {
@@ -49,6 +53,7 @@ export interface AppConfig {
     readonly deep: string;
     readonly live: string;
     readonly image: string;
+    readonly tts: string;
   };
 }
 
@@ -84,6 +89,7 @@ export function loadConfig(env: Record<string, string | undefined>): AppConfig {
       deep: e.GEMINI_MODEL_DEEP,
       live: e.GEMINI_MODEL_LIVE,
       image: e.IMAGE_MODEL,
+      tts: e.GEMINI_MODEL_TTS,
     },
   };
 }

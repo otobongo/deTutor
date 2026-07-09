@@ -48,6 +48,7 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 | 2026-07-09 | GT-107 | DocumentStore seam: Firestore adapter plus a dev-file adapter (DATA_STORE env, default firestore) | No Firebase credentials and no Java for the emulator on this machine. Same converter-validated single write path either way; connecting the real project is a one-env-var flip. e2e runs hermetically on dev-file. |
 | 2026-07-09 | GT-D1 | Default models moved to gemini-3.5-flash (fast) and gemini-pro-latest (deep) | gemini-2.5-flash began returning intermittent sunset 404s mid-batch during enrichment; successors verified live against the models API. Env overrides unchanged. |
 | 2026-07-09 | GT-403 | No token streaming for brain responses | Every runtime call is JSON-mode with schema validation (strategy Section 8); validated JSON cannot stream token by token. Pending states cover perceived latency; revisit if free-prose turns are added. Details in docs/perf.md. |
+| 2026-07-09 | GT-501 | IMAGE_MODEL default is gemini-3.1-flash-image | The PRD's "Nano Banana 2" name has no live identifier; the flash image model is the current GA equivalent (the pro/4K tier is out of scope per PRD Section 8). Verified with a live sample batch. |
 
 ## Phase 0: Foundation
 
@@ -131,7 +132,7 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 | Issue | Title | Status | Branch | Notes |
 |-------|-------|--------|--------|-------|
-| GT-501 | Image generation script | open | | |
+| GT-501 | Image generation script | done | gt-501-image-generation | Sample batch verified live (gemini-3.1-flash-image; PRD's 'Nano Banana 2' pinned to it, deviation noted); manifest ledger + MediaAssetRef writes; idempotent/resumable; full A1 batch is one command, cost flagged to owner. |
 | GT-502 | Audio generation script | open | | |
 | GT-503 | Gemini Live voice integration | open | | |
 | GT-504 | Provider flip and regression | open | | |

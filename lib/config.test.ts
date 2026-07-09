@@ -42,6 +42,7 @@ describe('loadConfig (GT-002)', () => {
     expect(config.models.deep.length).toBeGreaterThan(0);
     expect(config.models.live.length).toBeGreaterThan(0);
     expect(config.models.image.length).toBeGreaterThan(0);
+    expect(config.models.tts.length).toBeGreaterThan(0);
   });
 
   it('lets env override every model string', () => {
@@ -51,12 +52,14 @@ describe('loadConfig (GT-002)', () => {
       GEMINI_MODEL_DEEP: 'override-deep',
       GEMINI_MODEL_LIVE: 'override-live',
       IMAGE_MODEL: 'override-image',
+      GEMINI_MODEL_TTS: 'override-tts',
     });
     expect(config.models).toEqual({
       fast: 'override-fast',
       deep: 'override-deep',
       live: 'override-live',
       image: 'override-image',
+      tts: 'override-tts',
     });
   });
 
