@@ -19,6 +19,14 @@ export function loadVocabSeedFile(level: Level): ReturnType<typeof vocabularyWor
   return SEED_FILES[level].map((entry) => vocabularyWordSchema.parse(entry));
 }
 
+// A learner at a level has the lower bands too; generation and selection
+// against "learned vocabulary" should almost always use this.
+export function cumulativeCorpus(level: Level): ReturnType<typeof loadVocabSeedFile> {
+  const levels: Level[] =
+    level === 'A1' ? ['A1'] : level === 'A2' ? ['A1', 'A2'] : ['A1', 'A2', 'B1'];
+  return levels.flatMap((each) => loadVocabSeedFile(each));
+}
+
 export async function seedVocabulary(db: SeedTarget, level: Level): Promise<number> {
   const words = loadVocabSeedFile(level);
   const collection = db.collection('vocabulary');

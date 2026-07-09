@@ -59,6 +59,10 @@ export const CURATED_TRANSLATIONS: Readonly<Record<string, CuratedEntry>> = {
   wenn: { translation: 'if, when', wordType: 'other' },
   wer: { translation: 'who', wordType: 'other' },
   zwar: { translation: 'admittedly, in fact', wordType: 'adverb' },
+  viel: { translation: 'much, many', wordType: 'other' },
+  raus: { translation: 'out (colloquial)', wordType: 'adverb' },
+  her: { translation: 'here, hither', wordType: 'adverb' },
+  früher: { translation: 'earlier, in the past', wordType: 'adverb' },
   // Verbs
   dürfen: { translation: 'may, to be allowed to', wordType: 'verb' },
   können: { translation: 'can, to be able to', wordType: 'verb' },
