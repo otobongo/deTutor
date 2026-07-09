@@ -76,8 +76,8 @@ const guards = [
   {
     name: 'media-adapter',
     pattern:
-      /generativelanguage\.googleapis\.com.*(image|audio|speech|live)|from '@\/lib\/media\/(gemini|placeholder)-provider'/,
-    allow: ['lib/media/'],
+      /generativelanguage\.googleapis\.com|@google\/genai|from '@\/lib\/media\/(gemini|placeholder)-provider'/,
+    allow: ['lib/media/', 'lib/gemini/'],
     describe:
       'All media access goes through lib/media (the adapter law). Import from @/lib/media only.',
   },
