@@ -24,7 +24,9 @@ export default defineConfig({
       FIREBASE_CLIENT_EMAIL: 'e2e@placeholder.local',
       FIREBASE_PRIVATE_KEY: 'e2e-placeholder-key',
       GEMINI_API_KEY: 'e2e-placeholder-key',
-      MEDIA_PROVIDER: 'placeholder',
+      // The GT-504 flip regression runs the same suite with
+      // E2E_MEDIA_PROVIDER=gemini; placeholder is the default.
+      MEDIA_PROVIDER: process.env.E2E_MEDIA_PROVIDER ?? 'placeholder',
       DATA_STORE: 'dev-file',
     },
   },

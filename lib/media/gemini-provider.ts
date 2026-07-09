@@ -19,18 +19,21 @@ interface MediaManifest {
   audio: Record<string, string>;
 }
 
-function readManifest(): MediaManifest {
-  const file = path.join(process.cwd(), 'public', 'media', 'manifest.json');
-  if (!existsSync(file)) return { images: {}, audio: {} };
-  return JSON.parse(readFileSync(file, 'utf8')) as MediaManifest;
-}
-
 export class GeminiProvider implements MediaProvider {
-  constructor(private readonly liveTransportFactory: LiveTransportFactory = sdkLiveTransport) {}
+  constructor(
+    private readonly liveTransportFactory: LiveTransportFactory = sdkLiveTransport,
+    private readonly mediaDir: string = path.join(process.cwd(), 'public', 'media'),
+  ) {}
+
+  private readManifest(): MediaManifest {
+    const file = path.join(this.mediaDir, 'manifest.json');
+    if (!existsSync(file)) return { images: {}, audio: {} };
+    return JSON.parse(readFileSync(file, 'utf8')) as MediaManifest;
+  }
 
   getImage(word: string, style: 'flat' | 'render'): Promise<ImageAsset> {
     const key = `${word}:${style}` as ImageAsset['key'];
-    const file = readManifest().images[key];
+    const file = this.readManifest().images[key];
     if (file) {
       return Promise.resolve({
         key,
@@ -43,7 +46,7 @@ export class GeminiProvider implements MediaProvider {
   }
 
   getAudio(clipId: string): Promise<AudioAsset> {
-    const file = readManifest().audio[clipId];
+    const file = this.readManifest().audio[clipId];
     const captionText = lookupPlaceholderClip(clipId) ?? '';
     if (file) {
       return Promise.resolve({
