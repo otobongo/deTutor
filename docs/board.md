@@ -22,6 +22,13 @@ real Firebase config and the Gemini key. No red, no uncommitted work.
       config defaults are best-known values from build time and are env-overridable.
 - [ ] Add a GitHub remote when ready; the Actions workflow is committed and will run as-is.
 
+## Discovered work (not yet in the plan)
+
+- [ ] **GT-D1: Vocabulary enrichment batch.** Gemini script to fill ipa, exampleDe,
+      exampleEn for all corpus words and translations for db/seed/translation-pending.json
+      (235 entries), plus review of db/seed/article-review.json (9 entries). Needs
+      GEMINI_API_KEY. Blocks nothing in Phase 1; cards render without IPA/examples until then.
+
 ## Deviations log
 
 | Date | Issue | Deviation | Why |
@@ -30,6 +37,9 @@ real Firebase config and the Gemini key. No red, no uncommitted work.
 | 2026-07-09 | GT-001 | Repo root is the working directory `german/`, not a nested `german-platform/` | docs/ already lived here; layout inside the root matches PRD 11.1. |
 | 2026-07-09 | GT-101 | Added `capstonePremise` to the Unit schema (GT-003 file) | The plan requires a capstone premise per unit; the GT-003 field list predated it. schema.md updated. |
 | 2026-07-09 | GT-101 | Replaced `server-only` import in lib/firebase.ts with a runtime browser check | tsx-run seed scripts import lib/firebase; the server-only package throws outside React server components. Same protection, seed scripts work. |
+| 2026-07-09 | GT-102 | Corpus strategy: Goethe B1 Wortliste is the corpus and level source (frequency banding 650/650/rest), vocabforge supplies translations only | vocabforge CEFR tags are unusable for breadth (91 A1 rows of 32,000; 26,020 tagged C2). The Wortliste IS the official B1 scope the PRD names as the ceiling. |
+| 2026-07-09 | GT-102 | VocabularyWord ipa/exampleDe/exampleEn made nullable | No dataset supplies them; fabricating IPA would poison pronunciation teaching. Filled by the GT-D1 enrichment batch; null until then. |
+| 2026-07-09 | GT-102 | Theme tagging is a keyword heuristic plus override file, not Deutschland-Vocabulary mapping | That repo is scanned-PDF flashcards (Bangla), machine-unusable. Overrides live in db/seed/theme-overrides.json. |
 
 ## Phase 0: Foundation
 
@@ -49,7 +59,7 @@ real Firebase config and the Gemini key. No red, no uncommitted work.
 | Issue | Title | Status | Branch | Notes |
 |-------|-------|--------|--------|-------|
 | GT-101 | Unit structure seed (18 units) | done | gt-101-unit-seed | 18 units + 34 grammar items seeded idempotently; `npm run seed:curriculum` writes them once env points at a live/emulated Firestore. |
-| GT-102 | Vocabulary ingestion pipeline | open | | |
+| GT-102 | Vocabulary ingestion pipeline | done | gt-102-vocab-ingestion | Corpus: 2,548 verified words (A1 650 / A2 650 / B1 1,248) in db/seed/vocab/; 9 article reviews, 235 translations pending enrichment. Datasets download via scripts/download-datasets.sh (gitignored). |
 | GT-103 | A1 vocabulary seed and staged A2/B1 sets | open | | |
 | GT-104 | FSRS integration and card state persistence | open | | |
 | GT-105 | Review queue engine | open | | |
