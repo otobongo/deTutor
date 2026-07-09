@@ -1,9 +1,6 @@
 import Link from 'next/link';
-import { seedGrammarItems, seedUnits } from '@/db/seed/units';
-import { loadVocabSeedFile } from '@/db/seed/seed-vocab';
-import { learnerPaths, learnerProfileSchema, type SessionStep } from '@/lib/db/learner';
-import { getDataStore } from '@/lib/db/store';
-import { composeSession } from '@/lib/lesson/engine';
+import { getTodaySession } from '@/app/actions/lesson';
+import type { SessionStep } from '@/lib/db/learner';
 
 // The Day view (GT-107 landing target; the full shell arrives with GT-220).
 // Composes today's plan from the profile; without a profile it points back
@@ -29,12 +26,9 @@ function describeStep(step: SessionStep): string {
 }
 
 export default async function TodayPage() {
-  const store = getDataStore();
-  const [learners, learnerId] = learnerPaths.root().split('/') as [string, string];
-  const rawProfile = await store.collection(learners).doc(learnerId).get();
-  const profile = rawProfile ? learnerProfileSchema.safeParse(rawProfile) : null;
+  const payload = await getTodaySession();
 
-  if (!profile?.success) {
+  if (!payload) {
     return (
       <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-4 p-8">
         <h1 className="text-3xl font-semibold">Today</h1>
@@ -46,38 +40,25 @@ export default async function TodayPage() {
     );
   }
 
-  const unit = seedUnits.find((candidate) => candidate.id === profile.data.unitId);
-  if (!unit) {
-    return (
-      <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-4 p-8">
-        <h1 className="text-3xl font-semibold">Today</h1>
-        <p>
-          Unit {profile.data.unitId} is not seeded yet. Run npm run seed:curriculum or re-run
-          placement.
-        </p>
-      </main>
-    );
-  }
-
-  const session = composeSession({
-    unit,
-    unitGrammarItems: seedGrammarItems.filter((item) => unit.grammarItemIds.includes(item.id)),
-    corpus: loadVocabSeedFile(profile.data.level),
-    learnedWordIds: new Set<string>(),
-    cards: [],
-    lastSkillSlot: null,
-    poorGrammarItemIds: [],
-    now: new Date(),
-  });
-
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-8">
       <h1 className="text-3xl font-semibold">Today</h1>
       <p data-testid="today-summary">
-        Unit {unit.id.toUpperCase()}: {unit.theme}. Your daily plan, 15 to 20 minutes.
+        Unit {payload.unit.id.toUpperCase()}: {payload.unit.theme}. Your daily plan, 15 to 20
+        minutes.
       </p>
+      {payload.decayedUnitIds.length > 0 ? (
+        <p
+          className="rounded border border-yellow-600 p-3 text-sm"
+          role="status"
+          data-testid="remediation-notice"
+        >
+          Retention slipped on {payload.decayedUnitIds.map((id) => id.toUpperCase()).join(', ')}:
+          today&apos;s grammar focus revisits that material.
+        </p>
+      ) : null}
       <ol className="flex list-decimal flex-col gap-2 pl-6" data-testid="day-plan">
-        {session.steps.map((step) => (
+        {payload.session.steps.map((step) => (
           <li key={step.kind} data-testid={`step-${step.kind}`}>
             {describeStep(step)}
           </li>

@@ -122,7 +122,7 @@ translations, article review). No red, no uncommitted work.
 
 | Issue | Title | Status | Branch | Notes |
 |-------|-------|--------|--------|-------|
-| GT-401 | End-to-end placeholder pass | open | | |
+| GT-401 | End-to-end placeholder pass | done | gt-401-e2e-pass | All five journeys green and self-contained (store reset per journey). Flow gaps closed en route: unit-test UI with deterministic placeholder tests, retention remediation surfaced on Today, skill rotation wired across sessions, B1 exam page. |
 | GT-402 | Adapter contract and integrity audit | open | | |
 | GT-403 | Performance pass | open | | |
 | GT-404 | Accessibility pass | open | | |

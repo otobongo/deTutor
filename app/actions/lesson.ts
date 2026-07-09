@@ -8,11 +8,14 @@ import {
   learnerProfileSchema,
   lessonSessionConverter,
   lessonSessionSchema,
+  retentionScoreSchema,
   type LessonSession,
+  type SkillSlot,
 } from '@/lib/db/learner';
 import { getDataStore } from '@/lib/db/store';
 import type { GrammarItem, Unit, VocabularyWord } from '@/lib/db/curriculum';
 import { composeSession, poorGrammarItemsFrom } from '@/lib/lesson/engine';
+import { needsRemediation } from '@/lib/assessment/retention';
 import { buildSessionReport, persistSessionReport } from '@/lib/lesson/wrap-up';
 import { evaluateListening, type ListeningEvaluation } from '@/lib/exercises/listening-eval';
 import { GeminiError, getGeminiClient } from '@/lib/gemini/client';
@@ -38,6 +41,43 @@ export interface TodaySessionPayload {
   readonly wordAudio: Readonly<Record<string, AudioAsset>>;
   readonly listeningClip: AudioAsset;
   readonly tileItem: TileItem;
+  readonly decayedUnitIds: readonly string[];
+}
+
+// Rotation and remediation inputs come from stored state: the most recent
+// completed session drives the skill slot and grammar resurfacing (GT-108),
+// and decayed retention (GT-305) adds its units' grammar items.
+async function planningInputs(): Promise<{
+  lastSkillSlot: SkillSlot | null;
+  poorGrammarItemIds: string[];
+  decayed: string[];
+}> {
+  const store = getDataStore();
+  const [rawSessions, rawRetentions] = await Promise.all([
+    store.list(learnerPaths.sessions()),
+    store.list(learnerPaths.retentionScores()),
+  ]);
+  const completed = rawSessions
+    .map((data) => lessonSessionSchema.safeParse(data))
+    .flatMap((parsed) =>
+      parsed.success && parsed.data.status === 'completed' ? [parsed.data] : [],
+    )
+    .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  const last = completed[completed.length - 1] ?? null;
+  const lastSlotStep = last?.steps.find((step) => step.kind === 'skill-practice');
+  const decayed = rawRetentions
+    .map((data) => retentionScoreSchema.safeParse(data))
+    .flatMap((parsed) =>
+      parsed.success && needsRemediation(parsed.data) ? [parsed.data.unitId] : [],
+    );
+  const decayedGrammar = seedUnits
+    .filter((unit) => decayed.includes(unit.id))
+    .flatMap((unit) => unit.grammarItemIds);
+  return {
+    lastSkillSlot: lastSlotStep?.kind === 'skill-practice' ? lastSlotStep.slot : null,
+    poorGrammarItemIds: [...poorGrammarItemsFrom(last), ...decayedGrammar],
+    decayed,
+  };
 }
 
 async function loadActiveSession(sessionId: string): Promise<LessonSession | null> {
@@ -62,16 +102,23 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
   const sessionId = `session-${now.toISOString().slice(0, 10)}`;
   const existing = await loadActiveSession(sessionId);
   const corpus = loadVocabSeedFile(profile.data.level);
+  const planning = await planningInputs();
+  const remediationItems = seedGrammarItems.filter((item) =>
+    planning.poorGrammarItemIds.includes(item.id),
+  );
   const session =
     existing ??
     composeSession({
       unit,
-      unitGrammarItems: seedGrammarItems.filter((item) => unit.grammarItemIds.includes(item.id)),
+      unitGrammarItems: [
+        ...seedGrammarItems.filter((item) => unit.grammarItemIds.includes(item.id)),
+        ...remediationItems.filter((item) => !unit.grammarItemIds.includes(item.id)),
+      ],
       corpus,
       learnedWordIds: new Set<string>(),
       cards: [],
-      lastSkillSlot: null,
-      poorGrammarItemIds: poorGrammarItemsFrom(null),
+      lastSkillSlot: planning.lastSkillSlot,
+      poorGrammarItemIds: planning.poorGrammarItemIds,
       now,
     });
   if (!existing) {
@@ -110,6 +157,7 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
     wordAudio,
     listeningClip: await provider.getAudio(listeningClipId(unit.id)),
     tileItem: TILE_ITEMS[0] as TileItem,
+    decayedUnitIds: planning.decayed,
   };
 }
 

@@ -1,10 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { resetStore } from './helpers';
 
 // GT-204: settings reachable, editable, and the placement re-run entry
 // exists. Depends on a completed onboarding (profile present) from the
 // onboarding spec ordering, so this spec creates its own profile first.
 
 test('settings edits persist and placement re-run is reachable', async ({ page }) => {
+  resetStore();
   // Ensure a profile exists: run a minimal onboarding.
   await page.goto('/');
   await page.getByTestId('choose-voice-warm-1').click();

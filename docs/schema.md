@@ -150,6 +150,11 @@ grammar-focus with grammarItemId, skill-practice with slot, wrap-up), status
 ('active' | 'completed'), grammarScore (0 to 10 or null; drives the
 next-session resurfacing rule).
 
+### `learners/{learnerId}/unitProgress/{unitId}` (UnitProgressDoc, GT-401)
+
+Per-unit skill outcomes (score, passed) and remediation gates
+('pending' | 'done' per failed skill) from the GT-303 state machine.
+
 ### `learners/{learnerId}/weeklySummaries/{weekStart}` (WeeklySummary)
 
 Fields per PRD 4.6 weekly summary: weekStart, levelProgressPercent,
