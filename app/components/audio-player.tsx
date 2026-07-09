@@ -8,7 +8,15 @@ import type { AudioAsset } from '@/lib/media/provider';
 // synthesis degrades silently when the browser offers no de-DE voice; the
 // captions carry the content either way.
 
-export function AudioPlayer({ asset, label }: { asset: AudioAsset; label: string }) {
+export function AudioPlayer({
+  asset,
+  label,
+  rate = 1,
+}: {
+  asset: AudioAsset;
+  label: string;
+  rate?: number;
+}) {
   const [played, setPlayed] = useState(false);
 
   const play = useCallback(() => {
@@ -16,11 +24,12 @@ export function AudioPlayer({ asset, label }: { asset: AudioAsset; label: string
     if (asset.source.type === 'speech-synthesis' && 'speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(asset.source.text);
       utterance.lang = asset.source.lang;
+      utterance.rate = rate;
       window.speechSynthesis.speak(utterance);
     } else if (asset.source.type === 'url') {
       void new Audio(asset.source.url).play();
     }
-  }, [asset]);
+  }, [asset, rate]);
 
   return (
     <div className="flex flex-col gap-2">
