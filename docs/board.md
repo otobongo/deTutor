@@ -5,18 +5,19 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 
 ## State of the build
 
-**2026-07-09, Claude (Fable 5), builder.** Phases 0, 1, and 2 complete: GT-001 to GT-008, GT-101
-to GT-110, and GT-201 to GT-220 all done and merged to main. `npm run ci` green: lint, format,
-typecheck, 4 guards, 240 unit and component tests across 42 files, 9 Playwright journeys (smoke,
-onboarding to Day 1, adapter captions, placement escalation, settings persistence, FULL daily
-session from Today to completion, skills library, mobile viewport, keyboard nav). All four skills
-run in placeholder mode: echo/vocab cards, image ID with article traps, listening with captioned
-placeholder audio and tiered evaluation, reading generation with a code-owned level envelope plus
-Goethe Lesen tasks and tap-to-queue, writing tiles/dictation/composers/deep-tier correction,
-speaking echo loop, 12 scenarios with inline corrections and summaries, session wrap-up reports,
-and the app shell with a resumable five-step session runner. Brain-dependent flows degrade to
-recoverable states until GEMINI_API_KEY arrives. Next: Phase 3 (GT-301 to GT-311, assessment
-engine). Owner TODOs unchanged; GT-D1 enrichment batch still queued. No red, no uncommitted work.
+**2026-07-09, Claude (Fable 5), builder.** Phases 0 to 3 complete: GT-001 to GT-008, GT-101 to
+GT-110, GT-201 to GT-220, and GT-301 to GT-311 all done and merged; main pushed to
+github.com/otobongo/deTutor after every issue. `npm run ci` green: lint, format, typecheck, 4
+guards, 300+ unit/component tests, 10 Playwright journeys. The assessment engine is in: unit test
+generation (deep tier, envelope-validated), pure 60%-gate scoring with append-only attempts,
+remediation-locked single-skill retakes, the 7/14/30/60 spaced retest scheduler writing retention
+only, documented retention decay with lesson-plan resurfacing, dual-condition level gates, the
+official Goethe B1 exam blueprint with timing, the Progress session view with drill-down, the
+detector-pinned weekly summary, the level dashboard, and the adaptive difficulty-weighting engine
+plugged into lesson selection. GEMINI_API_KEY is live (text model ids verified); the GT-D1
+enrichment batch is filling IPA/examples across the corpus. Next: Phase 4 hardening (GT-401 to
+GT-404). Owner TODO remaining: Firebase credentials + DATA_STORE flip; GT-D1b (pending
+translations, article review). No red, no uncommitted work.
 
 ## Owner TODOs (non-blocking for Phase 0, needed before later phases)
 
