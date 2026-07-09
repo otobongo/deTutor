@@ -6,5 +6,10 @@
   "Adresse": false,
   "Fotografie": false,
   "Magazin": false,
-  "Strafzettel": false
+  "Strafzettel": false,
+  "Szene": false,
+  "Luft": false,
+  "Eltern": false,
+  "Wand": false,
+  "Visitenkarte": false
 }

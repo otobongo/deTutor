@@ -185,7 +185,7 @@ const THEME_KEYWORDS: ReadonlyArray<readonly [string, readonly string[]]> = [
       'pay',
       'cost',
       'euro',
-      'card, map, ticket',
+      'card, map',
       'credit',
       'supermarket',
       'market',

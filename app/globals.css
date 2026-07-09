@@ -1,5 +1,12 @@
 @import 'tailwindcss';
 
+/* Tailwind v4 scans sources for class names; docs and seed data are prose
+   and datasets, not markup, and stray tokens there must never reach the
+   compiled CSS (a docs file once injected an invalid utility). */
+@source not "../docs";
+@source not "../db";
+@source not "../scripts";
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

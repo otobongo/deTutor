@@ -34,6 +34,16 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **Corpus translation audit (done 2026-07-10, owner-triggered).** The image audit's blind
+      spot (it validated images against stored translations, not against the German words) let
+      vocabforge's rare-sense glosses through: Hund was "mine car", Zug was "strain", sehr was
+      "damned". Full audit of all 2,547 words via npm run audit:translations: 1,400 corrected
+      (55%), enrichment (IPA/examples) regenerated for every corrected word, affected images
+      purged and regenerated, image audit re-run judging against the German word first. Final:
+      240 images, zero flags; /words is the manual review surface (flagged-first, level filters).
+      Karte fixed to "card, map" per owner. Repeat-offender picturables (Eltern, Wand,
+      Visitenkarte, Luft, Szene, Tablette-as-computer etc.) made non-picturable with overrides.
+
 - [x] **Image catalog and vision audit (done 2026-07-09).** /catalog previews every generated
       image with word, translation, and audit verdict; npm run audit:images sends each image back
       through Gemini vision against its expected word. Outcome: 266 generated, 17 flagged, root

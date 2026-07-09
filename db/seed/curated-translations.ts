@@ -103,7 +103,7 @@ export const CURATED_TRANSLATIONS: Readonly<Record<string, CuratedEntry>> = {
   Größe: { translation: 'size, height', wordType: 'noun' },
   Hose: { translation: 'trousers, pants', wordType: 'noun' },
   Jacke: { translation: 'jacket', wordType: 'noun' },
-  Karte: { translation: 'card, map, ticket', wordType: 'noun' },
+  Karte: { translation: 'card, map', wordType: 'noun' },
   Karriere: { translation: 'career', wordType: 'noun' },
   Leute: { translation: 'people', wordType: 'noun' },
   Miete: { translation: 'rent', wordType: 'noun' },

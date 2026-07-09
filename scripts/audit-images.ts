@@ -63,9 +63,12 @@ async function main(): Promise<void> {
               { inlineData: { mimeType: 'image/png', data: image.toString('base64') } },
               {
                 text:
-                  `This image should clearly depict: "${word.translation}" ` +
-                  `(German: ${display}). Judge strictly but allow stylistic variation. ` +
-                  'Return JSON: {"match": true|false, "seen": "one or two words for what is actually pictured"}.',
+                  `This image illustrates the GERMAN word "${display}" for a beginner. ` +
+                  'Judge against the common primary meaning of the German word itself ' +
+                  `(the stored gloss "${word.translation}" may be wrong; flag it if the image ` +
+                  'matches a rare sense instead of the common one). Judge strictly but allow ' +
+                  'stylistic variation. Return JSON: {"match": true|false, ' +
+                  '"seen": "one or two words for what is actually pictured"}.',
               },
             ],
           },
