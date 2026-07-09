@@ -5,8 +5,13 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 
 ## State of the build
 
-**2026-07-09, Claude (Fable 5), builder.** Phase 0 in progress. Repo scaffolded on Next.js 16.2.10
-(App Router, TypeScript strict). See Deviations for the Next.js version note.
+**2026-07-09, Claude (Fable 5), builder.** Phase 0 complete: GT-001 through GT-008 all done and
+merged to main, `npm run ci` green (lint, format, typecheck, guards, 44 unit tests, smoke e2e).
+The four CI guards (model-strings, process-env, client-server-config, media-adapter) are live and
+tested with planted violations. Placeholder images, audio, and the fallback voice session are
+implemented and unit-tested; the MediaProvider seam is closed. Next: Phase 1 starting with GT-101
+(unit seed), GT-102 (vocab ingestion), and GT-109 (Gemini client), pending owner TODOs above for
+real Firebase config and the Gemini key. No red, no uncommitted work.
 
 ## Owner TODOs (non-blocking for Phase 0, needed before later phases)
 
@@ -34,7 +39,7 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 | GT-004 | Firestore schema, learner state | done | gt-004-learner-schema | FSRS state field named `phase` to keep the domain word "state" unambiguous; noted in schema.md. |
 | GT-005 | MediaProvider interface and provider switch | done | gt-005-media-provider | Interface verbatim per PRD 7.4; GeminiProvider is a loud-failure seam until Phase 5; adapter guard extended to Gemini SDK imports. |
 | GT-006 | PlaceholderProvider, images | done | gt-006-placeholder-images | Article colors defined once in lib/design/tokens.ts; nouns arrive as the full "der Tisch" package; ref persistence is a typed builder written via converters by callers. |
-| GT-007 | PlaceholderProvider, audio and voice fallback | open | | |
+| GT-007 | PlaceholderProvider, audio and voice fallback | done | gt-007-placeholder-audio-voice | Clip registry resolves clipId to German text; unknown clips degrade silent+captioned, never throw. VoiceSessionEvent contract lives in provider.ts; GT-503's contract test must run against both implementations. Caption UI component lands with GT-205; the contract (captionsRequired) is typed now. |
 | GT-008 | Test harness and CI | done | gt-008-test-harness | Built directly after GT-001 so later issues have a test home (plan permits: depends only on GT-001). Adapter guard joins the gate at GT-005. |
 
 ## Phase 1: Curriculum and Content Core
