@@ -101,7 +101,7 @@ resolution, never document shape. Path helpers: `learnerPaths` in the module.
 | due | ISO datetime string | Next review |
 | stability / difficulty | number | FSRS parameters |
 | elapsedDays / scheduledDays | number | FSRS parameters |
-| reps / lapses | integer | Counters |
+| reps / lapses / learningSteps | integer | Counters (learningSteps added by GT-104 for ts-fsrs short-term steps) |
 | lastReview | ISO datetime string \| null | Null until first review |
 
 Index needs: `(due asc)` for the review queue (GT-105).

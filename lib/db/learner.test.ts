@@ -36,6 +36,7 @@ const card: FsrsCardState = {
   scheduledDays: 1,
   reps: 1,
   lapses: 0,
+  learningSteps: 1,
   lastReview: '2026-07-09T08:00:00.000Z',
 };
 

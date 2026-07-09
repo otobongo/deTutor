@@ -61,7 +61,7 @@ real Firebase config and the Gemini key. No red, no uncommitted work.
 | GT-101 | Unit structure seed (18 units) | done | gt-101-unit-seed | 18 units + 34 grammar items seeded idempotently; `npm run seed:curriculum` writes them once env points at a live/emulated Firestore. |
 | GT-102 | Vocabulary ingestion pipeline | done | gt-102-vocab-ingestion | Corpus: 2,548 verified words (A1 650 / A2 650 / B1 1,248) in db/seed/vocab/; 9 article reviews, 235 translations pending enrichment. Datasets download via scripts/download-datasets.sh (gitignored). |
 | GT-103 | A1 vocabulary seed and staged A2/B1 sets | done | gt-103-vocab-seed | 650 A1 words seed by default; A2/B1 staged behind --level; day-set selector (theme within frequency) in lib/lesson/vocab-selection.ts. Includes GT-102 dedupe fix for prefix variants. |
-| GT-104 | FSRS integration and card state persistence | open | | |
+| GT-104 | FSRS integration and card state persistence | done | gt-104-fsrs | ts-fsrs wrapped pure with fuzz disabled (deterministic); FsrsCardState gained learningSteps (schema.md updated); unknown-card ratings fail loudly. |
 | GT-105 | Review queue engine | open | | |
 | GT-106 | Placement check engine | open | | |
 | GT-107 | Onboarding and placement UI flow | open | | |
