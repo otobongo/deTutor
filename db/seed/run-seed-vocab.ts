@@ -1,3 +1,4 @@
+import '@/scripts/load-env';
 import { getDb } from '@/lib/firebase';
 import { levelSchema } from '@/lib/db/curriculum';
 import { seedVocabulary } from './seed-vocab';

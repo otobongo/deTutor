@@ -22,17 +22,18 @@ engine). Owner TODOs unchanged; GT-D1 enrichment batch still queued. No red, no 
 
 - [ ] Create the real Firebase project and drop its config values into `.env.local`
       (Phase 0 builds and tests against dummy values and converters only).
-- [ ] Supply `GEMINI_API_KEY` when Phase 1 (GT-109) wires the Gemini client.
-- [ ] Verify current Gemini fast/deep/Live and Nano Banana 2 model identifiers at GT-109/GT-501;
-      config defaults are best-known values from build time and are env-overridable.
-- [ ] Add a GitHub remote when ready; the Actions workflow is committed and will run as-is.
+- [x] GEMINI_API_KEY supplied 2026-07-09 (lives in .env.local only; never committed).
+- [x] Text model ids verified live 2026-07-09 (gemini-2.5-flash and gemini-2.5-pro both respond);
+      Live and image identifiers still need verification at Phase 5 (GT-501/503).
+- [x] GitHub remote added 2026-07-09: https://github.com/otobongo/deTutor (push after each issue).
 
 ## Discovered work (not yet in the plan)
 
-- [ ] **GT-D1: Vocabulary enrichment batch.** Gemini script to fill ipa, exampleDe,
-      exampleEn for all corpus words and translations for db/seed/translation-pending.json
-      (235 entries), plus review of db/seed/article-review.json (9 entries). Needs
-      GEMINI_API_KEY. Blocks nothing in Phase 1; cards render without IPA/examples until then.
+- [x] **GT-D1: Vocabulary enrichment batch (in progress 2026-07-09).** npm run enrich:vocab
+      fills ipa/exampleDe/exampleEn for the corpus (idempotent, resumes by skipping enriched
+      words). Translation-pending entries (230) and article reviews (8) remain queued as GT-D1b.
+- [ ] **GT-D1b: Pending translations and article review.** Enrich db/seed/translation-pending.json
+      entries with translations and re-run ingestion; resolve db/seed/article-review.json.
 
 ## Deviations log
 
