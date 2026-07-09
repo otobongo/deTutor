@@ -5,13 +5,16 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 
 ## State of the build
 
-**2026-07-09, Claude (Fable 5), builder.** Phase 0 complete: GT-001 through GT-008 all done and
-merged to main, `npm run ci` green (lint, format, typecheck, guards, 57 unit tests, smoke e2e).
-The four CI guards (model-strings, process-env, client-server-config, media-adapter) are live and
-tested with planted violations. Placeholder images, audio, and the fallback voice session are
-implemented and unit-tested; the MediaProvider seam is closed. Next: Phase 1 starting with GT-101
-(unit seed), GT-102 (vocab ingestion), and GT-109 (Gemini client), pending owner TODOs above for
-real Firebase config and the Gemini key. No red, no uncommitted work.
+**2026-07-09, Claude (Fable 5), builder.** Phases 0 and 1 complete: GT-001 to GT-008 and GT-101
+to GT-110 all done and merged to main. `npm run ci` green: lint, format, typecheck, 4 guards, 134
+unit tests, 4 Playwright journeys (smoke, full onboarding to Day 1, adapter-served voice samples,
+placement escalation). Curriculum skeleton (18 units, 34 grammar items) and verified vocabulary
+corpus (A1 650 / A2 650 / B1 1243, zero unverified articles) are seedable; FSRS scheduler, review
+queue with the GT-304 seam, placement ladder, Gemini client with tiering, and the five-step lesson
+engine are all pure and tested. Onboarding runs end to end in the browser on the dev-file store.
+Next: Phase 2 (GT-201 to GT-220, four skills in placeholder mode). Owner TODOs above still open
+(Firebase project, GEMINI_API_KEY, model id verification); GT-D1 enrichment batch queued. No red,
+no uncommitted work.
 
 ## Owner TODOs (non-blocking for Phase 0, needed before later phases)
 
@@ -40,6 +43,7 @@ real Firebase config and the Gemini key. No red, no uncommitted work.
 | 2026-07-09 | GT-102 | Corpus strategy: Goethe B1 Wortliste is the corpus and level source (frequency banding 650/650/rest), vocabforge supplies translations only | vocabforge CEFR tags are unusable for breadth (91 A1 rows of 32,000; 26,020 tagged C2). The Wortliste IS the official B1 scope the PRD names as the ceiling. |
 | 2026-07-09 | GT-102 | VocabularyWord ipa/exampleDe/exampleEn made nullable | No dataset supplies them; fabricating IPA would poison pronunciation teaching. Filled by the GT-D1 enrichment batch; null until then. |
 | 2026-07-09 | GT-102 | Theme tagging is a keyword heuristic plus override file, not Deutschland-Vocabulary mapping | That repo is scanned-PDF flashcards (Bangla), machine-unusable. Overrides live in db/seed/theme-overrides.json. |
+| 2026-07-09 | GT-107 | DocumentStore seam: Firestore adapter plus a dev-file adapter (DATA_STORE env, default firestore) | No Firebase credentials and no Java for the emulator on this machine. Same converter-validated single write path either way; connecting the real project is a one-env-var flip. e2e runs hermetically on dev-file. |
 
 ## Phase 0: Foundation
 
@@ -64,7 +68,7 @@ real Firebase config and the Gemini key. No red, no uncommitted work.
 | GT-104 | FSRS integration and card state persistence | done | gt-104-fsrs | ts-fsrs wrapped pure with fuzz disabled (deterministic); FsrsCardState gained learningSteps (schema.md updated); unknown-card ratings fail loudly. |
 | GT-105 | Review queue engine | done | gt-105-review-queue | injectExtras seam documented for GT-304; retest items ride the queue but never touch FSRS state. |
 | GT-106 | Placement check engine | done | gt-106-placement | All 15 probes objectively checkable so placement is deterministic (plan acceptance); B1 start requires passing B1 probes, a failed B1 stage falls back to A2 start (fixed by the plan's own test case). |
-| GT-107 | Onboarding and placement UI flow | open | | |
+| GT-107 | Onboarding and placement UI flow | done | gt-107-onboarding | Voice (adapter samples with captions), dialect (skip defaults Hochdeutsch), placement ladder, result, Day 1 landing; e2e covers the full journey plus escalation. Settings page itself is GT-204. |
 | GT-108 | Daily lesson engine | done | gt-108-lesson-engine | Pure five-step composer; weight-proportional deterministic grammar selection (no RNG); chunk-then-produce enforced at completeStep; session doc schema added (schema.md). Built before GT-107 so onboarding lands on a real Day 1 plan. |
 | GT-109 | Gemini client wrapper and system prompt module | done | gt-109-gemini-client | Prompt embedded verbatim with a byte-equality sync test in CI; transport seam keeps SDK calls testable; owner must verify model ids and supply GEMINI_API_KEY before first real call. |
 | GT-110 | Model tiering, fast default with high-thinking escalation | done | gt-110-model-tiering | callSite is a closed union; ESCALATION_MAP is the only path to deep (4 mapped sites); tier logged per call. |
