@@ -6,6 +6,12 @@ import { z } from 'zod';
 export const MEDIA_PROVIDERS = ['placeholder', 'gemini'] as const;
 export type MediaProviderName = (typeof MEDIA_PROVIDERS)[number];
 
+// dev-file backs learner state with a local JSON file for credential-less
+// placeholder-mode development and e2e; firestore is production. Same typed,
+// converter-validated write path either way (deviation logged in board.md).
+export const DATA_STORES = ['firestore', 'dev-file'] as const;
+export type DataStoreName = (typeof DATA_STORES)[number];
+
 // Best-known identifiers at build time (July 2026), env-overridable.
 // TODO(GT-109): verify current Gemini text/Live identifiers when the client is wired.
 // TODO(GT-501): verify the Nano Banana 2 identifier when image generation is wired.
@@ -20,6 +26,7 @@ const envSchema = z.object({
   FIREBASE_PRIVATE_KEY: z.string().min(1),
   GEMINI_API_KEY: z.string().min(1),
   MEDIA_PROVIDER: z.enum(MEDIA_PROVIDERS).default('placeholder'),
+  DATA_STORE: z.enum(DATA_STORES).default('firestore'),
   GEMINI_MODEL_FAST: z.string().min(1).default(DEFAULT_MODEL_FAST),
   GEMINI_MODEL_DEEP: z.string().min(1).default(DEFAULT_MODEL_DEEP),
   GEMINI_MODEL_LIVE: z.string().min(1).default(DEFAULT_MODEL_LIVE),
@@ -34,6 +41,7 @@ export interface AppConfig {
   };
   readonly geminiApiKey: string;
   readonly mediaProvider: MediaProviderName;
+  readonly dataStore: DataStoreName;
   readonly models: {
     readonly fast: string;
     readonly deep: string;
@@ -68,6 +76,7 @@ export function loadConfig(env: Record<string, string | undefined>): AppConfig {
     },
     geminiApiKey: e.GEMINI_API_KEY,
     mediaProvider: e.MEDIA_PROVIDER,
+    dataStore: e.DATA_STORE,
     models: {
       fast: e.GEMINI_MODEL_FAST,
       deep: e.GEMINI_MODEL_DEEP,

@@ -15,5 +15,15 @@ export default defineConfig({
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    // Hermetic placeholder-mode environment: e2e never needs real
+    // credentials; the dev-file store backs learner state.
+    env: {
+      FIREBASE_PROJECT_ID: 'e2e-placeholder',
+      FIREBASE_CLIENT_EMAIL: 'e2e@placeholder.local',
+      FIREBASE_PRIVATE_KEY: 'e2e-placeholder-key',
+      GEMINI_API_KEY: 'e2e-placeholder-key',
+      MEDIA_PROVIDER: 'placeholder',
+      DATA_STORE: 'dev-file',
+    },
   },
 });
