@@ -1,4 +1,9 @@
-import { learnerPaths, skillScoreConverter, type SkillScore } from '@/lib/db/learner';
+import {
+  learnerPaths,
+  skillScoreConverter,
+  skillScoreSchema,
+  type SkillScore,
+} from '@/lib/db/learner';
 import type { Skill } from '@/lib/db/curriculum';
 import type { DocumentStore } from '@/lib/db/store';
 import type { UnitTest } from './unit-test-gen';
@@ -74,11 +79,9 @@ export async function recordSkillScore(
 ): Promise<SkillScore> {
   const docId = `${unitId}-${skill}`;
   const collectionPath = learnerPaths.skillScores();
-  const existing = await store.collection(collectionPath).doc(docId).get();
-  const attempts =
-    existing && Array.isArray(existing.attempts)
-      ? [...(existing.attempts as SkillScore['attempts'])]
-      : [];
+  const existingRaw = await store.collection(collectionPath).doc(docId).get();
+  const existing = existingRaw ? skillScoreSchema.safeParse(existingRaw) : null;
+  const attempts = existing?.success ? [...existing.data.attempts] : [];
   attempts.push({ score, at: nowIso });
   const skillScore: SkillScore = { unitId, skill, score, attempts };
   await store
