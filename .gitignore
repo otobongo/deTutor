@@ -45,3 +45,4 @@ test-results/
 playwright-report/
 db/datasets/
 .dev-data/
+public/media/
