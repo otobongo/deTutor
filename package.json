@@ -15,7 +15,8 @@
     "test:e2e": "playwright test",
     "guards": "node scripts/guards/run-guards.mjs",
     "seed:curriculum": "tsx db/seed/run-seed-curriculum.ts",
-    "ingest:vocab": "tsx scripts/ingest-vocab.ts"
+    "ingest:vocab": "tsx scripts/ingest-vocab.ts",
+    "seed:vocab": "tsx db/seed/run-seed-vocab.ts"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",

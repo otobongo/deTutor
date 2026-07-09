@@ -1666,20 +1666,6 @@
     "frequencyRank": 237
   },
   {
-    "id": "recht-other",
-    "german": "recht-",
-    "wordType": "other",
-    "article": null,
-    "translation": "right",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "A1",
-    "theme": "general",
-    "picturable": false,
-    "frequencyRank": 237
-  },
-  {
     "id": "richtig-adjective",
     "german": "richtig",
     "wordType": "adjective",
@@ -1890,20 +1876,6 @@
     "frequencyRank": 271
   },
   {
-    "id": "unter-other",
-    "german": "unter-",
-    "wordType": "other",
-    "article": null,
-    "translation": "under",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "A1",
-    "theme": "general",
-    "picturable": false,
-    "frequencyRank": 271
-  },
-  {
     "id": "schnell-adjective",
     "german": "schnell",
     "wordType": "adjective",
@@ -1934,20 +1906,6 @@
   {
     "id": "erst-adverb",
     "german": "erst",
-    "wordType": "adverb",
-    "article": null,
-    "translation": "only just",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "A1",
-    "theme": "general",
-    "picturable": false,
-    "frequencyRank": 278
-  },
-  {
-    "id": "erst-adverb",
-    "german": "erst-",
     "wordType": "adverb",
     "article": null,
     "translation": "only just",
@@ -4944,20 +4902,6 @@
   {
     "id": "gross-adjective",
     "german": "groß",
-    "wordType": "adjective",
-    "article": null,
-    "translation": "big",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "A1",
-    "theme": "general",
-    "picturable": false,
-    "frequencyRank": 721
-  },
-  {
-    "id": "gross-adjective",
-    "german": "Groß-",
     "wordType": "adjective",
     "article": null,
     "translation": "big",
@@ -9098,5 +9042,61 @@
     "theme": "general",
     "picturable": false,
     "frequencyRank": 1381
+  },
+  {
+    "id": "gegend-noun",
+    "german": "Gegend",
+    "wordType": "noun",
+    "article": "die",
+    "translation": "district",
+    "ipa": null,
+    "exampleDe": null,
+    "exampleEn": null,
+    "cefrLevel": "A1",
+    "theme": "general",
+    "picturable": false,
+    "frequencyRank": 1382
+  },
+  {
+    "id": "wald-noun",
+    "german": "Wald",
+    "wordType": "noun",
+    "article": "der",
+    "translation": "wood",
+    "ipa": null,
+    "exampleDe": null,
+    "exampleEn": null,
+    "cefrLevel": "A1",
+    "theme": "general",
+    "picturable": false,
+    "frequencyRank": 1383
+  },
+  {
+    "id": "erkennen-verb",
+    "german": "erkennen",
+    "wordType": "verb",
+    "article": null,
+    "translation": "discerned",
+    "ipa": null,
+    "exampleDe": null,
+    "exampleEn": null,
+    "cefrLevel": "A1",
+    "theme": "general",
+    "picturable": false,
+    "frequencyRank": 1388
+  },
+  {
+    "id": "glas-noun",
+    "german": "Glas",
+    "wordType": "noun",
+    "article": "das",
+    "translation": "spectacles glass",
+    "ipa": null,
+    "exampleDe": null,
+    "exampleEn": null,
+    "cefrLevel": "A1",
+    "theme": "general",
+    "picturable": false,
+    "frequencyRank": 1389
   }
 ]

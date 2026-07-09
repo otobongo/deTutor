@@ -375,7 +375,7 @@ export function ingest(inputs: IngestInputs): IngestOutputs {
   for (const line of inputs.wortlisteLines) {
     const entry = parseWortlisteLine(line);
     if (!entry) continue;
-    const dedupeKey = entry.lemma.toLowerCase();
+    const dedupeKey = entry.lemma.toLowerCase().replace(/-+$/, '');
     if (seen.has(dedupeKey)) continue;
     seen.add(dedupeKey);
 
