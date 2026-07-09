@@ -1,5 +1,10 @@
 import { z } from 'zod';
-import { skillScoreConverter, learnerPaths, type SkillScore } from '@/lib/db/learner';
+import {
+  skillScoreConverter,
+  skillScoreSchema,
+  learnerPaths,
+  type SkillScore,
+} from '@/lib/db/learner';
 import type { DocumentStore } from '@/lib/db/store';
 import { GeminiError, type GeminiClient } from '@/lib/gemini/client';
 import type { Level } from '@/lib/db/curriculum';
@@ -156,10 +161,8 @@ export async function writeReadingScore(
   const collectionPath = learnerPaths.skillScores();
   const docId = `${unitId}-reading`;
   const existingRaw = await store.collection(collectionPath).doc(docId).get();
-  const attempts =
-    existingRaw && Array.isArray(existingRaw.attempts)
-      ? [...(existingRaw.attempts as SkillScore['attempts'])]
-      : [];
+  const existing = existingRaw ? skillScoreSchema.safeParse(existingRaw) : null;
+  const attempts = existing?.success ? [...existing.data.attempts] : [];
   attempts.push({ score, at: nowIso });
   const skillScore: SkillScore = { unitId, skill: 'reading', score, attempts };
   await store
