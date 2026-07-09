@@ -30,9 +30,8 @@ translations, article review). No red, no uncommitted work.
 
 ## Discovered work (not yet in the plan)
 
-- [x] **GT-D1: Vocabulary enrichment batch (in progress 2026-07-09).** npm run enrich:vocab
-      fills ipa/exampleDe/exampleEn for the corpus (idempotent, resumes by skipping enriched
-      words). Translation-pending entries (230) and article reviews (8) remain queued as GT-D1b.
+- [x] **GT-D1: Vocabulary enrichment batch (done 2026-07-09).** All 2,547 corpus words carry
+      IPA and example sentences (npm run enrich:vocab, idempotent, resumable).
 - [ ] **GT-D1b: Pending translations and article review.** Enrich db/seed/translation-pending.json
       entries with translations and re-run ingestion; resolve db/seed/article-review.json.
 
@@ -48,6 +47,7 @@ translations, article review). No red, no uncommitted work.
 | 2026-07-09 | GT-102 | VocabularyWord ipa/exampleDe/exampleEn made nullable | No dataset supplies them; fabricating IPA would poison pronunciation teaching. Filled by the GT-D1 enrichment batch; null until then. |
 | 2026-07-09 | GT-102 | Theme tagging is a keyword heuristic plus override file, not Deutschland-Vocabulary mapping | That repo is scanned-PDF flashcards (Bangla), machine-unusable. Overrides live in db/seed/theme-overrides.json. |
 | 2026-07-09 | GT-107 | DocumentStore seam: Firestore adapter plus a dev-file adapter (DATA_STORE env, default firestore) | No Firebase credentials and no Java for the emulator on this machine. Same converter-validated single write path either way; connecting the real project is a one-env-var flip. e2e runs hermetically on dev-file. |
+| 2026-07-09 | GT-D1 | Default models moved to gemini-3.5-flash (fast) and gemini-pro-latest (deep) | gemini-2.5-flash began returning intermittent sunset 404s mid-batch during enrichment; successors verified live against the models API. Env overrides unchanged. |
 
 ## Phase 0: Foundation
 
