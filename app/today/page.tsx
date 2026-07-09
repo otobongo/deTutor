@@ -83,9 +83,13 @@ export default async function TodayPage() {
           </li>
         ))}
       </ol>
-      <p className="text-sm opacity-70">
-        Lesson playback (cards, exercises, scenarios) arrives with Phase 2.
-      </p>
+      <Link
+        className="self-start rounded bg-blue-700 px-4 py-2 text-white"
+        href="/today/session"
+        data-testid="start-session"
+      >
+        Start today&apos;s session
+      </Link>
     </main>
   );
 }
