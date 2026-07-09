@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createGeminiClient, type GeminiTransport } from '@/lib/gemini/client';
-import { PlaceholderProvider } from '@/lib/media/placeholder-provider';
+import { createMediaProvider } from '@/lib/media';
 import { assessEchoAttempt, moveOnLogEntry, startEchoLoop } from './speaking-echo';
 
 function clientWith(responses: string[]) {
@@ -66,7 +66,7 @@ describe('speaking echo loop (GT-215)', () => {
   });
 
   it('runs fully in placeholder mode: tutor audio comes from the adapter', async () => {
-    const provider = new PlaceholderProvider();
+    const provider = createMediaProvider('placeholder');
     const asset = await provider.getAudio('echo-das-broetchen');
     expect(asset.captionsRequired).toBe(true);
     const session = await provider.getLiveVoiceSession({

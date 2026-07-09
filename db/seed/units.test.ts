@@ -123,8 +123,8 @@ describe('seedCurriculum idempotency (GT-101)', () => {
   it('writes each unit and grammar item exactly once per run, keyed by id', async () => {
     const { db, written } = fakeDb();
     const summary = await seedCurriculum(db);
-    expect(summary).toEqual({ units: 18, grammarItems: seedGrammarItems.length });
-    expect(written.size).toBe(18 + seedGrammarItems.length);
+    expect(summary).toEqual({ units: 18, grammarItems: seedGrammarItems.length, scenarios: 12 });
+    expect(written.size).toBe(18 + seedGrammarItems.length + 12);
     expect(written.has('units/a1-1')).toBe(true);
     expect(written.has('grammarItems/noun-genders-articles')).toBe(true);
   });

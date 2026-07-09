@@ -1,5 +1,6 @@
-import { grammarItemConverter, unitConverter } from '@/lib/db/curriculum';
+import { grammarItemConverter, scenarioConverter, unitConverter } from '@/lib/db/curriculum';
 import { seedGrammarItems, seedUnits } from './units';
+import { seedScenarios } from './scenarios';
 
 // Idempotent curriculum seed (GT-101): documents are keyed by their stable
 // ids and written with set(), so re-running overwrites identical data and
@@ -20,6 +21,7 @@ export interface SeedTarget {
 export interface SeedSummary {
   units: number;
   grammarItems: number;
+  scenarios: number;
 }
 
 export async function seedCurriculum(db: SeedTarget): Promise<SeedSummary> {
@@ -31,5 +33,13 @@ export async function seedCurriculum(db: SeedTarget): Promise<SeedSummary> {
   for (const item of seedGrammarItems) {
     await grammarCollection.doc(item.id).set(grammarItemConverter.toFirestore(item));
   }
-  return { units: seedUnits.length, grammarItems: seedGrammarItems.length };
+  const scenarioCollection = db.collection('scenarios');
+  for (const scenario of seedScenarios) {
+    await scenarioCollection.doc(scenario.id).set(scenarioConverter.toFirestore(scenario));
+  }
+  return {
+    units: seedUnits.length,
+    grammarItems: seedGrammarItems.length,
+    scenarios: seedScenarios.length,
+  };
 }

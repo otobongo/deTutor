@@ -92,7 +92,7 @@ no uncommitted work.
 | GT-213 | Writing correction engine | done | gt-213-writing-correction | Four-part structure schema-fixed; deep tier; every error logged via GT-214; content points assessed for emails; GT-311 reads the log, not corrections. |
 | GT-214 | Grammar mistake log and error analytics store | done | gt-214-grammar-log | Built first in Phase 2 (write path feeds most skill issues). DocumentStore gained list() for analytics queries. |
 | GT-215 | Speaking echo loop (fallback mode) | open | | |
-| GT-216 | Scenario engine and A1/A2 scenarios | open | | |
+| GT-216 | Scenario engine and A1/A2 scenarios | done | gt-216-scenario-engine | Layer-3 context injection (never a prompt fork); English redirect deterministic by second English turn; structured turns carry inline corrections; six A1/A2 scenarios seeded. Includes a gt-215 test fix the adapter guard caught (direct provider import). |
 | GT-217 | B1 scenarios | open | | |
 | GT-218 | Inline corrections and post-session summary | open | | |
 | GT-219 | Session wrap-up and reporting hooks | open | | |
