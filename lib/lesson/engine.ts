@@ -23,6 +23,7 @@ export interface ComposeSessionInputs {
   readonly poorGrammarItemIds: readonly string[];
   readonly now: Date;
   readonly injectExtras?: InjectExtras;
+  readonly grammarWeightOf?: (item: GrammarItem) => number;
 }
 
 function sessionIdFor(now: Date): string {
@@ -36,10 +37,15 @@ export function selectGrammarItem(
   unitItems: readonly GrammarItem[],
   poorGrammarItemIds: readonly string[],
   now: Date,
+  // GT-311 seam: the difficulty-weighting engine supplies adapted weights;
+  // the default is the item's seeded PRD weight.
+  weightOf: (item: GrammarItem) => number = (item) => item.weight,
 ): GrammarItem {
   const resurfaced = unitItems.find((item) => poorGrammarItemIds.includes(item.id));
   if (resurfaced) return resurfaced;
-  const expanded = unitItems.flatMap((item) => Array<GrammarItem>(item.weight).fill(item));
+  const expanded = unitItems.flatMap((item) =>
+    Array<GrammarItem>(Math.max(1, Math.round(weightOf(item)))).fill(item),
+  );
   if (expanded.length === 0) {
     throw new Error('A unit must carry at least one grammar item.');
   }
@@ -65,6 +71,7 @@ export function composeSession(inputs: ComposeSessionInputs): LessonSession {
     inputs.unitGrammarItems,
     inputs.poorGrammarItemIds,
     inputs.now,
+    inputs.grammarWeightOf ?? ((item) => item.weight),
   );
 
   const steps: SessionStep[] = [
