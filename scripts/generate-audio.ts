@@ -39,6 +39,14 @@ interface ClipJob {
   readonly text: string;
 }
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Daily-quota 429s cannot recover inside a run; per-minute 429s can. One
+// paced retry distinguishes them.
+function isQuotaExhausted(error: unknown): boolean {
+  return String(error).includes('exceeded your current quota');
+}
+
 async function main(): Promise<void> {
   const config = getConfig();
   const ai = new GoogleGenAI({ apiKey: config.geminiApiKey });
@@ -75,14 +83,29 @@ async function main(): Promise<void> {
       continue;
     }
     try {
-      const response = await ai.models.generateContent({
-        model: config.models.tts,
-        contents: `Sprich klar und natürlich auf Deutsch: ${job.text}`,
-        config: {
-          responseModalities: ['AUDIO'],
-          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } },
-        },
-      });
+      let response;
+      try {
+        response = await ai.models.generateContent({
+          model: config.models.tts,
+          contents: `Sprich klar und natürlich auf Deutsch: ${job.text}`,
+          config: {
+            responseModalities: ['AUDIO'],
+            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } },
+          },
+        });
+      } catch (firstError) {
+        if (isQuotaExhausted(firstError)) throw firstError;
+        // Transient rate limit or network blip: one paced retry.
+        await sleep(15_000);
+        response = await ai.models.generateContent({
+          model: config.models.tts,
+          contents: `Sprich klar und natürlich auf Deutsch: ${job.text}`,
+          config: {
+            responseModalities: ['AUDIO'],
+            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } },
+          },
+        });
+      }
       const data = response.candidates?.[0]?.content?.parts?.find((part) => part.inlineData?.data)
         ?.inlineData?.data;
       if (!data) throw new Error('no audio data in response');
@@ -106,6 +129,14 @@ async function main(): Promise<void> {
       generated += 1;
       console.log(`generated ${job.clipId} -> ${fileName}`);
     } catch (error) {
+      if (isQuotaExhausted(error)) {
+        console.error(
+          `quota exhausted for ${config.models.tts} at ${job.clipId}; ` +
+            'stopping cleanly. Rerun when quota resets (the ledger resumes here), ' +
+            'or override GEMINI_MODEL_TTS.',
+        );
+        return;
+      }
       failed += 1;
       console.error(`failed ${job.clipId}: ${String(error).slice(0, 140)}`);
       if (failed >= 8) {
@@ -113,6 +144,8 @@ async function main(): Promise<void> {
         return;
       }
     }
+    // Gentle pacing keeps the run inside per-minute limits.
+    await sleep(1_500);
   }
   console.log(`audio: ${generated} generated, ${skipped} skipped, ${failed} failed.`);
 }
