@@ -40,7 +40,8 @@ export type GeminiCallSite =
   | 'writing-correction'
   | 'remediation-generation'
   | 'unit-test-generation'
-  | 'weekly-summary';
+  | 'weekly-summary'
+  | 'vocab-enrichment';
 
 export const ESCALATION_MAP: Readonly<Record<GeminiCallSite, GeminiTier>> = {
   'scenario-turn': 'fast',
@@ -56,6 +57,8 @@ export const ESCALATION_MAP: Readonly<Record<GeminiCallSite, GeminiTier>> = {
   'unit-test-generation': 'deep',
   // Weekly pattern synthesis across the full error log (GT-309).
   'weekly-summary': 'deep',
+  // Build-time batch filling IPA and example sentences (GT-D1).
+  'vocab-enrichment': 'fast',
 };
 
 export interface GeminiCallLogEntry {

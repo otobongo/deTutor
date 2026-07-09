@@ -1,3 +1,4 @@
+import '@/scripts/load-env';
 import { getDb } from '@/lib/firebase';
 import { seedCurriculum } from './seed-curriculum';
 
