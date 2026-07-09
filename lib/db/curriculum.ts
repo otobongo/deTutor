@@ -41,6 +41,7 @@ export const unitSchema = z.object({
   grammarItemIds: z.array(z.string().min(1)).min(2).max(3),
   vocabSetRef: z.string().min(1),
   capstoneDialogueRef: z.string().min(1),
+  capstonePremise: z.string().min(1),
   targetWordCount: z.number().int().positive(),
 });
 export type Unit = z.infer<typeof unitSchema>;
