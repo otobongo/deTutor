@@ -86,7 +86,7 @@ no uncommitted work.
 | GT-207 | Reading text generator | done | gt-207-reading-generator | Envelope validated in code: format by level, length caps, corpus+stretch budget (35%, inflection-tolerant, function forms always allowed since the Wortliste excludes them by design); one regeneration then typed failure. cumulativeCorpus helper added. |
 | GT-208 | Reading task formats | done | gt-208-reading-tasks | All three Goethe Lesen formats; matching keys checked for double assignment and dangling refs; deterministic scoring writes SkillScore(reading) with appended attempts. Task UI composes in the GT-220 shell. |
 | GT-209 | Tap-to-queue unknown words | done | gt-209-tap-to-queue | In-corpus taps enqueue the existing id; duplicates are no-ops; out-of-corpus taps get schema-honest mini-cards (nouns must carry articles). |
-| GT-210 | Writing, word-tile sentence construction | open | | |
+| GT-210 | Writing, word-tile sentence construction | done | gt-210-word-tiles | Accepted-order sets per item (V2 variants both valid); verb-third logged as order; deterministic tile shuffle never presents a valid order. |
 | GT-211 | Writing, dictation | open | | |
 | GT-212 | Writing, emails and opinion texts | open | | |
 | GT-213 | Writing correction engine | open | | |
