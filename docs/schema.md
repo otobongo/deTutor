@@ -75,7 +75,73 @@ provider flip needs zero data migration.
 | styleOrClipId | string | The style (image) or clipId (audio) |
 | status | 'placeholder' \| 'pending' \| 'generated' | Generation lifecycle |
 
-## Learner state (GT-004)
+## Learner state collections (GT-004)
 
-Added by GT-004; documented in the "Learner state collections" section below
-when that issue lands.
+Source module: `lib/db/learner.ts`. Single learner in v1: everything roots at
+`learners/default`. The v2.1 auth switch (GT-601) changes only learnerId
+resolution, never document shape. Path helpers: `learnerPaths` in the module.
+
+### `learners/{learnerId}` (document: LearnerProfile)
+
+| Field | Type | Notes |
+|-------|------|-------|
+| level | 'A1' \| 'A2' \| 'B1' | Current level |
+| unitId | string | Current unit, e.g. `a1-1` |
+| settings.voice | string | Selected tutor voice id |
+| settings.dialect | 'hochdeutsch' \| 'berlin' | Dialect mode |
+| settings.imageStyle | 'flat' \| 'render' \| 'mixed' | Image style preference |
+
+### `learners/{learnerId}/cards/{wordId}` (FsrsCardState)
+
+| Field | Type | Notes |
+|-------|------|-------|
+| wordId | string | Ref into `vocabulary` |
+| phase | 'new' \| 'learning' \| 'review' \| 'relearning' | FSRS state name (called `phase` to avoid clashing with the domain word "state") |
+| due | ISO datetime string | Next review |
+| stability / difficulty | number | FSRS parameters |
+| elapsedDays / scheduledDays | number | FSRS parameters |
+| reps / lapses | integer | Counters |
+| lastReview | ISO datetime string \| null | Null until first review |
+
+Index needs: `(due asc)` for the review queue (GT-105).
+
+### `learners/{learnerId}/skillScores/{unitId}-{skill}` (SkillScore)
+
+| Field | Type | Notes |
+|-------|------|-------|
+| unitId | string | Unit tested |
+| skill | 'listening' \| 'reading' \| 'writing' \| 'speaking' | Closed union |
+| score | number 0 to 100 | Latest attempt |
+| attempts | Array<{ score, at }> | Append-only history, min 1 |
+
+### `learners/{learnerId}/retentionScores/{unitId}` (RetentionScore)
+
+| Field | Type | Notes |
+|-------|------|-------|
+| unitId | string | Passed unit |
+| score | number 0 to 100 | Decays on failed/lapsed retests (GT-305) |
+| lastRetestAt | ISO datetime string \| null | Last retest |
+
+### `learners/{learnerId}/grammarErrors/{autoId}` (GrammarErrorLogEntry)
+
+| Field | Type | Notes |
+|-------|------|-------|
+| category | 'gender' \| 'case' \| 'ending' \| 'order' \| 'spelling' \| 'choice' | Closed union; single write path lands at GT-214 |
+| item | string | The grammar item or word involved |
+| context | string | Snippet showing the error |
+| at | ISO datetime string | When |
+
+Index needs: `(category asc, at desc)` and `(at desc)` for analytics windows.
+
+### `learners/{learnerId}/sessionReports/{autoId}` (SessionReport)
+
+Fields per PRD 4.7 per-session list: sessionDate, wordsReviewed, recallRate
+(0 to 1), newWords, imageIdAccuracy (0 to 1, null when no image exercises),
+scenarioScore (0 to 10, null when no scenario), skillScores (partial record by
+skill), errorsByCategory (partial record by category), grammarItemPracticed.
+
+### `learners/{learnerId}/weeklySummaries/{weekStart}` (WeeklySummary)
+
+Fields per PRD 4.6 weekly summary: weekStart, levelProgressPercent,
+topErrorPatterns (max 5: category, item, occurrences, fix), retentionCurve
+(points of at + score), streakDays, nextWeekFocus.
