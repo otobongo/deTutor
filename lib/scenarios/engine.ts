@@ -43,12 +43,18 @@ export const scenarioTurnSchema = z.object({
 });
 export type ScenarioTurn = z.infer<typeof scenarioTurnSchema>;
 
+// Corrections keep the learner's original utterance so the post-session
+// summary can render "your version / correct version / rule" (GT-218).
+export type RecordedCorrection = NonNullable<ScenarioTurn['correction']> & {
+  readonly original: string;
+};
+
 export interface ScenarioState {
   readonly scenario: Scenario;
   readonly level: Level;
   readonly dialect: Dialect;
   readonly messages: readonly ChatMessage[];
-  readonly corrections: readonly ScenarioTurn['correction'][];
+  readonly corrections: readonly RecordedCorrection[];
   readonly englishStreak: number;
   readonly redirected: boolean;
 }
@@ -150,7 +156,9 @@ export async function runScenarioTurn(
       ...state,
       englishStreak,
       messages: [...messages, { role: 'tutor', text: turn.reply }],
-      corrections: turn.correction ? [...state.corrections, turn.correction] : state.corrections,
+      corrections: turn.correction
+        ? [...state.corrections, { ...turn.correction, original: learnerInput }]
+        : state.corrections,
     },
     turn,
   };
