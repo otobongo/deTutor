@@ -7,7 +7,7 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 
 **2026-07-09, Claude (Fable 5), builder.** Phases 0, 1, and 2 complete: GT-001 to GT-008, GT-101
 to GT-110, and GT-201 to GT-220 all done and merged to main. `npm run ci` green: lint, format,
-typecheck, 4 guards, 233 unit/component tests across 36 files, 9 Playwright journeys (smoke,
+typecheck, 4 guards, 240 unit and component tests across 42 files, 9 Playwright journeys (smoke,
 onboarding to Day 1, adapter captions, placement escalation, settings persistence, FULL daily
 session from Today to completion, skills library, mobile viewport, keyboard nav). All four skills
 run in placeholder mode: echo/vocab cards, image ID with article traps, listening with captioned
