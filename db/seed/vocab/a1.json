@@ -980,6 +980,20 @@
     "frequencyRank": 127
   },
   {
+    "id": "viel-other",
+    "german": "viel",
+    "wordType": "other",
+    "article": null,
+    "translation": "much, many",
+    "ipa": null,
+    "exampleDe": null,
+    "exampleEn": null,
+    "cefrLevel": "A1",
+    "theme": "people-family",
+    "picturable": false,
+    "frequencyRank": 128
+  },
+  {
     "id": "weg-noun",
     "german": "Weg",
     "wordType": "noun",
@@ -1456,6 +1470,20 @@
     "frequencyRank": 197
   },
   {
+    "id": "raus-adverb",
+    "german": "raus",
+    "wordType": "adverb",
+    "article": null,
+    "translation": "out (colloquial)",
+    "ipa": null,
+    "exampleDe": null,
+    "exampleEn": null,
+    "cefrLevel": "A1",
+    "theme": "general",
+    "picturable": false,
+    "frequencyRank": 198
+  },
+  {
     "id": "paar-noun",
     "german": "Paar",
     "wordType": "noun",
@@ -1510,6 +1538,20 @@
     "theme": "general",
     "picturable": false,
     "frequencyRank": 212
+  },
+  {
+    "id": "her-adverb",
+    "german": "her",
+    "wordType": "adverb",
+    "article": null,
+    "translation": "here, hither",
+    "ipa": null,
+    "exampleDe": null,
+    "exampleEn": null,
+    "cefrLevel": "A1",
+    "theme": "general",
+    "picturable": false,
+    "frequencyRank": 214
   },
   {
     "id": "helfen-verb",
@@ -4226,6 +4268,20 @@
     "theme": "general",
     "picturable": false,
     "frequencyRank": 621
+  },
+  {
+    "id": "frueher-adverb",
+    "german": "früher",
+    "wordType": "adverb",
+    "article": null,
+    "translation": "earlier, in the past",
+    "ipa": null,
+    "exampleDe": null,
+    "exampleEn": null,
+    "cefrLevel": "A1",
+    "theme": "general",
+    "picturable": false,
+    "frequencyRank": 622
   },
   {
     "id": "wohin-adverb",
@@ -9042,61 +9098,5 @@
     "theme": "general",
     "picturable": false,
     "frequencyRank": 1381
-  },
-  {
-    "id": "gegend-noun",
-    "german": "Gegend",
-    "wordType": "noun",
-    "article": "die",
-    "translation": "district",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "A1",
-    "theme": "general",
-    "picturable": false,
-    "frequencyRank": 1382
-  },
-  {
-    "id": "wald-noun",
-    "german": "Wald",
-    "wordType": "noun",
-    "article": "der",
-    "translation": "wood",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "A1",
-    "theme": "general",
-    "picturable": false,
-    "frequencyRank": 1383
-  },
-  {
-    "id": "erkennen-verb",
-    "german": "erkennen",
-    "wordType": "verb",
-    "article": null,
-    "translation": "discerned",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "A1",
-    "theme": "general",
-    "picturable": false,
-    "frequencyRank": 1388
-  },
-  {
-    "id": "glas-noun",
-    "german": "Glas",
-    "wordType": "noun",
-    "article": "das",
-    "translation": "spectacles glass",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "A1",
-    "theme": "general",
-    "picturable": false,
-    "frequencyRank": 1389
   }
 ]

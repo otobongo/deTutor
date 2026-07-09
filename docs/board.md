@@ -83,7 +83,7 @@ no uncommitted work.
 | GT-204 | Settings, image style and preferences | done | gt-204-settings | Mixed rule = render for concrete-theme nouns, flat otherwise; style flips asset keys only (cached, deterministic). Placement re-run links to onboarding. |
 | GT-205 | Listening exercise flow | done | gt-205-listening-flow | Captions honor the GT-007 contract; replay reuses the identical clipId; slower toggle at 0.75x; segments have individual controls. |
 | GT-206 | Listening evaluation engine | done | gt-206-listening-eval | Closed-union verdict, schema-validated; B1 adds the deep-tier nuance pass; parse failures surface as categorized GeminiError (retryable state, not a crash). |
-| GT-207 | Reading text generator | open | | |
+| GT-207 | Reading text generator | done | gt-207-reading-generator | Envelope validated in code: format by level, length caps, corpus+stretch budget (35%, inflection-tolerant, function forms always allowed since the Wortliste excludes them by design); one regeneration then typed failure. cumulativeCorpus helper added. |
 | GT-208 | Reading task formats | open | | |
 | GT-209 | Tap-to-queue unknown words | open | | |
 | GT-210 | Writing, word-tile sentence construction | open | | |

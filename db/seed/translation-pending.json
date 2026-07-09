@@ -1,13 +1,5 @@
 [
   {
-    "lemma": "viel",
-    "frequencyRank": 128
-  },
-  {
-    "lemma": "früher",
-    "frequencyRank": 622
-  },
-  {
     "lemma": "sich befinden",
     "frequencyRank": 60379
   },
@@ -46,10 +38,6 @@
   {
     "lemma": "heutig-",
     "frequencyRank": 60817
-  },
-  {
-    "lemma": "her",
-    "frequencyRank": 214
   },
   {
     "lemma": "andererseits",
@@ -506,10 +494,6 @@
   {
     "lemma": "runterwerfen",
     "frequencyRank": 62358
-  },
-  {
-    "lemma": "raus",
-    "frequencyRank": 198
   },
   {
     "lemma": "Bekannte",
