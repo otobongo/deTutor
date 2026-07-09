@@ -111,7 +111,7 @@ engine). Owner TODOs unchanged; GT-D1 enrichment batch still queued. No red, no 
 | GT-304 | Spaced retest scheduler | done | gt-304-305-retention | 7/14/30/60 points; injector fills the GT-105 seam; retests ride the WarmupItem union unannounced; results write retention only. Shares a module and branch with GT-305 (one retention math surface). |
 | GT-305 | Retention score and decay | done | gt-304-305-retention | Documented math: start 80, +10 pass, -15 fail, -10 lapse, clamp 0-100, threshold 60 (parameterized); decayed units feed the lesson engine's resurfacing seam. |
 | GT-306 | Level gate exams | done | gt-306-level-gates | Dual condition (all modules 60+, average retention 70+); failure report names blocking modules weakest first; only passed gates advance the profile. |
-| GT-307 | B1 exit simulation | open | | |
+| GT-307 | B1 exit simulation | done | gt-307-b1-exam | Official blueprint in code (Lesen 5/30/65min, Hören 4/30/40min, Schreiben 3 tasks/60min, Sprechen 3/15min); assembly validated against it; pure module timer; normalization to 100 per module. |
 | GT-308 | Session report view | open | | |
 | GT-309 | Weekly summary generator | open | | |
 | GT-310 | Level dashboard and hard-area trends | open | | |
