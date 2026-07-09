@@ -105,7 +105,7 @@ engine). Owner TODOs unchanged; GT-D1 enrichment batch still queued. No red, no 
 
 | Issue | Title | Status | Branch | Notes |
 |-------|-------|--------|--------|-------|
-| GT-301 | Unit test generator | open | | |
+| GT-301 | Unit test generator | done | gt-301-unit-test-generator | Section counts proportional to summed grammar weights; out-of-unit grammar ids rejected in code; regeneration must not repeat prior items (avoid list). |
 | GT-302 | Per-skill scoring and pass gates | open | | |
 | GT-303 | Remediation and single-skill retake | open | | |
 | GT-304 | Spaced retest scheduler | open | | |
