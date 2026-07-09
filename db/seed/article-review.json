@@ -1,0 +1,56 @@
+[
+  {
+    "lemma": "Traum-",
+    "claimed": "das",
+    "allowed": [],
+    "reason": "unverified"
+  },
+  {
+    "lemma": "Wagen",
+    "claimed": "der",
+    "allowed": [],
+    "reason": "unverified"
+  },
+  {
+    "lemma": "Jugendliche",
+    "claimed": "der",
+    "allowed": ["die"],
+    "reason": "mismatch"
+  },
+  {
+    "lemma": "Erwachsene",
+    "claimed": "der",
+    "allowed": ["die"],
+    "reason": "mismatch"
+  },
+  {
+    "lemma": "Angehörige",
+    "claimed": "der",
+    "allowed": ["die"],
+    "reason": "mismatch"
+  },
+  {
+    "lemma": "Verwandte",
+    "claimed": "der",
+    "allowed": ["die"],
+    "reason": "mismatch"
+  },
+  {
+    "lemma": "Doppel-",
+    "claimed": "der",
+    "allowed": [],
+    "reason": "unverified"
+  },
+  {
+    "lemma": "Speise-",
+    "claimed": "die",
+    "allowed": [],
+    "reason": "unverified"
+  },
+  {
+    "lemma": "Fortbildung",
+    "claimed": "die",
+    "allowed": [],
+    "reason": "unverified"
+  }
+]

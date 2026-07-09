@@ -53,9 +53,11 @@ export const vocabularyWordSchema = z
     wordType: wordTypeSchema,
     article: articleSchema.nullable(),
     translation: z.string().min(1),
-    ipa: z.string().min(1),
-    exampleDe: z.string().min(1),
-    exampleEn: z.string().min(1),
+    // Enrichment fields: filled by the Gemini enrichment batch (board.md
+    // discovered-work entry); null until then, never fabricated.
+    ipa: z.string().min(1).nullable(),
+    exampleDe: z.string().min(1).nullable(),
+    exampleEn: z.string().min(1).nullable(),
     cefrLevel: levelSchema,
     theme: z.string().min(1),
     picturable: z.boolean(),

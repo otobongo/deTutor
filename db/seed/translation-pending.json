@@ -1,0 +1,942 @@
+[
+  {
+    "lemma": "viel",
+    "frequencyRank": 128
+  },
+  {
+    "lemma": "früher",
+    "frequencyRank": 622
+  },
+  {
+    "lemma": "sich befinden",
+    "frequencyRank": 60381
+  },
+  {
+    "lemma": "sogenannt-",
+    "frequencyRank": 60451
+  },
+  {
+    "lemma": "gesamt-",
+    "frequencyRank": 60458
+  },
+  {
+    "lemma": "sich freuen",
+    "frequencyRank": 60481
+  },
+  {
+    "lemma": "sich verhalten",
+    "frequencyRank": 60494
+  },
+  {
+    "lemma": "sich beteiligen",
+    "frequencyRank": 60592
+  },
+  {
+    "lemma": "Abschnitt",
+    "frequencyRank": 7991
+  },
+  {
+    "lemma": "Medien",
+    "frequencyRank": 4815
+  },
+  {
+    "lemma": "sich eignen",
+    "frequencyRank": 60750
+  },
+  {
+    "lemma": "heutig-",
+    "frequencyRank": 60820
+  },
+  {
+    "lemma": "her",
+    "frequencyRank": 214
+  },
+  {
+    "lemma": "andererseits",
+    "frequencyRank": 5051
+  },
+  {
+    "lemma": "sich kümmern",
+    "frequencyRank": 60892
+  },
+  {
+    "lemma": "sich verlaufen",
+    "frequencyRank": 60918
+  },
+  {
+    "lemma": "digital",
+    "frequencyRank": 17167
+  },
+  {
+    "lemma": "sich konzentrieren",
+    "frequencyRank": 60970
+  },
+  {
+    "lemma": "Ursache",
+    "frequencyRank": 3102
+  },
+  {
+    "lemma": "Ausland",
+    "frequencyRank": 4989
+  },
+  {
+    "lemma": "Strecke",
+    "frequencyRank": 4063
+  },
+  {
+    "lemma": "Lager",
+    "frequencyRank": 1904
+  },
+  {
+    "lemma": "ausländisch",
+    "frequencyRank": 61132
+  },
+  {
+    "lemma": "sich bemühen",
+    "frequencyRank": 61137
+  },
+  {
+    "lemma": "Pflanze",
+    "frequencyRank": 6909
+  },
+  {
+    "lemma": "Verlag",
+    "frequencyRank": 14461
+  },
+  {
+    "lemma": "Beamte",
+    "frequencyRank": 8541
+  },
+  {
+    "lemma": "Gedicht",
+    "frequencyRank": 5075
+  },
+  {
+    "lemma": "Hersteller",
+    "frequencyRank": 17489
+  },
+  {
+    "lemma": "sich lohnen",
+    "frequencyRank": 61410
+  },
+  {
+    "lemma": "sich wundern",
+    "frequencyRank": 61417
+  },
+  {
+    "lemma": "sich entschließen",
+    "frequencyRank": 61557
+  },
+  {
+    "lemma": "sich verlieben",
+    "frequencyRank": 61564
+  },
+  {
+    "lemma": "Bedarf",
+    "frequencyRank": 6676
+  },
+  {
+    "lemma": "Angestellte",
+    "frequencyRank": 7854
+  },
+  {
+    "lemma": "sich nähern",
+    "frequencyRank": 61650
+  },
+  {
+    "lemma": "Ufer",
+    "frequencyRank": 6174
+  },
+  {
+    "lemma": "interkulturell",
+    "frequencyRank": 61664
+  },
+  {
+    "lemma": "sich bedanken",
+    "frequencyRank": 61701
+  },
+  {
+    "lemma": "senkrecht",
+    "frequencyRank": 28231
+  },
+  {
+    "lemma": "sich einigen",
+    "frequencyRank": 61733
+  },
+  {
+    "lemma": "Gewissen",
+    "frequencyRank": 1784
+  },
+  {
+    "lemma": "Supermarkt",
+    "frequencyRank": 6135
+  },
+  {
+    "lemma": "Frucht",
+    "frequencyRank": 9470
+  },
+  {
+    "lemma": "Rechner",
+    "frequencyRank": 16041
+  },
+  {
+    "lemma": "Kindergarten",
+    "frequencyRank": 8629
+  },
+  {
+    "lemma": "Verbot",
+    "frequencyRank": 14295
+  },
+  {
+    "lemma": "Kälte",
+    "frequencyRank": 5617
+  },
+  {
+    "lemma": "Laune",
+    "frequencyRank": 3792
+  },
+  {
+    "lemma": "vorlesen",
+    "frequencyRank": 6261
+  },
+  {
+    "lemma": "städtisch",
+    "frequencyRank": 61920
+  },
+  {
+    "lemma": "sich bewerben",
+    "frequencyRank": 61935
+  },
+  {
+    "lemma": "Empfang",
+    "frequencyRank": 3124
+  },
+  {
+    "lemma": "sich weigern",
+    "frequencyRank": 61954
+  },
+  {
+    "lemma": "Teilnahme",
+    "frequencyRank": 16834
+  },
+  {
+    "lemma": "sich erholen",
+    "frequencyRank": 61976
+  },
+  {
+    "lemma": "Kasten",
+    "frequencyRank": 6929
+  },
+  {
+    "lemma": "Eintritt",
+    "frequencyRank": 7686
+  },
+  {
+    "lemma": "ernähren",
+    "frequencyRank": 6348
+  },
+  {
+    "lemma": "Lampe",
+    "frequencyRank": 4977
+  },
+  {
+    "lemma": "sich beschweren",
+    "frequencyRank": 62026
+  },
+  {
+    "lemma": "sich erkundigen",
+    "frequencyRank": 62031
+  },
+  {
+    "lemma": "sich irren",
+    "frequencyRank": 62033
+  },
+  {
+    "lemma": "Breite",
+    "frequencyRank": 12160
+  },
+  {
+    "lemma": "Recherche",
+    "frequencyRank": 13290
+  },
+  {
+    "lemma": "Spezialist",
+    "frequencyRank": 13436
+  },
+  {
+    "lemma": "Dose",
+    "frequencyRank": 6557
+  },
+  {
+    "lemma": "sich langweilen",
+    "frequencyRank": 62130
+  },
+  {
+    "lemma": "Jeans",
+    "frequencyRank": 6852
+  },
+  {
+    "lemma": "Butter",
+    "frequencyRank": 4847
+  },
+  {
+    "lemma": "Geschwindigkeitsbeschränkung",
+    "frequencyRank": 62141
+  },
+  {
+    "lemma": "Zange",
+    "frequencyRank": 13528
+  },
+  {
+    "lemma": "Chipkarte",
+    "frequencyRank": 62150
+  },
+  {
+    "lemma": "sich umziehen",
+    "frequencyRank": 62153
+  },
+  {
+    "lemma": "Abgase",
+    "frequencyRank": 45315
+  },
+  {
+    "lemma": "jedes Mal",
+    "frequencyRank": 62167
+  },
+  {
+    "lemma": "Überschrift",
+    "frequencyRank": 31449
+  },
+  {
+    "lemma": "buchstabieren",
+    "frequencyRank": 14221
+  },
+  {
+    "lemma": "sich beeilen",
+    "frequencyRank": 62187
+  },
+  {
+    "lemma": "weder … noch",
+    "frequencyRank": 62189
+  },
+  {
+    "lemma": "Kursleiter",
+    "frequencyRank": 62201
+  },
+  {
+    "lemma": "bio",
+    "frequencyRank": 19276
+  },
+  {
+    "lemma": "ausgebildet",
+    "frequencyRank": 6180
+  },
+  {
+    "lemma": "Radfahrer",
+    "frequencyRank": 38730
+  },
+  {
+    "lemma": "Suchtmittel",
+    "frequencyRank": 62214
+  },
+  {
+    "lemma": "Krankenpfleger",
+    "frequencyRank": 27170
+  },
+  {
+    "lemma": "letzt-",
+    "frequencyRank": 16489
+  },
+  {
+    "lemma": "siezen",
+    "frequencyRank": 47660
+  },
+  {
+    "lemma": "leid tun",
+    "frequencyRank": 62222
+  },
+  {
+    "lemma": "vergnügt",
+    "frequencyRank": 12800
+  },
+  {
+    "lemma": "sich amüsieren",
+    "frequencyRank": 62240
+  },
+  {
+    "lemma": "ein bisschen",
+    "frequencyRank": 62244
+  },
+  {
+    "lemma": "Lerner",
+    "frequencyRank": 38477
+  },
+  {
+    "lemma": "selb-",
+    "frequencyRank": 62247
+  },
+  {
+    "lemma": "Kalender",
+    "frequencyRank": 7534
+  },
+  {
+    "lemma": "Pullover",
+    "frequencyRank": 8530
+  },
+  {
+    "lemma": "geboren werden",
+    "frequencyRank": 62254
+  },
+  {
+    "lemma": "Bleistift",
+    "frequencyRank": 12388
+  },
+  {
+    "lemma": "zelten",
+    "frequencyRank": 13092
+  },
+  {
+    "lemma": "sich etwas gefallen lassen",
+    "frequencyRank": 62259
+  },
+  {
+    "lemma": "Sucht",
+    "frequencyRank": 1089
+  },
+  {
+    "lemma": "Senioren",
+    "frequencyRank": 23908
+  },
+  {
+    "lemma": "Profisportler",
+    "frequencyRank": 62265
+  },
+  {
+    "lemma": "Tomate",
+    "frequencyRank": 15840
+  },
+  {
+    "lemma": "je … desto …",
+    "frequencyRank": 62271
+  },
+  {
+    "lemma": "Spezial-",
+    "frequencyRank": 24479
+  },
+  {
+    "lemma": "Speisewagen",
+    "frequencyRank": 31931
+  },
+  {
+    "lemma": "Einbrecher",
+    "frequencyRank": 7427
+  },
+  {
+    "lemma": "zu sein",
+    "frequencyRank": 62283
+  },
+  {
+    "lemma": "Kreditkarte",
+    "frequencyRank": 5823
+  },
+  {
+    "lemma": "Bankleitzahl",
+    "frequencyRank": 62292
+  },
+  {
+    "lemma": "kaputtmachen",
+    "frequencyRank": 15471
+  },
+  {
+    "lemma": "im Freien",
+    "frequencyRank": 62301
+  },
+  {
+    "lemma": "sowohl … als auch",
+    "frequencyRank": 62302
+  },
+  {
+    "lemma": "Familienstand",
+    "frequencyRank": 62304
+  },
+  {
+    "lemma": "Wolle",
+    "frequencyRank": 4014
+  },
+  {
+    "lemma": "Müesli",
+    "frequencyRank": 62318
+  },
+  {
+    "lemma": "verpflichtet",
+    "frequencyRank": 4281
+  },
+  {
+    "lemma": "besonder-",
+    "frequencyRank": 62325
+  },
+  {
+    "lemma": "S-Bahn",
+    "frequencyRank": 62336
+  },
+  {
+    "lemma": "Zweitsprache",
+    "frequencyRank": 62340
+  },
+  {
+    "lemma": "Überstunde",
+    "frequencyRank": 62345
+  },
+  {
+    "lemma": "Bio-",
+    "frequencyRank": 19276
+  },
+  {
+    "lemma": "Einzel-",
+    "frequencyRank": 62351
+  },
+  {
+    "lemma": "abbiegen",
+    "frequencyRank": 11403
+  },
+  {
+    "lemma": "Schere",
+    "frequencyRank": 6974
+  },
+  {
+    "lemma": "Torte",
+    "frequencyRank": 6100
+  },
+  {
+    "lemma": "runterwerfen",
+    "frequencyRank": 62365
+  },
+  {
+    "lemma": "raus",
+    "frequencyRank": 198
+  },
+  {
+    "lemma": "Bekannte",
+    "frequencyRank": 5136
+  },
+  {
+    "lemma": "sich scheiden lassen",
+    "frequencyRank": 62374
+  },
+  {
+    "lemma": "Aprikose",
+    "frequencyRank": 62375
+  },
+  {
+    "lemma": "Muttersprache",
+    "frequencyRank": 31914
+  },
+  {
+    "lemma": "Bescheid sagen",
+    "frequencyRank": 62379
+  },
+  {
+    "lemma": "Neuigkeit",
+    "frequencyRank": 8607
+  },
+  {
+    "lemma": "erkältet",
+    "frequencyRank": 11616
+  },
+  {
+    "lemma": "Ordner",
+    "frequencyRank": 18489
+  },
+  {
+    "lemma": "möbliert",
+    "frequencyRank": 42663
+  },
+  {
+    "lemma": "Fachmann die Fachfrau",
+    "frequencyRank": 62387
+  },
+  {
+    "lemma": "vor allem",
+    "frequencyRank": 62390
+  },
+  {
+    "lemma": "Hühnchen",
+    "frequencyRank": 4634
+  },
+  {
+    "lemma": "Abfalleimer",
+    "frequencyRank": 36933
+  },
+  {
+    "lemma": "Spritze",
+    "frequencyRank": 5484
+  },
+  {
+    "lemma": "getrennt leben",
+    "frequencyRank": 62397
+  },
+  {
+    "lemma": "wie viel",
+    "frequencyRank": 62407
+  },
+  {
+    "lemma": "Klassenarbeit",
+    "frequencyRank": 62408
+  },
+  {
+    "lemma": "vorder-",
+    "frequencyRank": 62422
+  },
+  {
+    "lemma": "Kranke",
+    "frequencyRank": 6152
+  },
+  {
+    "lemma": "Verbrecher",
+    "frequencyRank": 3006
+  },
+  {
+    "lemma": "Friede",
+    "frequencyRank": 8686
+  },
+  {
+    "lemma": "Ernte",
+    "frequencyRank": 6536
+  },
+  {
+    "lemma": "was für ein-",
+    "frequencyRank": 62448
+  },
+  {
+    "lemma": "Tee ziehen lassen",
+    "frequencyRank": 62454
+  },
+  {
+    "lemma": "Konfitüre",
+    "frequencyRank": 37884
+  },
+  {
+    "lemma": "Briefmarke",
+    "frequencyRank": 20532
+  },
+  {
+    "lemma": "Standpunkt",
+    "frequencyRank": 7074
+  },
+  {
+    "lemma": "als ob",
+    "frequencyRank": 62476
+  },
+  {
+    "lemma": "beid-",
+    "frequencyRank": 62478
+  },
+  {
+    "lemma": "sich anstrengen",
+    "frequencyRank": 62479
+  },
+  {
+    "lemma": "Pommes frites",
+    "frequencyRank": 62503
+  },
+  {
+    "lemma": "Notausgang",
+    "frequencyRank": 23574
+  },
+  {
+    "lemma": "Einfahrt",
+    "frequencyRank": 11912
+  },
+  {
+    "lemma": "chic",
+    "frequencyRank": 26508
+  },
+  {
+    "lemma": "Absender",
+    "frequencyRank": 16349
+  },
+  {
+    "lemma": "faulenzen",
+    "frequencyRank": 32098
+  },
+  {
+    "lemma": "un-",
+    "frequencyRank": 6084
+  },
+  {
+    "lemma": "stehen bleiben",
+    "frequencyRank": 62537
+  },
+  {
+    "lemma": "spazieren gehen",
+    "frequencyRank": 62539
+  },
+  {
+    "lemma": "verabredet",
+    "frequencyRank": 3885
+  },
+  {
+    "lemma": "Bescheid geben",
+    "frequencyRank": 62548
+  },
+  {
+    "lemma": "sich ereignen",
+    "frequencyRank": 62554
+  },
+  {
+    "lemma": "Betreuer",
+    "frequencyRank": 14516
+  },
+  {
+    "lemma": "so viel",
+    "frequencyRank": 62568
+  },
+  {
+    "lemma": "bekannt geben",
+    "frequencyRank": 62573
+  },
+  {
+    "lemma": "-weise",
+    "frequencyRank": 62574
+  },
+  {
+    "lemma": "Orange",
+    "frequencyRank": 6022
+  },
+  {
+    "lemma": "Speisekarte",
+    "frequencyRank": 12889
+  },
+  {
+    "lemma": "Anrufbeantworter",
+    "frequencyRank": 8504
+  },
+  {
+    "lemma": "Zinsen",
+    "frequencyRank": 8719
+  },
+  {
+    "lemma": "Mobilbox",
+    "frequencyRank": 62588
+  },
+  {
+    "lemma": "anklicken",
+    "frequencyRank": 62590
+  },
+  {
+    "lemma": "Sprechstunde",
+    "frequencyRank": 23645
+  },
+  {
+    "lemma": "Hinweise",
+    "frequencyRank": 3870
+  },
+  {
+    "lemma": "manch-",
+    "frequencyRank": 16922
+  },
+  {
+    "lemma": "duzen",
+    "frequencyRank": 18857
+  },
+  {
+    "lemma": "Studierende",
+    "frequencyRank": 62614
+  },
+  {
+    "lemma": "Neffe",
+    "frequencyRank": 5028
+  },
+  {
+    "lemma": "Zahncreme",
+    "frequencyRank": 62620
+  },
+  {
+    "lemma": "Elektro-",
+    "frequencyRank": 62621
+  },
+  {
+    "lemma": "Apartment",
+    "frequencyRank": 4147
+  },
+  {
+    "lemma": "sich erkälten",
+    "frequencyRank": 62630
+  },
+  {
+    "lemma": "Treffpunkt",
+    "frequencyRank": 7205
+  },
+  {
+    "lemma": "inner-",
+    "frequencyRank": 62632
+  },
+  {
+    "lemma": "Creme",
+    "frequencyRank": 12474
+  },
+  {
+    "lemma": "Vorfahrt",
+    "frequencyRank": 36681
+  },
+  {
+    "lemma": "kaputtgehen",
+    "frequencyRank": 35479
+  },
+  {
+    "lemma": "Fähre",
+    "frequencyRank": 8616
+  },
+  {
+    "lemma": "verpflegen",
+    "frequencyRank": 62646
+  },
+  {
+    "lemma": "Öko-",
+    "frequencyRank": 62650
+  },
+  {
+    "lemma": "pensioniert",
+    "frequencyRank": 18291
+  },
+  {
+    "lemma": "Verlierer",
+    "frequencyRank": 4553
+  },
+  {
+    "lemma": "Sonderangebot",
+    "frequencyRank": 22932
+  },
+  {
+    "lemma": "Prost",
+    "frequencyRank": 2446
+  },
+  {
+    "lemma": "Lieblings-",
+    "frequencyRank": 25599
+  },
+  {
+    "lemma": "rauf",
+    "frequencyRank": 1833
+  },
+  {
+    "lemma": "erschöpft",
+    "frequencyRank": 3752
+  },
+  {
+    "lemma": "Versichertenkarte",
+    "frequencyRank": 62680
+  },
+  {
+    "lemma": "Aussprache",
+    "frequencyRank": 20268
+  },
+  {
+    "lemma": "Seife",
+    "frequencyRank": 6304
+  },
+  {
+    "lemma": "Intensivkurs",
+    "frequencyRank": 62690
+  },
+  {
+    "lemma": "Nichtraucher",
+    "frequencyRank": 26675
+  },
+  {
+    "lemma": "miss-",
+    "frequencyRank": 488
+  },
+  {
+    "lemma": "Schwieger-",
+    "frequencyRank": 62700
+  },
+  {
+    "lemma": "Couch",
+    "frequencyRank": 3814
+  },
+  {
+    "lemma": "Banane",
+    "frequencyRank": 9786
+  },
+  {
+    "lemma": "befreit",
+    "frequencyRank": 3231
+  },
+  {
+    "lemma": "Personalien",
+    "frequencyRank": 30870
+  },
+  {
+    "lemma": "Nichte",
+    "frequencyRank": 4429
+  },
+  {
+    "lemma": "um … zu",
+    "frequencyRank": 62739
+  },
+  {
+    "lemma": "Flohmarkt",
+    "frequencyRank": 17816
+  },
+  {
+    "lemma": "ander-",
+    "frequencyRank": 35159
+  },
+  {
+    "lemma": "entweder … oder",
+    "frequencyRank": 62749
+  },
+  {
+    "lemma": "Steckdose",
+    "frequencyRank": 28129
+  },
+  {
+    "lemma": "Rundfahrt",
+    "frequencyRank": 49454
+  },
+  {
+    "lemma": "Ausfahrt",
+    "frequencyRank": 13877
+  },
+  {
+    "lemma": "sich vergnügen",
+    "frequencyRank": 62764
+  },
+  {
+    "lemma": "Bürste",
+    "frequencyRank": 17824
+  },
+  {
+    "lemma": "Teilzeit",
+    "frequencyRank": 26602
+  },
+  {
+    "lemma": "waagerecht",
+    "frequencyRank": 48782
+  },
+  {
+    "lemma": "Sahne",
+    "frequencyRank": 8568
+  },
+  {
+    "lemma": "anschnallen",
+    "frequencyRank": 12997
+  },
+  {
+    "lemma": "geehrt",
+    "frequencyRank": 6683
+  },
+  {
+    "lemma": "Wetterbericht",
+    "frequencyRank": 18685
+  },
+  {
+    "lemma": "sämtliche",
+    "frequencyRank": 5257
+  },
+  {
+    "lemma": "Tote",
+    "frequencyRank": 1805
+  }
+]
