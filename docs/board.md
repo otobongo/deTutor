@@ -88,7 +88,7 @@ no uncommitted work.
 | GT-209 | Tap-to-queue unknown words | done | gt-209-tap-to-queue | In-corpus taps enqueue the existing id; duplicates are no-ops; out-of-corpus taps get schema-honest mini-cards (nouns must carry articles). |
 | GT-210 | Writing, word-tile sentence construction | done | gt-210-word-tiles | Accepted-order sets per item (V2 variants both valid); verb-third logged as order; deterministic tile shuffle never presents a valid order. |
 | GT-211 | Writing, dictation | done | gt-211-dictation | LCS word-level diff; substitutions log as spelling; captions hidden until submission, shown after for silent placeholder assets. |
-| GT-212 | Writing, emails and opinion texts | open | | |
+| GT-212 | Writing, emails and opinion texts | done | gt-212-composers | Both Goethe Schreiben formats; keyword-hinted checklist; missing points soft-warn once then allow submission; live word count. |
 | GT-213 | Writing correction engine | open | | |
 | GT-214 | Grammar mistake log and error analytics store | done | gt-214-grammar-log | Built first in Phase 2 (write path feeds most skill issues). DocumentStore gained list() for analytics queries. |
 | GT-215 | Speaking echo loop (fallback mode) | open | | |
