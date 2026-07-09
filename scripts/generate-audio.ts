@@ -46,9 +46,7 @@ async function main(): Promise<void> {
 
   const levelFlag = process.argv.indexOf('--level');
   const level = (levelFlag === -1 ? 'A1' : process.argv[levelFlag + 1]?.toUpperCase()) as
-    | 'A1'
-    | 'A2'
-    | 'B1';
+    'A1' | 'A2' | 'B1';
   const limitFlag = process.argv.indexOf('--limit');
   const limit = limitFlag === -1 ? Infinity : Number(process.argv[limitFlag + 1]);
 
@@ -85,9 +83,8 @@ async function main(): Promise<void> {
           speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } },
         },
       });
-      const data = response.candidates?.[0]?.content?.parts?.find(
-        (part) => part.inlineData?.data,
-      )?.inlineData?.data;
+      const data = response.candidates?.[0]?.content?.parts?.find((part) => part.inlineData?.data)
+        ?.inlineData?.data;
       if (!data) throw new Error('no audio data in response');
       const fileName = `audio/${job.clipId}.wav`;
       writeFileSync(path.join(MEDIA_DIR, fileName), pcmToWav(Buffer.from(data, 'base64')));
