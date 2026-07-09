@@ -5,16 +5,18 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 
 ## State of the build
 
-**2026-07-09, Claude (Fable 5), builder.** Phases 0 and 1 complete: GT-001 to GT-008 and GT-101
-to GT-110 all done and merged to main. `npm run ci` green: lint, format, typecheck, 4 guards, 134
-unit tests, 4 Playwright journeys (smoke, full onboarding to Day 1, adapter-served voice samples,
-placement escalation). Curriculum skeleton (18 units, 34 grammar items) and verified vocabulary
-corpus (A1 650 / A2 650 / B1 1243, zero unverified articles) are seedable; FSRS scheduler, review
-queue with the GT-304 seam, placement ladder, Gemini client with tiering, and the five-step lesson
-engine are all pure and tested. Onboarding runs end to end in the browser on the dev-file store.
-Next: Phase 2 (GT-201 to GT-220, four skills in placeholder mode). Owner TODOs above still open
-(Firebase project, GEMINI_API_KEY, model id verification); GT-D1 enrichment batch queued. No red,
-no uncommitted work.
+**2026-07-09, Claude (Fable 5), builder.** Phases 0, 1, and 2 complete: GT-001 to GT-008, GT-101
+to GT-110, and GT-201 to GT-220 all done and merged to main. `npm run ci` green: lint, format,
+typecheck, 4 guards, 233 unit/component tests across 36 files, 9 Playwright journeys (smoke,
+onboarding to Day 1, adapter captions, placement escalation, settings persistence, FULL daily
+session from Today to completion, skills library, mobile viewport, keyboard nav). All four skills
+run in placeholder mode: echo/vocab cards, image ID with article traps, listening with captioned
+placeholder audio and tiered evaluation, reading generation with a code-owned level envelope plus
+Goethe Lesen tasks and tap-to-queue, writing tiles/dictation/composers/deep-tier correction,
+speaking echo loop, 12 scenarios with inline corrections and summaries, session wrap-up reports,
+and the app shell with a resumable five-step session runner. Brain-dependent flows degrade to
+recoverable states until GEMINI_API_KEY arrives. Next: Phase 3 (GT-301 to GT-311, assessment
+engine). Owner TODOs unchanged; GT-D1 enrichment batch still queued. No red, no uncommitted work.
 
 ## Owner TODOs (non-blocking for Phase 0, needed before later phases)
 
@@ -96,7 +98,7 @@ no uncommitted work.
 | GT-217 | B1 scenarios | done | gt-217-b1-scenarios | Six B1 scenarios with register in personas (Behörde strict Sie-form, opinion invites Konjunktiv II); level gates selection; content seeded with gt-216, tests own this branch. |
 | GT-218 | Inline corrections and post-session summary | done | gt-218-inline-corrections | Corrections record the learner's original utterance; summary table matches the fixed format; zero-error sessions congratulate without an empty table; all corrections logged via GT-214. |
 | GT-219 | Session wrap-up and reporting hooks | done | gt-219-wrap-up | Report fields per PRD 4.7; recall = non-again ratings; interrupted sessions refuse to persist; loadSessionReports is the Phase 3 hook. |
-| GT-220 | App shell, navigation, and Day view | open | | |
+| GT-220 | App shell, navigation, and Day view | done | gt-220-app-shell | Shell nav (Today/Practice/Progress/Settings, keyboard-tested); session runner walks all five steps with per-step persistence and resume; brain-dependent evaluation degrades to a recoverable self-check state without a key; e2e covers the full daily session, skills library, and mobile viewport. |
 
 ## Phase 3: Assessment Engine
 
