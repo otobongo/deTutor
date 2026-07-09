@@ -79,7 +79,7 @@ no uncommitted work.
 |-------|-------|--------|--------|-------|
 | GT-201 | Vocabulary card component and echo flow | done | gt-201-vocab-card-echo | Echo is a strict state machine; production structurally mandatory; component tests run on jsdom (testing-library added to the harness). |
 | GT-202 | Image identification, recognition phase | done | gt-202-image-id | Options include an article trap (same noun, wrong article) so article confusion is detectable and logged as gender; distractors deterministic, theme-first. |
-| GT-203 | Image identification, production phase | open | | |
+| GT-203 | Image identification, production phase | done | gt-203-image-production | Partial credit (word right, article wrong) logs gender and maps to Hard; full maps to Good; rating updates FSRS. Grading engine landed with gt-202 module. |
 | GT-204 | Settings, image style and preferences | open | | |
 | GT-205 | Listening exercise flow | open | | |
 | GT-206 | Listening evaluation engine | open | | |
