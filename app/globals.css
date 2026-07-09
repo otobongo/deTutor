@@ -2,32 +2,316 @@
 
 /* Tailwind v4 scans sources for class names; docs and seed data are prose
    and datasets, not markup, and stray tokens there must never reach the
-   compiled CSS (a docs file once injected an invalid utility). */
+   compiled CSS. */
 @source not "../docs";
 @source not "../db";
 @source not "../scripts";
 
+/* ------------------------------------------------------------------ */
+/* deTutor token layer, per docs/design-system.md.                      */
+/* Theme axis: data-lid-theme on <html> (default cal-readwise-hybrid,   */
+/* or monochrome-stark). Mode axis: lid-mode-light / lid-mode-dark.     */
+/* Bootstrap defaults below are Cal x Readwise light so first paint is  */
+/* correct before the pre-hydration script runs.                        */
+/* ------------------------------------------------------------------ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  /* Cal x Readwise, light */
+  --color-background: #f4f4f4;
+  --color-surface: #ffffff;
+  --color-surface-2: #f0efec;
+  --color-ink: #141414;
+  --color-ink-muted: #6b6b6b;
+  --color-ink-subtle: #6b6b6b;
+  --color-ink-inverse: #ffffff;
+  --color-border: #e5e5e5;
+  --color-border-strong: #d4d4d4;
+  --color-action: #141414;
+  --color-action-inverse: #ffffff;
+  --color-reading-surface: #fbf9f4;
+  --color-reading-ink: #1a1a1a;
+  --color-success: #4a7c59;
+  --color-success-tint: rgba(74, 124, 89, 0.1);
+  --color-error: #a8413b;
+  --color-error-tint: rgba(168, 65, 59, 0.1);
+  --color-info: #5a6f8a;
+  --color-warning: #a88a4d;
+  --color-focus-ring: #141414;
+
+  /* fonts: *-loaded vars come from next/font; Google Sans Flex is not
+     self-hosted, so stacks fall back per the spec. */
+  --font-display:
+    var(--font-display-loaded), 'Inter Tight', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-ui: var(--font-ui-loaded), 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-reading: var(--font-ui-loaded), 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-loaded), 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* layout */
+  --width-shell: 1200px;
+  --width-readable: 720px;
+  --header-h: 56px;
+
+  /* radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-pill: 9999px;
+
+  /* tracking */
+  --tracking-display: -0.02em;
+  --tracking-ui: 0em;
+  --tracking-reading: 0em;
+
+  /* motion */
+  --motion-fast: 150ms;
+  --motion-base: 250ms;
+  --motion-slow: 300ms;
+
+  /* highlights, Cal x Readwise */
+  --highlight-date-color: #fbda83;
+  --highlight-date-text-color: #1a1a1a;
+  --highlight-event-color: #fbda83;
+  --highlight-event-text-color: var(--color-ink);
+  --highlight-concept-color: #e4938e;
+  --highlight-concept-text-color: var(--color-ink);
+  --highlight-person-color: #e4938e;
+  --highlight-person-text-color: var(--color-ink);
+  --highlight-place-color: #8dbbff;
+  --highlight-place-text-color: var(--color-ink);
+  --highlight-law-color: #8dbbff;
+  --highlight-law-text-color: var(--color-ink);
+
+  /* deTutor pedagogy tokens: article colors (blue der, red die, green
+     das) are PRD-mandated and mode-aware; article identity is always
+     also text, never color alone. */
+  --article-der: #1d4ed8;
+  --article-die: #b91c1c;
+  --article-das: #15803d;
 }
 
+html.lid-mode-dark {
+  color-scheme: dark;
+
+  --color-background: #0a0a0a;
+  --color-surface: #141414;
+  --color-surface-2: #1b1b1b;
+  --color-ink: #f4f4f4;
+  --color-ink-muted: #9c9c9c;
+  --color-ink-subtle: #848484;
+  --color-ink-inverse: #141414;
+  --color-border: #262626;
+  --color-border-strong: #3a3a3a;
+  --color-action: #f4f4f4;
+  --color-action-inverse: #141414;
+  --color-reading-surface: #161412;
+  --color-reading-ink: #e8e5de;
+  --color-success: #7baa89;
+  --color-success-tint: rgba(123, 170, 137, 0.14);
+  --color-error: #d08580;
+  --color-error-tint: rgba(208, 133, 128, 0.14);
+  --color-info: #7a8faa;
+  --color-warning: #c8a86d;
+  --color-focus-ring: #f4f4f4;
+
+  /* lifted article shades clearing 4.5:1 on the dark surface */
+  --article-der: #8dbbff;
+  --article-die: #e4938e;
+  --article-das: #7baa89;
+}
+
+html[data-lid-theme='monochrome-stark'] {
+  --color-background: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-2: #f2f2f2;
+  --color-ink: #000000;
+  --color-ink-muted: #525252;
+  --color-ink-subtle: #6d6d6d;
+  --color-ink-inverse: #ffffff;
+  --color-border: #e5e5e5;
+  --color-border-strong: #000000;
+  --color-action: #000000;
+  --color-action-inverse: #ffffff;
+  --color-reading-surface: #ffffff;
+  --color-reading-ink: #000000;
+  --color-success: #000000;
+  --color-success-tint: rgba(0, 0, 0, 0.06);
+  --color-error: #000000;
+  --color-error-tint: rgba(0, 0, 0, 0.06);
+  --color-info: #525252;
+  --color-warning: #525252;
+  --color-focus-ring: #000000;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-pill: 0px;
+  --tracking-display: -0.04em;
+  --tracking-reading: -0.01em;
+
+  /* grayscale: article identity is carried by the text itself */
+  --article-der: #000000;
+  --article-die: #000000;
+  --article-das: #000000;
+
+  --highlight-date-color: var(--color-ink);
+  --highlight-date-text-color: var(--color-action-inverse);
+  --highlight-event-color: var(--color-ink-muted);
+  --highlight-concept-color: var(--color-ink);
+  --highlight-person-color: var(--color-ink);
+  --highlight-place-color: var(--color-ink-muted);
+  --highlight-law-color: var(--color-ink);
+}
+
+html[data-lid-theme='monochrome-stark'].lid-mode-dark {
+  --color-background: #000000;
+  --color-surface: #0a0a0a;
+  --color-surface-2: #1a1a1a;
+  --color-ink: #ffffff;
+  --color-ink-muted: #a3a3a3;
+  --color-ink-subtle: #848484;
+  --color-ink-inverse: #000000;
+  --color-border: #262626;
+  --color-border-strong: #ffffff;
+  --color-action: #ffffff;
+  --color-action-inverse: #000000;
+  --color-reading-surface: #000000;
+  --color-reading-ink: #ffffff;
+  --color-success: #ffffff;
+  --color-success-tint: rgba(255, 255, 255, 0.08);
+  --color-error: #ffffff;
+  --color-error-tint: rgba(255, 255, 255, 0.08);
+  --color-info: #a3a3a3;
+  --color-warning: #a3a3a3;
+  --color-focus-ring: #ffffff;
+
+  --article-der: #ffffff;
+  --article-die: #ffffff;
+  --article-das: #ffffff;
+}
+
+/* Utility bridge (design-system.md section 7). */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-surface-2: var(--color-surface-2);
+  --color-ink: var(--color-ink);
+  --color-ink-muted: var(--color-ink-muted);
+  --color-ink-subtle: var(--color-ink-subtle);
+  --color-ink-inverse: var(--color-ink-inverse);
+  --color-border-default: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-action: var(--color-action);
+  --color-action-inverse: var(--color-action-inverse);
+  --color-reading-surface: var(--color-reading-surface);
+  --color-reading-ink: var(--color-reading-ink);
+  --color-success: var(--color-success);
+  --color-success-tint: var(--color-success-tint);
+  --color-error: var(--color-error);
+  --color-error-tint: var(--color-error-tint);
+  --color-info: var(--color-info);
+  --color-warning: var(--color-warning);
+  --font-display: var(--font-display);
+  --font-ui: var(--font-ui);
+  --font-reading: var(--font-reading);
+  --font-mono: var(--font-mono);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-pill: var(--radius-pill);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  /* Tailwind v4 defaults border-color to currentColor; the system default
+     is the border token. */
+  *,
+  ::before,
+  ::after,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body {
+    background-color: var(--color-background);
+    color: var(--color-ink);
+    font-family: var(--font-ui);
+    letter-spacing: var(--tracking-ui);
+  }
+  body {
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: var(--tracking-display);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Highlight treatments (design-system.md section 3.3, verbatim). */
+mark[data-highlight-kind] {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+mark[data-highlight-kind][data-highlight-treatment='pill'] {
+  background-color: var(--highlight-color, transparent);
+  color: var(--highlight-text-color, inherit);
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  font-weight: 500;
+}
+mark[data-highlight-kind][data-highlight-treatment='tint'] {
+  background-color: color-mix(in srgb, var(--highlight-color, transparent) 28%, transparent);
+  color: var(--highlight-text-color, inherit);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+mark[data-highlight-kind][data-highlight-treatment='underline'] {
+  border-bottom: 2px solid var(--highlight-color, currentColor);
+  padding-bottom: 1px;
+}
+mark[data-highlight-kind][data-highlight-treatment='italic-border'] {
+  font-style: italic;
+  border-bottom: 1px solid var(--highlight-color, currentColor);
+  padding-bottom: 1px;
+}
+mark[data-highlight-kind][data-highlight-treatment='mono-border'] {
+  font-family: var(--font-mono);
+  border: 1px solid var(--highlight-color, currentColor);
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 0.88em;
+  white-space: nowrap;
+}
+
+@layer utilities {
+  .readable-width {
+    max-width: var(--width-readable);
+  }
+  .shell-width {
+    max-width: var(--width-shell);
+  }
 }

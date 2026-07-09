@@ -31,7 +31,7 @@ export function DictationExercise({
     <div className="flex flex-col gap-4" data-testid="dictation-exercise">
       <button
         type="button"
-        className="self-start rounded bg-gray-900 px-3 py-1 text-sm text-white dark:bg-gray-100 dark:text-gray-900"
+        className="self-start rounded-md bg-action px-3 py-1 text-sm text-action-inverse"
         onClick={play}
         data-testid={`dictation-play-${audio.clipId}`}
       >
@@ -48,7 +48,7 @@ export function DictationExercise({
           }}
         >
           <input
-            className="w-full rounded border px-3 py-2"
+            className="w-full rounded-md border bg-surface px-3 py-2"
             value={attempt}
             onChange={(event) => setAttempt(event.target.value)}
             placeholder="Type exactly what you hear"
@@ -57,7 +57,7 @@ export function DictationExercise({
           />
           <button
             type="submit"
-            className="rounded bg-blue-700 px-4 py-2 text-white disabled:opacity-40"
+            className="rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
             disabled={attempt.trim().length === 0}
             data-testid="dictation-submit"
           >
@@ -73,8 +73,8 @@ export function DictationExercise({
                 data-diff={segment.kind}
                 className={
                   segment.kind === 'correct'
-                    ? 'text-green-800 dark:text-green-300'
-                    : 'rounded bg-red-100 px-1 line-through dark:bg-red-900'
+                    ? 'text-success'
+                    : 'rounded-sm bg-error-tint px-1 text-error line-through'
                 }
               >
                 {segment.kind === 'extra' ? segment.submitted : segment.expected}
@@ -82,7 +82,7 @@ export function DictationExercise({
             ))}
           </p>
           {audio.captionsRequired ? (
-            <p className="text-sm italic opacity-80" data-testid="dictation-captions">
+            <p className="text-sm italic text-ink-muted" data-testid="dictation-captions">
               {audio.captionText}
             </p>
           ) : null}

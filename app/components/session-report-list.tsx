@@ -29,7 +29,7 @@ export function SessionReportList({
         return (
           <li
             key={report.sessionDate}
-            className="rounded-lg border p-4"
+            className="rounded-lg border bg-surface p-4"
             data-testid={`report-${report.sessionDate.slice(0, 10)}`}
           >
             <h3 className="font-medium">{report.sessionDate.slice(0, 10)}</h3>

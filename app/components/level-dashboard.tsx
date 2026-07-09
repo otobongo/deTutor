@@ -11,9 +11,9 @@ import {
 // simple width-scaled bars (no chart library, no invented numbers).
 
 const BAND_CLASSES: Record<string, string> = {
-  healthy: 'bg-green-200 dark:bg-green-900',
-  warm: 'bg-yellow-200 dark:bg-yellow-800',
-  decayed: 'bg-red-200 dark:bg-red-900',
+  healthy: 'bg-success-tint',
+  warm: 'bg-[color-mix(in_srgb,var(--color-warning)_20%,transparent)]',
+  decayed: 'bg-error-tint',
 };
 
 export function LevelDashboard({
@@ -62,7 +62,7 @@ export function LevelDashboard({
           {heat.map((cell) => (
             <li
               key={cell.unitId}
-              className={`rounded px-2 py-1 text-sm ${BAND_CLASSES[cell.band]}`}
+              className={`rounded-sm px-2 py-1 text-sm ${BAND_CLASSES[cell.band]}`}
               data-testid={`retention-${cell.unitId}`}
               data-band={cell.band}
             >

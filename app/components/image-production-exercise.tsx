@@ -47,7 +47,7 @@ export function ImageProductionExercise({
         }}
       >
         <input
-          className="rounded border px-3 py-2"
+          className="rounded-md border bg-surface px-3 py-2"
           value={input}
           onChange={(event) => setInput(event.target.value)}
           placeholder="Name it, with the article"
@@ -57,7 +57,7 @@ export function ImageProductionExercise({
         />
         <button
           type="submit"
-          className="rounded bg-blue-700 px-3 py-1 text-white disabled:opacity-40"
+          className="rounded-md bg-action px-3 py-1 text-action-inverse disabled:opacity-40"
           disabled={input.trim().length === 0 || result !== null}
           data-testid="image-production-submit"
         >

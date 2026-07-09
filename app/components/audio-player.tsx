@@ -36,13 +36,13 @@ export function AudioPlayer({
       <button
         type="button"
         onClick={play}
-        className="rounded border px-3 py-1 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+        className="rounded-md border bg-surface px-3 py-1 text-sm hover:bg-surface-2"
         data-testid={`play-${asset.clipId}`}
       >
         {label}
       </button>
       {asset.captionsRequired && played ? (
-        <p className="text-sm italic opacity-80" data-testid={`captions-${asset.clipId}`}>
+        <p className="text-sm italic text-ink-muted" data-testid={`captions-${asset.clipId}`}>
           {asset.captionText}
         </p>
       ) : null}

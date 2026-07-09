@@ -46,7 +46,7 @@ export function WritingComposer({
       </ul>
 
       <textarea
-        className="min-h-40 rounded border px-3 py-2"
+        className="min-h-40 rounded-md border bg-surface px-3 py-2"
         value={text}
         onChange={(event) => {
           setText(event.target.value);
@@ -55,7 +55,7 @@ export function WritingComposer({
         aria-label="Your text"
         data-testid="composer-text"
       />
-      <p className="text-sm opacity-80" data-testid="composer-word-count">
+      <p className="text-sm text-ink-muted" data-testid="composer-word-count">
         {count} / ~{prompt.targetWords} words
       </p>
 
@@ -68,7 +68,7 @@ export function WritingComposer({
 
       <button
         type="button"
-        className="self-start rounded bg-blue-700 px-4 py-2 text-white disabled:opacity-40"
+        className="self-start rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
         disabled={text.trim().length === 0 || submitting}
         onClick={submit}
         data-testid="composer-submit"

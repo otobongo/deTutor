@@ -18,7 +18,7 @@ export default async function OnboardingPage() {
   const clientProbes = placementProbes;
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-8">
+    <main className="mx-auto flex min-h-screen w-full readable-width flex-col gap-6 p-8">
       <h1 className="text-3xl font-semibold">Willkommen!</h1>
       <p data-testid="onboarding-intro">
         Your German tutor takes you from zero to B1: listening, reading, writing, and speaking.

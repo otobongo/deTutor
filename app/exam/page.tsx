@@ -16,7 +16,7 @@ const MODULE_LABELS: Record<string, string> = {
 export default function ExamPage() {
   const now = new Date();
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-8">
+    <main className="mx-auto flex min-h-screen w-full readable-width flex-col gap-6 p-8">
       <h1 className="text-3xl font-semibold">Goethe-Zertifikat B1 simulation</h1>
       <p data-testid="exam-intro">
         Four timed modules, scored 0 to 100 each; 60 passes a module. The structure below matches
@@ -29,7 +29,7 @@ export default function ExamPage() {
           return (
             <li
               key={module.skill}
-              className="rounded-lg border p-4"
+              className="rounded-lg border bg-surface p-4"
               data-testid={`exam-module-${module.skill}`}
             >
               <h2 className="font-medium">
@@ -45,14 +45,14 @@ export default function ExamPage() {
                   {module.productionTasks} production tasks
                 </p>
               )}
-              <p className="text-sm opacity-70" data-testid={`exam-timer-${module.skill}`}>
+              <p className="text-sm text-ink-muted" data-testid={`exam-timer-${module.skill}`}>
                 Timer: {Math.round(timer.remainingSeconds / 60)} minutes when started
               </p>
             </li>
           );
         })}
       </ul>
-      <p className="text-sm opacity-70">
+      <p className="text-sm text-ink-muted">
         The exam unlocks at B1 after the A2 gate; module item generation uses the deep tier.
       </p>
     </main>

@@ -61,7 +61,7 @@ export function SettingsForm({ profile }: { profile: LearnerProfile }) {
       <label className="flex flex-col gap-1">
         <span className="font-medium">Voice</span>
         <select
-          className="rounded border px-3 py-2"
+          className="rounded-md border bg-surface px-3 py-2"
           value={settings.voice}
           onChange={(event) => setSettings({ ...settings, voice: event.target.value })}
           data-testid="settings-voice"
@@ -77,7 +77,7 @@ export function SettingsForm({ profile }: { profile: LearnerProfile }) {
       <label className="flex flex-col gap-1">
         <span className="font-medium">Dialect</span>
         <select
-          className="rounded border px-3 py-2"
+          className="rounded-md border bg-surface px-3 py-2"
           value={settings.dialect}
           onChange={(event) =>
             setSettings({ ...settings, dialect: event.target.value as typeof settings.dialect })
@@ -92,7 +92,7 @@ export function SettingsForm({ profile }: { profile: LearnerProfile }) {
       <div className="flex items-center gap-4">
         <button
           type="submit"
-          className="rounded bg-blue-700 px-4 py-2 text-white"
+          className="rounded-md bg-action px-4 py-2 text-action-inverse"
           data-testid="settings-save"
         >
           Save
@@ -101,7 +101,7 @@ export function SettingsForm({ profile }: { profile: LearnerProfile }) {
         {error ? <span role="alert">{error}</span> : null}
       </div>
 
-      <Link className="text-blue-700 underline" href="/" data-testid="rerun-placement">
+      <Link className="text-ink underline" href="/" data-testid="rerun-placement">
         Re-run the placement check
       </Link>
     </form>

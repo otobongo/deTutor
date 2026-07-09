@@ -41,7 +41,7 @@ export function ImageIdExercise({
           <button
             key={option.wordId}
             type="button"
-            className={`rounded border px-3 py-2 ${chosen === option.wordId ? 'ring-2 ring-blue-700' : ''}`}
+            className={`rounded-md border bg-surface px-3 py-2 ${chosen === option.wordId ? 'ring-2 ring-blue-700' : ''}`}
             disabled={result !== null}
             onClick={() => {
               setChosen(option.wordId);
