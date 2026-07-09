@@ -20,10 +20,10 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Owner TODOs (non-blocking for Phase 0, needed before later phases)
 
-- [ ] **Enable pay-as-you-go billing for the Gemini API key** (AI Studio -> plan/billing). All 266
-      images generated fine, but every TTS model on the current plan has a tiny daily quota:
-      audio stands at 55 of 2,565 clips. Once upgraded, one command finishes the batch
-      (quota-aware, resumable): `npm run generate:audio -- --level A1` then A2/B1.
+- [ ] **Enable pay-as-you-go billing for the Gemini API key** (AI Studio -> plan/billing), then
+      run `npm run generate:audio` (defaults to A1 only; quota-aware and resumable). Audio stands
+      at 55 of 656 A1 clips. **By owner decision (2026-07-09), A2 and B1 audio are deferred**
+      until the learner approaches those levels; generate them then with `-- --level A2|B1`.
 
 - [ ] Create the real Firebase project and drop its config values into `.env.local`
       (Phase 0 builds and tests against dummy values and converters only).
@@ -33,6 +33,13 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 - [x] GitHub remote added 2026-07-09: https://github.com/otobongo/deTutor (push after each issue).
 
 ## Discovered work (not yet in the plan)
+
+- [x] **Image catalog and vision audit (done 2026-07-09).** /catalog previews every generated
+      image with word, translation, and audit verdict; npm run audit:images sends each image back
+      through Gemini vision against its expected word. Outcome: 266 generated, 17 flagged, root
+      causes fixed (7 bad source translations corrected, 8 abstract/confusable words made
+      non-picturable with overrides persisted), flagged images regenerated; final catalog is 250
+      images, 100% audit-verified.
 
 - [x] **GT-D1: Vocabulary enrichment batch (done 2026-07-09).** All 2,547 corpus words carry
       IPA and example sentences (npm run enrich:vocab, idempotent, resumable).

@@ -70,6 +70,11 @@ test('Practice lists all four skills', async ({ page }) => {
   }
 });
 
+test('the image catalog renders with its audit summary', async ({ page }) => {
+  await page.goto('/catalog');
+  await expect(page.getByTestId('catalog-summary')).toBeVisible();
+});
+
 test('mobile viewport renders without horizontal scroll', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 700 });
   for (const path of ['/practice', '/progress']) {
