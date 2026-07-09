@@ -133,7 +133,7 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 | Issue | Title | Status | Branch | Notes |
 |-------|-------|--------|--------|-------|
 | GT-501 | Image generation script | done | gt-501-image-generation | Sample batch verified live (gemini-3.1-flash-image; PRD's 'Nano Banana 2' pinned to it, deviation noted); manifest ledger + MediaAssetRef writes; idempotent/resumable; full A1 batch is one command, cost flagged to owner. |
-| GT-502 | Audio generation script | open | | |
+| GT-502 | Audio generation script | done | gt-502-audio-generation | Live-verified sample (all 6 A1 unit clips + pronunciations, de-DE TTS to WAV); caption text retained in seeds; same ledger/idempotency contract as GT-501. |
 | GT-503 | Gemini Live voice integration | open | | |
 | GT-504 | Provider flip and regression | open | | |
 
