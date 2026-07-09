@@ -77,7 +77,7 @@ no uncommitted work.
 
 | Issue | Title | Status | Branch | Notes |
 |-------|-------|--------|--------|-------|
-| GT-201 | Vocabulary card component and echo flow | open | | |
+| GT-201 | Vocabulary card component and echo flow | done | gt-201-vocab-card-echo | Echo is a strict state machine; production structurally mandatory; component tests run on jsdom (testing-library added to the harness). |
 | GT-202 | Image identification, recognition phase | open | | |
 | GT-203 | Image identification, production phase | open | | |
 | GT-204 | Settings, image style and preferences | open | | |
