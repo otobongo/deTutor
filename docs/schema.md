@@ -141,6 +141,15 @@ Fields per PRD 4.7 per-session list: sessionDate, wordsReviewed, recallRate
 scenarioScore (0 to 10, null when no scenario), skillScores (partial record by
 skill), errorsByCategory (partial record by category), grammarItemPracticed.
 
+### `learners/{learnerId}/sessions/{sessionId}` (LessonSession, GT-108)
+
+One document per session day (`session-YYYY-MM-DD`). Fields: id, unitId,
+createdAt, currentStepIndex (0 to 4, resume point), steps (fixed five-step
+array: warm-up with queueWordIds, new-vocabulary with theme and wordIds,
+grammar-focus with grammarItemId, skill-practice with slot, wrap-up), status
+('active' | 'completed'), grammarScore (0 to 10 or null; drives the
+next-session resurfacing rule).
+
 ### `learners/{learnerId}/weeklySummaries/{weekStart}` (WeeklySummary)
 
 Fields per PRD 4.6 weekly summary: weekStart, levelProgressPercent,

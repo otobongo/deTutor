@@ -65,7 +65,7 @@ real Firebase config and the Gemini key. No red, no uncommitted work.
 | GT-105 | Review queue engine | done | gt-105-review-queue | injectExtras seam documented for GT-304; retest items ride the queue but never touch FSRS state. |
 | GT-106 | Placement check engine | done | gt-106-placement | All 15 probes objectively checkable so placement is deterministic (plan acceptance); B1 start requires passing B1 probes, a failed B1 stage falls back to A2 start (fixed by the plan's own test case). |
 | GT-107 | Onboarding and placement UI flow | open | | |
-| GT-108 | Daily lesson engine | open | | |
+| GT-108 | Daily lesson engine | done | gt-108-lesson-engine | Pure five-step composer; weight-proportional deterministic grammar selection (no RNG); chunk-then-produce enforced at completeStep; session doc schema added (schema.md). Built before GT-107 so onboarding lands on a real Day 1 plan. |
 | GT-109 | Gemini client wrapper and system prompt module | done | gt-109-gemini-client | Prompt embedded verbatim with a byte-equality sync test in CI; transport seam keeps SDK calls testable; owner must verify model ids and supply GEMINI_API_KEY before first real call. |
 | GT-110 | Model tiering, fast default with high-thinking escalation | done | gt-110-model-tiering | callSite is a closed union; ESCALATION_MAP is the only path to deep (4 mapped sites); tier logged per call. |
 
