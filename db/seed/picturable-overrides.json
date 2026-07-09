@@ -1,1 +1,10 @@
-{}
+{
+  "Gefahr": false,
+  "Training": false,
+  "Strom": false,
+  "Wettbewerb": false,
+  "Adresse": false,
+  "Fotografie": false,
+  "Magazin": false,
+  "Strafzettel": false
+}

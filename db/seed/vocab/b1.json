@@ -3504,13 +3504,13 @@
     "german": "Wettbewerb",
     "wordType": "noun",
     "article": "der",
-    "translation": "business rivalry",
+    "translation": "competition, contest",
     "ipa": "ˈvɛtbəˌvɛʁp",
     "exampleDe": "Sie haben den Wettbewerb um die beste Idee gewonnen.",
     "exampleEn": "They won the competition for the best idea.",
     "cefrLevel": "B1",
     "theme": "city-transport",
-    "picturable": true,
+    "picturable": false,
     "frequencyRank": 4867
   },
   {
@@ -6458,13 +6458,13 @@
     "german": "Magazin",
     "wordType": "noun",
     "article": "das",
-    "translation": "stack room",
+    "translation": "magazine",
     "ipa": "maɡaˈtsiːn",
     "exampleDe": "Die alten Bücher sind im Magazin gelagert.",
     "exampleEn": "The old books are stored in the stack room.",
     "cefrLevel": "B1",
     "theme": "home-living",
-    "picturable": true,
+    "picturable": false,
     "frequencyRank": 6560
   },
   {
@@ -8852,13 +8852,13 @@
     "german": "Strafzettel",
     "wordType": "noun",
     "article": "der",
-    "translation": "ticket",
+    "translation": "parking ticket",
     "ipa": "ˈʃtʁaːft͡sɛtl̩",
     "exampleDe": "Ich habe einen Strafzettel bekommen, weil ich falsch geparkt habe.",
     "exampleEn": "I got a ticket because I parked incorrectly.",
     "cefrLevel": "B1",
     "theme": "city-transport",
-    "picturable": true,
+    "picturable": false,
     "frequencyRank": 8475
   },
   {
@@ -13534,7 +13534,7 @@
     "exampleEn": "She is very interested in modern photography.",
     "cefrLevel": "B1",
     "theme": "nature-weather",
-    "picturable": true,
+    "picturable": false,
     "frequencyRank": 15850
   },
   {

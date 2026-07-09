@@ -47,6 +47,10 @@ export default function PracticePage() {
         <Link className="underline" href="/today">
           Today
         </Link>
+        . Generated media is reviewable in the{' '}
+        <Link className="underline" href="/catalog" data-testid="catalog-link">
+          image catalog
+        </Link>
         .
       </p>
     </main>

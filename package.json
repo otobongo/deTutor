@@ -19,7 +19,8 @@
     "seed:vocab": "tsx db/seed/run-seed-vocab.ts",
     "enrich:vocab": "tsx scripts/enrich-vocab.ts",
     "generate:images": "tsx scripts/generate-images.ts",
-    "generate:audio": "tsx scripts/generate-audio.ts"
+    "generate:audio": "tsx scripts/generate-audio.ts",
+    "audit:images": "tsx scripts/audit-images.ts"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",

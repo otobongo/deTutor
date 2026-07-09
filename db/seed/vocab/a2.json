@@ -318,7 +318,7 @@
     "exampleEn": "What is your address?",
     "cefrLevel": "A2",
     "theme": "clothing",
-    "picturable": true,
+    "picturable": false,
     "frequencyRank": 1450
   },
   {
@@ -5674,13 +5674,13 @@
     "german": "Strom",
     "wordType": "noun",
     "article": "der",
-    "translation": "current",
+    "translation": "electricity, electric current",
     "ipa": "ʃtroːm",
     "exampleDe": "Der Strom ist heute Abend ausgefallen.",
     "exampleEn": "The power went out this evening.",
     "cefrLevel": "A2",
     "theme": "home-living",
-    "picturable": true,
+    "picturable": false,
     "frequencyRank": 2576
   },
   {
@@ -6808,7 +6808,7 @@
     "german": "Werk",
     "wordType": "noun",
     "article": "das",
-    "translation": "plant",
+    "translation": "work, factory",
     "ipa": "vɛʁk",
     "exampleDe": "Das Auto wird in diesem Werk gebaut.",
     "exampleEn": "The car is built in this factory.",
@@ -7836,7 +7836,7 @@
     "exampleEn": "I go to training three times a week.",
     "cefrLevel": "A2",
     "theme": "city-transport",
-    "picturable": true,
+    "picturable": false,
     "frequencyRank": 3165
   },
   {

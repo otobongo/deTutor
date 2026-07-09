@@ -4092,7 +4092,7 @@
     "german": "Eltern",
     "wordType": "noun",
     "article": "die",
-    "translation": "parents",
+    "translation": "parents (mother and father)",
     "ipa": "ˈɛltɐn",
     "exampleDe": "Meine Eltern wohnen in Berlin.",
     "exampleEn": "My parents live in Berlin.",
@@ -4890,7 +4890,7 @@
     "german": "Luft",
     "wordType": "noun",
     "article": "die",
-    "translation": "elbow room",
+    "translation": "air",
     "ipa": "lʊft",
     "exampleDe": "Die Luft hier ist sehr gut.",
     "exampleEn": "The air here is very good.",
@@ -6758,7 +6758,7 @@
     "exampleEn": "That is not a danger.",
     "cefrLevel": "A1",
     "theme": "food-drink",
-    "picturable": true,
+    "picturable": false,
     "frequencyRank": 985
   },
   {
