@@ -22,6 +22,7 @@ Source module: `lib/db/curriculum.ts`.
 | grammarItemIds | string[] | 2 to 3 refs into `grammarItems` |
 | vocabSetRef | string | Ref to the unit's vocabulary set |
 | capstoneDialogueRef | string | Ref to the capstone dialogue scenario |
+| capstonePremise | string | One-line premise of the capstone dialogue (GT-101) |
 | targetWordCount | number | Words introduced by the unit |
 
 ### `vocabulary/{wordId}`

@@ -28,6 +28,8 @@ real Firebase config and the Gemini key. No red, no uncommitted work.
 |------|-------|-----------|-----|
 | 2026-07-09 | GT-001 | Next.js 16.2.10 instead of the v15-era assumption in the PRD | create-next-app@latest at build time; App Router and strict TS unchanged. Next 16 conventions apply (see AGENTS.md note). |
 | 2026-07-09 | GT-001 | Repo root is the working directory `german/`, not a nested `german-platform/` | docs/ already lived here; layout inside the root matches PRD 11.1. |
+| 2026-07-09 | GT-101 | Added `capstonePremise` to the Unit schema (GT-003 file) | The plan requires a capstone premise per unit; the GT-003 field list predated it. schema.md updated. |
+| 2026-07-09 | GT-101 | Replaced `server-only` import in lib/firebase.ts with a runtime browser check | tsx-run seed scripts import lib/firebase; the server-only package throws outside React server components. Same protection, seed scripts work. |
 
 ## Phase 0: Foundation
 
@@ -46,7 +48,7 @@ real Firebase config and the Gemini key. No red, no uncommitted work.
 
 | Issue | Title | Status | Branch | Notes |
 |-------|-------|--------|--------|-------|
-| GT-101 | Unit structure seed (18 units) | open | | |
+| GT-101 | Unit structure seed (18 units) | done | gt-101-unit-seed | 18 units + 34 grammar items seeded idempotently; `npm run seed:curriculum` writes them once env points at a live/emulated Firestore. |
 | GT-102 | Vocabulary ingestion pipeline | open | | |
 | GT-103 | A1 vocabulary seed and staged A2/B1 sets | open | | |
 | GT-104 | FSRS integration and card state persistence | open | | |

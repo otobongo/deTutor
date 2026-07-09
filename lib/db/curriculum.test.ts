@@ -24,6 +24,7 @@ const unit: Unit = {
   grammarItemIds: ['numbers-teens', 'v2-questions'],
   vocabSetRef: 'vocab-a1-3',
   capstoneDialogueRef: 'capstone-a1-3',
+  capstonePremise: 'Arranging to meet a friend at a specific day and time',
   targetWordCount: 110,
 };
 
