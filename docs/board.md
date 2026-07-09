@@ -6,7 +6,7 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 ## State of the build
 
 **2026-07-09, Claude (Fable 5), builder.** Phase 0 complete: GT-001 through GT-008 all done and
-merged to main, `npm run ci` green (lint, format, typecheck, guards, 44 unit tests, smoke e2e).
+merged to main, `npm run ci` green (lint, format, typecheck, guards, 57 unit tests, smoke e2e).
 The four CI guards (model-strings, process-env, client-server-config, media-adapter) are live and
 tested with planted violations. Placeholder images, audio, and the fallback voice session are
 implemented and unit-tested; the MediaProvider seam is closed. Next: Phase 1 starting with GT-101
