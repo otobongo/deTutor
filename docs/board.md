@@ -5,19 +5,18 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 
 ## State of the build
 
-**2026-07-09, Claude (Fable 5), builder.** Phases 0 to 3 complete: GT-001 to GT-008, GT-101 to
-GT-110, GT-201 to GT-220, and GT-301 to GT-311 all done and merged; main pushed to
-github.com/otobongo/deTutor after every issue. `npm run ci` green: lint, format, typecheck, 4
-guards, 300+ unit/component tests, 10 Playwright journeys. The assessment engine is in: unit test
-generation (deep tier, envelope-validated), pure 60%-gate scoring with append-only attempts,
-remediation-locked single-skill retakes, the 7/14/30/60 spaced retest scheduler writing retention
-only, documented retention decay with lesson-plan resurfacing, dual-condition level gates, the
-official Goethe B1 exam blueprint with timing, the Progress session view with drill-down, the
-detector-pinned weekly summary, the level dashboard, and the adaptive difficulty-weighting engine
-plugged into lesson selection. GEMINI_API_KEY is live (text model ids verified); the GT-D1
-enrichment batch is filling IPA/examples across the corpus. Next: Phase 4 hardening (GT-401 to
-GT-404). Owner TODO remaining: Firebase credentials + DATA_STORE flip; GT-D1b (pending
-translations, article review). No red, no uncommitted work.
+**2026-07-09, Claude (Fable 5), builder.** Phases 0 to 4 complete (GT-001 to GT-404 plus GT-D1),
+all merged and pushed to github.com/otobongo/deTutor. `npm run ci` green: lint, format,
+typecheck, 4 guards, 300+ unit/component tests, 17 Playwright checks including the five GT-401
+journeys (onboarding, daily session with rotation, unit test with remediated retake, retention
+decay to remediation, B1 exam smoke), performance ceilings, and axe WCAG A/AA on five flows.
+Integrity audit in docs/audit-phase4.md (two read-validation findings remediated); performance
+budgets in docs/perf.md (step transition 29ms vs 200ms budget); streaming deviation documented.
+The corpus is fully enriched (2,547 words with IPA and examples); model defaults refreshed to
+gemini-3.5-flash / gemini-pro-latest after the 2.5-flash sunset. Next: Phase 5 media generation
+(GT-501 to GT-504; needs no further owner input for images/audio scripts, Gemini Live at GT-503)
+and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pending translations,
+8 article reviews) remains queued. No red, no uncommitted work.
 
 ## Owner TODOs (non-blocking for Phase 0, needed before later phases)
 
@@ -126,7 +125,7 @@ translations, article review). No red, no uncommitted work.
 | GT-401 | End-to-end placeholder pass | done | gt-401-e2e-pass | All five journeys green and self-contained (store reset per journey). Flow gaps closed en route: unit-test UI with deterministic placeholder tests, retention remediation surfaced on Today, skill rotation wired across sessions, B1 exam page. |
 | GT-402 | Adapter contract and integrity audit | done | gt-402-integrity-audit | All four sweeps documented in docs/audit-phase4.md; two read-validation findings remediated in-issue; guards enforce sweeps 1/2/5 on every CI run. |
 | GT-403 | Performance pass | done | gt-403-perf | Budgets documented and met (step transition 29ms vs 200ms budget, CLS ~0); CI ceilings enforced in perf.spec.ts. Streaming test case recorded as a deviation (JSON-mode calls cannot token-stream). |
-| GT-404 | Accessibility pass | open | | |
+| GT-404 | Accessibility pass | done | gt-404-a11y | axe (WCAG A/AA) clean on onboarding, Today, session, Progress, Settings; keyboard-only step completion; article identity proven as literal text in a real flow. |
 
 ## Phase 5: Media Generation (final)
 
