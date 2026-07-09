@@ -35,7 +35,7 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 | GT-005 | MediaProvider interface and provider switch | open | | |
 | GT-006 | PlaceholderProvider, images | open | | |
 | GT-007 | PlaceholderProvider, audio and voice fallback | open | | |
-| GT-008 | Test harness and CI | open | | Built directly after GT-001 so later issues have a test home (plan permits: depends only on GT-001). |
+| GT-008 | Test harness and CI | done | gt-008-test-harness | Built directly after GT-001 so later issues have a test home (plan permits: depends only on GT-001). Adapter guard joins the gate at GT-005. |
 
 ## Phase 1: Curriculum and Content Core
 
