@@ -93,7 +93,7 @@ no uncommitted work.
 | GT-214 | Grammar mistake log and error analytics store | done | gt-214-grammar-log | Built first in Phase 2 (write path feeds most skill issues). DocumentStore gained list() for analytics queries. |
 | GT-215 | Speaking echo loop (fallback mode) | open | | |
 | GT-216 | Scenario engine and A1/A2 scenarios | done | gt-216-scenario-engine | Layer-3 context injection (never a prompt fork); English redirect deterministic by second English turn; structured turns carry inline corrections; six A1/A2 scenarios seeded. Includes a gt-215 test fix the adapter guard caught (direct provider import). |
-| GT-217 | B1 scenarios | open | | |
+| GT-217 | B1 scenarios | done | gt-217-b1-scenarios | Six B1 scenarios with register in personas (Behörde strict Sie-form, opinion invites Konjunktiv II); level gates selection; content seeded with gt-216, tests own this branch. |
 | GT-218 | Inline corrections and post-session summary | open | | |
 | GT-219 | Session wrap-up and reporting hooks | open | | |
 | GT-220 | App shell, navigation, and Day view | open | | |
