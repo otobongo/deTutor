@@ -32,7 +32,7 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 | GT-002 | Firebase wiring and environment configuration | done | gt-002-firebase-config | Built against dummy env values; real Firebase project is an owner TODO. Model-string and process-env guards wired into CI. |
 | GT-003 | Firestore schema, curriculum entities | done | gt-003-curriculum-schema | zod-backed converters in lib/db/; wordType field added so the noun-needs-article rule is checkable. |
 | GT-004 | Firestore schema, learner state | done | gt-004-learner-schema | FSRS state field named `phase` to keep the domain word "state" unambiguous; noted in schema.md. |
-| GT-005 | MediaProvider interface and provider switch | open | | |
+| GT-005 | MediaProvider interface and provider switch | done | gt-005-media-provider | Interface verbatim per PRD 7.4; GeminiProvider is a loud-failure seam until Phase 5; adapter guard extended to Gemini SDK imports. |
 | GT-006 | PlaceholderProvider, images | open | | |
 | GT-007 | PlaceholderProvider, audio and voice fallback | open | | |
 | GT-008 | Test harness and CI | done | gt-008-test-harness | Built directly after GT-001 so later issues have a test home (plan permits: depends only on GT-001). Adapter guard joins the gate at GT-005. |

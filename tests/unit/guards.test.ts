@@ -64,6 +64,14 @@ describe('CI guard suite (GT-002, GT-005)', () => {
     expect(result.output).toContain('client-server-config');
   });
 
+  it('fails when a Gemini media SDK is imported outside lib/media and lib/gemini', () => {
+    const plantedSdkImport = ['@google', 'genai'].join('/');
+    plant('planted-sdk.ts', `import { GoogleGenAI } from '${plantedSdkImport}';\n`);
+    const result = runGuards();
+    expect(result.ok).toBe(false);
+    expect(result.output).toContain('media-adapter');
+  });
+
   it('fails when a media provider is imported directly instead of via lib/media', () => {
     plant('planted-media.ts', `import { PlaceholderProvider } from '${plantedMediaImport}';\n`);
     const result = runGuards();
