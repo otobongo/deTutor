@@ -63,7 +63,7 @@ real Firebase config and the Gemini key. No red, no uncommitted work.
 | GT-103 | A1 vocabulary seed and staged A2/B1 sets | done | gt-103-vocab-seed | 650 A1 words seed by default; A2/B1 staged behind --level; day-set selector (theme within frequency) in lib/lesson/vocab-selection.ts. Includes GT-102 dedupe fix for prefix variants. |
 | GT-104 | FSRS integration and card state persistence | done | gt-104-fsrs | ts-fsrs wrapped pure with fuzz disabled (deterministic); FsrsCardState gained learningSteps (schema.md updated); unknown-card ratings fail loudly. |
 | GT-105 | Review queue engine | done | gt-105-review-queue | injectExtras seam documented for GT-304; retest items ride the queue but never touch FSRS state. |
-| GT-106 | Placement check engine | open | | |
+| GT-106 | Placement check engine | done | gt-106-placement | All 15 probes objectively checkable so placement is deterministic (plan acceptance); B1 start requires passing B1 probes, a failed B1 stage falls back to A2 start (fixed by the plan's own test case). |
 | GT-107 | Onboarding and placement UI flow | open | | |
 | GT-108 | Daily lesson engine | open | | |
 | GT-109 | Gemini client wrapper and system prompt module | done | gt-109-gemini-client | Prompt embedded verbatim with a byte-equality sync test in CI; transport seam keeps SDK calls testable; owner must verify model ids and supply GEMINI_API_KEY before first real call. |
