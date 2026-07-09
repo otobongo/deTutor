@@ -1,61 +1,5 @@
 [
   {
-    "id": "arbeiter-noun",
-    "german": "Arbeiter",
-    "wordType": "noun",
-    "article": "der",
-    "translation": "worker",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "B1",
-    "theme": "work-school",
-    "picturable": false,
-    "frequencyRank": 3582
-  },
-  {
-    "id": "humor-noun",
-    "german": "Humor",
-    "wordType": "noun",
-    "article": "der",
-    "translation": "humour",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "B1",
-    "theme": "general",
-    "picturable": false,
-    "frequencyRank": 3584
-  },
-  {
-    "id": "organisation-noun",
-    "german": "Organisation",
-    "wordType": "noun",
-    "article": "die",
-    "translation": "organization",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "B1",
-    "theme": "general",
-    "picturable": false,
-    "frequencyRank": 3587
-  },
-  {
-    "id": "studio-noun",
-    "german": "Studio",
-    "wordType": "noun",
-    "article": "das",
-    "translation": "studio",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "B1",
-    "theme": "general",
-    "picturable": false,
-    "frequencyRank": 3590
-  },
-  {
     "id": "teller-noun",
     "german": "Teller",
     "wordType": "noun",
@@ -4142,20 +4086,6 @@
     "theme": "general",
     "picturable": false,
     "frequencyRank": 5124
-  },
-  {
-    "id": "meist-adverb",
-    "german": "meist",
-    "wordType": "adverb",
-    "article": null,
-    "translation": "almost",
-    "ipa": null,
-    "exampleDe": null,
-    "exampleEn": null,
-    "cefrLevel": "B1",
-    "theme": "general",
-    "picturable": false,
-    "frequencyRank": 5128
   },
   {
     "id": "meist-adverb",
@@ -17007,7 +16937,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 61669
+    "frequencyRank": 61666
   },
   {
     "id": "einheitlich-adverb",
@@ -17021,7 +16951,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 61694
+    "frequencyRank": 61691
   },
   {
     "id": "migrant-noun",
@@ -17035,7 +16965,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 61705
+    "frequencyRank": 61702
   },
   {
     "id": "virtuell-adverb",
@@ -17049,7 +16979,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 61755
+    "frequencyRank": 61752
   },
   {
     "id": "feststehen-verb",
@@ -17063,7 +16993,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 61881
+    "frequencyRank": 61878
   },
   {
     "id": "migration-noun",
@@ -17077,7 +17007,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62003
+    "frequencyRank": 62000
   },
   {
     "id": "mobilitaet-noun",
@@ -17091,7 +17021,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62163
+    "frequencyRank": 62160
   },
   {
     "id": "verkehrszeichen-noun",
@@ -17105,7 +17035,7 @@
     "cefrLevel": "B1",
     "theme": "city-transport",
     "picturable": true,
-    "frequencyRank": 62185
+    "frequencyRank": 62182
   },
   {
     "id": "pauschal-adverb",
@@ -17119,7 +17049,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62190
+    "frequencyRank": 62187
   },
   {
     "id": "halbpension-noun",
@@ -17133,7 +17063,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62208
+    "frequencyRank": 62205
   },
   {
     "id": "gaststaette-noun",
@@ -17147,7 +17077,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62238
+    "frequencyRank": 62233
   },
   {
     "id": "weiterbildung-noun",
@@ -17161,7 +17091,7 @@
     "cefrLevel": "B1",
     "theme": "nature-weather",
     "picturable": false,
-    "frequencyRank": 62261
+    "frequencyRank": 62256
   },
   {
     "id": "abonnement-noun",
@@ -17175,7 +17105,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62274
+    "frequencyRank": 62268
   },
   {
     "id": "hageln-verb",
@@ -17189,7 +17119,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62337
+    "frequencyRank": 62331
   },
   {
     "id": "mehrwertsteuer-noun",
@@ -17203,7 +17133,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62366
+    "frequencyRank": 62359
   },
   {
     "id": "mittler-other",
@@ -17217,7 +17147,7 @@
     "cefrLevel": "B1",
     "theme": "media-communication",
     "picturable": false,
-    "frequencyRank": 62394
+    "frequencyRank": 62387
   },
   {
     "id": "vermietung-noun",
@@ -17231,7 +17161,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62410
+    "frequencyRank": 62403
   },
   {
     "id": "umtausch-noun",
@@ -17245,7 +17175,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62447
+    "frequencyRank": 62440
   },
   {
     "id": "tierpark-noun",
@@ -17259,7 +17189,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62458
+    "frequencyRank": 62451
   },
   {
     "id": "lehrstelle-noun",
@@ -17273,7 +17203,7 @@
     "cefrLevel": "B1",
     "theme": "home-living",
     "picturable": true,
-    "frequencyRank": 62461
+    "frequencyRank": 62454
   },
   {
     "id": "kraftfahrzeug-noun",
@@ -17287,7 +17217,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62475
+    "frequencyRank": 62468
   },
   {
     "id": "eckig-adverb",
@@ -17301,7 +17231,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62495
+    "frequencyRank": 62488
   },
   {
     "id": "haltbar-adverb",
@@ -17315,7 +17245,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62499
+    "frequencyRank": 62492
   },
   {
     "id": "sehenswuerdigkeit-noun",
@@ -17329,7 +17259,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62502
+    "frequencyRank": 62495
   },
   {
     "id": "hallenbad-noun",
@@ -17343,7 +17273,7 @@
     "cefrLevel": "B1",
     "theme": "home-living",
     "picturable": true,
-    "frequencyRank": 62522
+    "frequencyRank": 62515
   },
   {
     "id": "naechst-verb",
@@ -17357,7 +17287,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62532
+    "frequencyRank": 62525
   },
   {
     "id": "fussgaengerzone-noun",
@@ -17371,7 +17301,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62542
+    "frequencyRank": 62535
   },
   {
     "id": "girokonto-noun",
@@ -17385,7 +17315,7 @@
     "cefrLevel": "B1",
     "theme": "home-living",
     "picturable": true,
-    "frequencyRank": 62580
+    "frequencyRank": 62573
   },
   {
     "id": "stilistisch-adverb",
@@ -17399,7 +17329,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62615
+    "frequencyRank": 62608
   },
   {
     "id": "abonnieren-verb",
@@ -17413,7 +17343,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62625
+    "frequencyRank": 62618
   },
   {
     "id": "berufstaetig-adverb",
@@ -17427,7 +17357,7 @@
     "cefrLevel": "B1",
     "theme": "work-school",
     "picturable": false,
-    "frequencyRank": 62652
+    "frequencyRank": 62645
   },
   {
     "id": "diskothek-noun",
@@ -17441,7 +17371,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62675
+    "frequencyRank": 62668
   },
   {
     "id": "kloss-noun",
@@ -17455,7 +17385,7 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62685
+    "frequencyRank": 62678
   },
   {
     "id": "ermaessigung-noun",
@@ -17469,6 +17399,6 @@
     "cefrLevel": "B1",
     "theme": "general",
     "picturable": false,
-    "frequencyRank": 62789
+    "frequencyRank": 62782
   }
 ]
