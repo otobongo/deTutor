@@ -30,7 +30,7 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 |-------|-------|--------|--------|-------|
 | GT-001 | Repository scaffold and CLAUDE.md | done | gt-001-repo-scaffold | CLAUDE.md adapter-law content test lands with the GT-008 harness. |
 | GT-002 | Firebase wiring and environment configuration | done | gt-002-firebase-config | Built against dummy env values; real Firebase project is an owner TODO. Model-string and process-env guards wired into CI. |
-| GT-003 | Firestore schema, curriculum entities | open | | |
+| GT-003 | Firestore schema, curriculum entities | done | gt-003-curriculum-schema | zod-backed converters in lib/db/; wordType field added so the noun-needs-article rule is checkable. |
 | GT-004 | Firestore schema, learner state | open | | |
 | GT-005 | MediaProvider interface and provider switch | open | | |
 | GT-006 | PlaceholderProvider, images | open | | |
