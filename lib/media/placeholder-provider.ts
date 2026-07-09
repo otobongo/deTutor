@@ -1,16 +1,14 @@
 import type { AudioAsset, ImageAsset, MediaProvider, VoiceConfig, VoiceSession } from './provider';
 import { MediaProviderError } from './provider';
+import { buildPlaceholderImageAsset } from './placeholder-images';
 
 // Permanent development implementation (Prime Directive 6): placeholders are
-// production code, used forever in placeholder mode. Methods land with their
-// issues: getImage (GT-006), getAudio and getLiveVoiceSession (GT-007).
+// production code, used forever in placeholder mode. getAudio and
+// getLiveVoiceSession land with GT-007.
 
 export class PlaceholderProvider implements MediaProvider {
   getImage(word: string, style: 'flat' | 'render'): Promise<ImageAsset> {
-    throw new MediaProviderError(
-      'not-implemented',
-      `getImage(${word}, ${style}) is implemented by GT-006.`,
-    );
+    return Promise.resolve(buildPlaceholderImageAsset(word, style));
   }
 
   getAudio(clipId: string): Promise<AudioAsset> {
