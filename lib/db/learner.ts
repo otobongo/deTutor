@@ -152,6 +152,18 @@ export const lessonSessionSchema = z.object({
 });
 export type LessonSession = z.infer<typeof lessonSessionSchema>;
 
+// Unit progress (GT-401 flow wiring): per-unit skill outcomes and
+// remediation gates from the GT-303 state machine, persisted per unit.
+export const unitProgressSchema = z.object({
+  unitId: z.string().min(1),
+  skills: z.record(
+    skillSchema,
+    z.object({ score: z.number().min(0).max(100), passed: z.boolean() }),
+  ),
+  remediation: z.partialRecord(skillSchema, z.enum(['pending', 'done'])),
+});
+export type UnitProgressDoc = z.infer<typeof unitProgressSchema>;
+
 // Every learner document lives under this tree; there is no learner data
 // anywhere else (GT-004 acceptance criteria).
 export const learnerPaths = {
@@ -166,6 +178,7 @@ export const learnerPaths = {
   weeklySummaries: (learnerId: string = DEFAULT_LEARNER_ID) =>
     `learners/${learnerId}/weeklySummaries`,
   sessions: (learnerId: string = DEFAULT_LEARNER_ID) => `learners/${learnerId}/sessions`,
+  unitProgress: (learnerId: string = DEFAULT_LEARNER_ID) => `learners/${learnerId}/unitProgress`,
 } as const;
 
 export const learnerProfileConverter = zodConverter(learnerProfileSchema);
@@ -176,3 +189,4 @@ export const grammarErrorLogEntryConverter = zodConverter(grammarErrorLogEntrySc
 export const sessionReportConverter = zodConverter(sessionReportSchema);
 export const weeklySummaryConverter = zodConverter(weeklySummarySchema);
 export const lessonSessionConverter = zodConverter(lessonSessionSchema);
+export const unitProgressConverter = zodConverter(unitProgressSchema);

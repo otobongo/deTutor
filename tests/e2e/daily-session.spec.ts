@@ -1,35 +1,12 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { completeEcho, completeOnboarding, resetStore } from './helpers';
 
-// GT-220 journeys: the full daily session from Today, the skills library,
-// and mobile rendering without horizontal scroll.
-
-async function ensureProfile(page: Page): Promise<void> {
-  await page.goto('/');
-  await page.getByTestId('choose-voice-warm-1').click();
-  await page.getByTestId('voice-continue').click();
-  await page.getByTestId('dialect-continue').click();
-  for (let index = 0; index < 5; index += 1) {
-    const textInput = page.getByTestId('probe-text-input');
-    if (await textInput.isVisible().catch(() => false)) {
-      await textInput.fill('wrong');
-      await page.getByTestId('probe-text-submit').click();
-    } else {
-      await page.getByTestId('probe-option').first().click();
-    }
-  }
-  await expect(page.getByTestId('placement-result')).toBeVisible();
-}
-
-async function completeEcho(page: Page, phrase: string): Promise<void> {
-  await page.getByTestId('echo-heard').click();
-  await page.getByTestId('echo-heard').click();
-  await page.getByTestId('echo-production-input').fill(phrase);
-  await page.getByTestId('echo-produce').click();
-  await page.getByTestId('echo-fast-pass-done').click();
-}
+// GT-220/GT-401 journeys: the full daily session from Today (with skill
+// rotation across sessions), the skills library, and mobile rendering.
 
 test('a full daily session runs from Today to completion', async ({ page }) => {
-  await ensureProfile(page);
+  resetStore();
+  await completeOnboarding(page);
   await page.goto('/today');
   await page.getByTestId('start-session').click();
 
@@ -68,6 +45,22 @@ test('a full daily session runs from Today to completion', async ({ page }) => {
   await page.goto('/progress');
   await expect(page.getByTestId('session-reports')).toBeVisible();
   await expect(page.getByTestId('report-new-words').first()).not.toHaveText('');
+
+  // GT-401 journey 2: the skill slot rotates across sessions. The completed
+  // listening session makes the next composition rotate to reading (which
+  // runs the deterministic tile drill in placeholder mode).
+  await page.goto('/today/session');
+  await expect(page.getByTestId('step-warm-up-view')).toBeVisible();
+  await page.getByTestId('warmup-continue').click();
+  await expect(page.getByTestId('step-vocab-view')).toBeVisible();
+  for (let index = 0; index < 3; index += 1) {
+    await completeEcho(page, 'meine Antwort');
+  }
+  await page.getByTestId('vocab-continue').click();
+  await page.getByTestId('grammar-production').fill('Ich lerne wieder Deutsch.');
+  await page.getByTestId('grammar-continue').click();
+  await expect(page.getByTestId('step-skill-view')).toBeVisible();
+  await expect(page.locator('h2', { hasText: 'Skill practice' })).toContainText('reading');
 });
 
 test('Practice lists all four skills', async ({ page }) => {
