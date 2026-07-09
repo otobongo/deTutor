@@ -114,7 +114,7 @@ engine). Owner TODOs unchanged; GT-D1 enrichment batch still queued. No red, no 
 | GT-307 | B1 exit simulation | done | gt-307-b1-exam | Official blueprint in code (Lesen 5/30/65min, Hören 4/30/40min, Schreiben 3 tasks/60min, Sprechen 3/15min); assembly validated against it; pure module timer; normalization to 100 per module. |
 | GT-308 | Session report view | done | gt-308-session-report-view | Progress tab renders stored numbers verbatim; drill-down lists the day's grammar-log entries; honest empty state; e2e asserts the completed session appears. |
 | GT-309 | Weekly summary generator | done | gt-309-weekly-summary | Patterns pinned to the GT-214 detector (invented ones rejected); deep tier writes only fixes and focus; growth framed against the learner's prior week; pattern-free weeks skip the model call. |
-| GT-310 | Level dashboard and hard-area trends | open | | |
+| GT-310 | Level dashboard and hard-area trends | done | gt-310-level-dashboard | Pure aggregates: skill trajectories from attempt history, retention heat with severity bands, hard-area weekly error counts (falling = improving); rendered from stored data only, empty state graceful. |
 | GT-311 | Difficulty-weighting engine | open | | |
 
 ## Phase 4: Hardening
