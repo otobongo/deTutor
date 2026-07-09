@@ -12,11 +12,13 @@ export type MediaProviderName = (typeof MEDIA_PROVIDERS)[number];
 export const DATA_STORES = ['firestore', 'dev-file'] as const;
 export type DataStoreName = (typeof DATA_STORES)[number];
 
-// Best-known identifiers at build time (July 2026), env-overridable.
-// TODO(GT-109): verify current Gemini text/Live identifiers when the client is wired.
+// Verified live 2026-07-09 against the models API, env-overridable.
+// gemini-2.5-flash began returning intermittent sunset 404s mid-batch, so
+// fast pins the newest GA flash and deep tracks the pro alias (no GA
+// gemini-3 pro exists yet; the alias survives the 2.5-pro sunset).
 // TODO(GT-501): verify the Nano Banana 2 identifier when image generation is wired.
-const DEFAULT_MODEL_FAST = 'gemini-2.5-flash';
-const DEFAULT_MODEL_DEEP = 'gemini-2.5-pro';
+const DEFAULT_MODEL_FAST = 'gemini-3.5-flash';
+const DEFAULT_MODEL_DEEP = 'gemini-pro-latest';
 const DEFAULT_MODEL_LIVE = 'gemini-live-2.5-flash-preview';
 const DEFAULT_MODEL_IMAGE = 'nano-banana-2';
 
