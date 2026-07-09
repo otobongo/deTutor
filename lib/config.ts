@@ -1,0 +1,88 @@
+import { z } from 'zod';
+
+// The only reader of process.env in the codebase, and the only home of model
+// strings (Prime Directive 3). Everything else imports typed config from here.
+
+export const MEDIA_PROVIDERS = ['placeholder', 'gemini'] as const;
+export type MediaProviderName = (typeof MEDIA_PROVIDERS)[number];
+
+// Best-known identifiers at build time (July 2026), env-overridable.
+// TODO(GT-109): verify current Gemini text/Live identifiers when the client is wired.
+// TODO(GT-501): verify the Nano Banana 2 identifier when image generation is wired.
+const DEFAULT_MODEL_FAST = 'gemini-2.5-flash';
+const DEFAULT_MODEL_DEEP = 'gemini-2.5-pro';
+const DEFAULT_MODEL_LIVE = 'gemini-live-2.5-flash-preview';
+const DEFAULT_MODEL_IMAGE = 'nano-banana-2';
+
+const envSchema = z.object({
+  FIREBASE_PROJECT_ID: z.string().min(1),
+  FIREBASE_CLIENT_EMAIL: z.string().min(1),
+  FIREBASE_PRIVATE_KEY: z.string().min(1),
+  GEMINI_API_KEY: z.string().min(1),
+  MEDIA_PROVIDER: z.enum(MEDIA_PROVIDERS).default('placeholder'),
+  GEMINI_MODEL_FAST: z.string().min(1).default(DEFAULT_MODEL_FAST),
+  GEMINI_MODEL_DEEP: z.string().min(1).default(DEFAULT_MODEL_DEEP),
+  GEMINI_MODEL_LIVE: z.string().min(1).default(DEFAULT_MODEL_LIVE),
+  IMAGE_MODEL: z.string().min(1).default(DEFAULT_MODEL_IMAGE),
+});
+
+export interface AppConfig {
+  readonly firebase: {
+    readonly projectId: string;
+    readonly clientEmail: string;
+    readonly privateKey: string;
+  };
+  readonly geminiApiKey: string;
+  readonly mediaProvider: MediaProviderName;
+  readonly models: {
+    readonly fast: string;
+    readonly deep: string;
+    readonly live: string;
+    readonly image: string;
+  };
+}
+
+export class ConfigError extends Error {
+  constructor(readonly missingOrInvalid: readonly string[]) {
+    super(
+      `Invalid environment configuration. Missing or invalid: ${missingOrInvalid.join(', ')}. ` +
+        'Copy .env.example to .env.local and fill in every value.',
+    );
+    this.name = 'ConfigError';
+  }
+}
+
+export function loadConfig(env: Record<string, string | undefined>): AppConfig {
+  const parsed = envSchema.safeParse(env);
+  if (!parsed.success) {
+    const vars = [...new Set(parsed.error.issues.map((issue) => String(issue.path[0])))];
+    throw new ConfigError(vars);
+  }
+  const e = parsed.data;
+  return {
+    firebase: {
+      projectId: e.FIREBASE_PROJECT_ID,
+      clientEmail: e.FIREBASE_CLIENT_EMAIL,
+      // .env files store the PEM newlines escaped; restore them for the SDK.
+      privateKey: e.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    },
+    geminiApiKey: e.GEMINI_API_KEY,
+    mediaProvider: e.MEDIA_PROVIDER,
+    models: {
+      fast: e.GEMINI_MODEL_FAST,
+      deep: e.GEMINI_MODEL_DEEP,
+      live: e.GEMINI_MODEL_LIVE,
+      image: e.IMAGE_MODEL,
+    },
+  };
+}
+
+let cached: AppConfig | undefined;
+
+export function getConfig(): AppConfig {
+  if (typeof window !== 'undefined') {
+    throw new ConfigError(['getConfig() must never run in the browser']);
+  }
+  cached ??= loadConfig(process.env);
+  return cached;
+}
