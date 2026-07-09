@@ -95,7 +95,7 @@ no uncommitted work.
 | GT-216 | Scenario engine and A1/A2 scenarios | done | gt-216-scenario-engine | Layer-3 context injection (never a prompt fork); English redirect deterministic by second English turn; structured turns carry inline corrections; six A1/A2 scenarios seeded. Includes a gt-215 test fix the adapter guard caught (direct provider import). |
 | GT-217 | B1 scenarios | done | gt-217-b1-scenarios | Six B1 scenarios with register in personas (Behörde strict Sie-form, opinion invites Konjunktiv II); level gates selection; content seeded with gt-216, tests own this branch. |
 | GT-218 | Inline corrections and post-session summary | done | gt-218-inline-corrections | Corrections record the learner's original utterance; summary table matches the fixed format; zero-error sessions congratulate without an empty table; all corrections logged via GT-214. |
-| GT-219 | Session wrap-up and reporting hooks | open | | |
+| GT-219 | Session wrap-up and reporting hooks | done | gt-219-wrap-up | Report fields per PRD 4.7; recall = non-again ratings; interrupted sessions refuse to persist; loadSessionReports is the Phase 3 hook. |
 | GT-220 | App shell, navigation, and Day view | open | | |
 
 ## Phase 3: Assessment Engine
