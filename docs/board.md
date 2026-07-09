@@ -90,7 +90,7 @@ no uncommitted work.
 | GT-211 | Writing, dictation | open | | |
 | GT-212 | Writing, emails and opinion texts | open | | |
 | GT-213 | Writing correction engine | open | | |
-| GT-214 | Grammar mistake log and error analytics store | open | | |
+| GT-214 | Grammar mistake log and error analytics store | done | gt-214-grammar-log | Built first in Phase 2 (write path feeds most skill issues). DocumentStore gained list() for analytics queries. |
 | GT-215 | Speaking echo loop (fallback mode) | open | | |
 | GT-216 | Scenario engine and A1/A2 scenarios | open | | |
 | GT-217 | B1 scenarios | open | | |

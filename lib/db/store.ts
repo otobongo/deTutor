@@ -19,9 +19,18 @@ export interface StoredCollection {
 
 export interface DocumentStore {
   collection(collectionPath: string): StoredCollection;
+  // Lists every document in a collection (GT-214 analytics queries). Fine at
+  // single-learner scale; server-side filtering can come with auth (v2.1).
+  list(collectionPath: string): Promise<DocumentData[]>;
 }
 
 class FirestoreStore implements DocumentStore {
+  async list(collectionPath: string): Promise<DocumentData[]> {
+    const { getDb } = await import('@/lib/firebase');
+    const snapshot = await getDb().collection(collectionPath).get();
+    return snapshot.docs.map((doc) => doc.data());
+  }
+
   collection(collectionPath: string): StoredCollection {
     return {
       doc: (id: string) => ({
@@ -43,6 +52,16 @@ const DEV_STORE_FILE = path.join(process.cwd(), '.dev-data', 'store.json');
 
 export class DevFileStore implements DocumentStore {
   constructor(private readonly file: string = DEV_STORE_FILE) {}
+
+  list(collectionPath: string): Promise<DocumentData[]> {
+    const prefix = `${collectionPath}/`;
+    const all = this.read();
+    return Promise.resolve(
+      Object.entries(all)
+        .filter(([key]) => key.startsWith(prefix) && !key.slice(prefix.length).includes('/'))
+        .map(([, data]) => data),
+    );
+  }
 
   private read(): Record<string, DocumentData> {
     try {
