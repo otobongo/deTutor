@@ -44,6 +44,7 @@ export const fsrsCardStateSchema = z.object({
   scheduledDays: z.number().nonnegative(),
   reps: z.number().int().nonnegative(),
   lapses: z.number().int().nonnegative(),
+  learningSteps: z.number().int().nonnegative(),
   lastReview: isoDateTime.nullable(),
 });
 export type FsrsCardState = z.infer<typeof fsrsCardStateSchema>;
