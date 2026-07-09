@@ -119,6 +119,39 @@ export const weeklySummarySchema = z.object({
 });
 export type WeeklySummary = z.infer<typeof weeklySummarySchema>;
 
+// Lesson session state (GT-108): persisted so an interrupted session resumes
+// at its step. One document per session day.
+
+export const SKILL_SLOTS = ['listening', 'reading', 'writing', 'scenario'] as const;
+export const skillSlotSchema = z.enum(SKILL_SLOTS);
+export type SkillSlot = z.infer<typeof skillSlotSchema>;
+
+export const sessionStepSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('warm-up'), queueWordIds: z.array(z.string()) }),
+  z.object({
+    kind: z.literal('new-vocabulary'),
+    theme: z.string().min(1),
+    wordIds: z.array(z.string().min(1)).min(1),
+  }),
+  z.object({ kind: z.literal('grammar-focus'), grammarItemId: z.string().min(1) }),
+  z.object({ kind: z.literal('skill-practice'), slot: skillSlotSchema }),
+  z.object({ kind: z.literal('wrap-up') }),
+]);
+export type SessionStep = z.infer<typeof sessionStepSchema>;
+
+export const lessonSessionSchema = z.object({
+  id: z.string().min(1),
+  unitId: z.string().min(1),
+  createdAt: isoDateTime,
+  currentStepIndex: z.number().int().min(0).max(4),
+  steps: z.array(sessionStepSchema).length(5),
+  status: z.enum(['active', 'completed']),
+  // 0 to 10 self-consistency score for the practiced grammar item, written at
+  // wrap-up; drives next-session resurfacing (GT-108 adaptation rule).
+  grammarScore: z.number().min(0).max(10).nullable(),
+});
+export type LessonSession = z.infer<typeof lessonSessionSchema>;
+
 // Every learner document lives under this tree; there is no learner data
 // anywhere else (GT-004 acceptance criteria).
 export const learnerPaths = {
@@ -132,6 +165,7 @@ export const learnerPaths = {
     `learners/${learnerId}/sessionReports`,
   weeklySummaries: (learnerId: string = DEFAULT_LEARNER_ID) =>
     `learners/${learnerId}/weeklySummaries`,
+  sessions: (learnerId: string = DEFAULT_LEARNER_ID) => `learners/${learnerId}/sessions`,
 } as const;
 
 export const learnerProfileConverter = zodConverter(learnerProfileSchema);
@@ -141,3 +175,4 @@ export const retentionScoreConverter = zodConverter(retentionScoreSchema);
 export const grammarErrorLogEntryConverter = zodConverter(grammarErrorLogEntrySchema);
 export const sessionReportConverter = zodConverter(sessionReportSchema);
 export const weeklySummaryConverter = zodConverter(weeklySummarySchema);
+export const lessonSessionConverter = zodConverter(lessonSessionSchema);
