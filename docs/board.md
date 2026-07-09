@@ -81,7 +81,7 @@ no uncommitted work.
 | GT-202 | Image identification, recognition phase | done | gt-202-image-id | Options include an article trap (same noun, wrong article) so article confusion is detectable and logged as gender; distractors deterministic, theme-first. |
 | GT-203 | Image identification, production phase | done | gt-203-image-production | Partial credit (word right, article wrong) logs gender and maps to Hard; full maps to Good; rating updates FSRS. Grading engine landed with gt-202 module. |
 | GT-204 | Settings, image style and preferences | done | gt-204-settings | Mixed rule = render for concrete-theme nouns, flat otherwise; style flips asset keys only (cached, deterministic). Placement re-run links to onboarding. |
-| GT-205 | Listening exercise flow | open | | |
+| GT-205 | Listening exercise flow | done | gt-205-listening-flow | Captions honor the GT-007 contract; replay reuses the identical clipId; slower toggle at 0.75x; segments have individual controls. |
 | GT-206 | Listening evaluation engine | open | | |
 | GT-207 | Reading text generator | open | | |
 | GT-208 | Reading task formats | open | | |
