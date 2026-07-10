@@ -1,28 +1,33 @@
 import Link from 'next/link';
 
-// Practice: the skills library (GT-220). Each skill lists what is available
-// now; brain-dependent flows say so honestly until the Gemini key arrives.
+// Practice: the skills library (GT-220). Listening, reading, writing, and
+// scenario dialogue rotate through the daily session; the echo loop is also
+// practicable on demand here.
 
 const SKILLS = [
   {
     skill: 'listening',
     description:
       'Graded clips with captions, replay, and slower playback. Runs in the daily session.',
+    href: null,
   },
   {
     skill: 'reading',
     description:
-      'Level-graded generated texts with Goethe Lesen tasks and tap-to-queue. Generation needs the Gemini brain (key pending).',
+      'Generated texts at your level with Goethe Lesen tasks and tap-to-queue. Runs in the daily session (reading days).',
+    href: null,
   },
   {
     skill: 'writing',
     description:
-      'Word tiles and dictation run now; email and opinion correction needs the Gemini brain (key pending).',
+      'Word tiles and dictation run in the daily session (writing days); email and opinion composers arrive with A2/B1.',
+    href: null,
   },
   {
     skill: 'speaking',
     description:
-      'Echo pronunciation loop and 12 dialogue scenarios; scenario turns need the Gemini brain (key pending).',
+      'Dialogue scenarios run in the daily session (scenario days). The echo pronunciation loop is always available here.',
+    href: '/practice/speaking',
   },
 ] as const;
 
@@ -39,6 +44,15 @@ export default function PracticePage() {
           >
             <h2 className="font-medium capitalize">{entry.skill}</h2>
             <p className="text-sm text-ink-muted">{entry.description}</p>
+            {entry.href ? (
+              <Link
+                className="mt-2 inline-block rounded-md bg-action px-3 py-1 text-sm text-action-inverse"
+                href={entry.href}
+                data-testid={`practice-${entry.skill}-link`}
+              >
+                Start echo practice
+              </Link>
+            ) : null}
           </li>
         ))}
       </ul>

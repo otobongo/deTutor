@@ -26,6 +26,8 @@ test('axe finds no WCAG A/AA violations on core flows', async ({ page }) => {
   await expectNoViolations(page, 'progress');
   await page.goto('/settings');
   await expectNoViolations(page, 'settings');
+  await page.goto('/practice/speaking');
+  await expectNoViolations(page, 'speaking practice');
 });
 
 test('a session step completes with keyboard only', async ({ page }) => {

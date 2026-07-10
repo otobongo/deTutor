@@ -2,48 +2,97 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { LessonSession } from '@/lib/db/learner';
+import type { GrammarErrorCategory, LessonSession } from '@/lib/db/learner';
 import { completeStep, currentStep } from '@/lib/lesson/engine';
 import { gradeTileOrder } from '@/lib/exercises/word-tiles';
+import { gradeRecognition, type RecognitionResult } from '@/lib/exercises/image-id';
+import { gradeDictation, type DictationResult } from '@/lib/exercises/dictation';
+import type { ReviewRating } from '@/lib/fsrs/scheduler';
 import type { ListeningClip } from '@/app/components/listening-exercise';
 import { ListeningExercise } from '@/app/components/listening-exercise';
 import { EchoFlow } from '@/app/components/echo-flow';
 import { VocabCard } from '@/app/components/vocab-card';
+import { WarmupReview } from '@/app/components/warmup-review';
+import { ReadingPanel } from '@/app/components/reading-panel';
+import { ScenarioChat } from '@/app/components/scenario-chat';
+import { ImageIdExercise } from '@/app/components/image-id-exercise';
+import { DictationExercise } from '@/app/components/dictation-exercise';
 import {
   completeSession,
   evaluateListeningAction,
   saveSession,
   type TodaySessionPayload,
 } from '@/app/actions/lesson';
+import { introduceWordsAction, rateCardAction } from '@/app/actions/cards';
+import { logGrammarErrorsAction } from '@/app/actions/grammar';
+import {
+  getReadingExerciseAction,
+  submitReadingAction,
+  tapWordAction,
+} from '@/app/actions/reading';
+import {
+  endScenarioAction,
+  getScenarioForTodayAction,
+  scenarioTurnAction,
+} from '@/app/actions/scenario';
 
 // The daily session runner (GT-220): walks the five GT-108 steps in order,
-// persisting after each so an interrupted session resumes at its step.
-// Brain-dependent evaluation renders failures as recoverable states.
+// persisting after each so an interrupted session resumes at its step. Every
+// skill slot runs its real exercise; brain-dependent evaluation renders
+// failures as recoverable states. Warm-up ratings, image-ID results, logged
+// error counts, and the scenario score all flow into the GT-219 report.
 
 export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
   const router = useRouter();
   const [session, setSession] = useState<LessonSession>(payload.session);
   const [echoIndex, setEchoIndex] = useState(0);
+  const [imageIdIndex, setImageIdIndex] = useState(0);
+  const [imageIdResult, setImageIdResult] = useState<RecognitionResult | null>(null);
+  const [imageIdResults, setImageIdResults] = useState<readonly boolean[]>([]);
+  const [warmupRatings, setWarmupRatings] = useState<readonly ReviewRating[]>([]);
   const [grammarProduction, setGrammarProduction] = useState('');
   const [tileOrder, setTileOrder] = useState<string[]>([]);
   const [tileFeedback, setTileFeedback] = useState<string | null>(null);
+  const [writingStage, setWritingStage] = useState<'tiles' | 'dictation'>('tiles');
+  const [dictationResult, setDictationResult] = useState<DictationResult | null>(null);
   const [listeningFeedback, setListeningFeedback] = useState<string | null>(null);
   const [evaluating, setEvaluating] = useState(false);
+  const [readingScore, setReadingScore] = useState<number | null>(null);
+  const [scenarioScore, setScenarioScore] = useState<number | null>(null);
+  const [errorTally, setErrorTally] = useState<Partial<Record<GrammarErrorCategory, number>>>({});
   const [grammarScore, setGrammarScore] = useState(7);
   const [done, setDone] = useState(false);
 
   const step = currentStep(session);
   const echoWords = payload.dayWords.slice(0, 3);
 
-  async function advance(extra?: { grammarScore?: number }): Promise<void> {
-    const next = completeStep(session, { learnerProduced: true, ...extra });
+  function tallyErrors(categories: readonly GrammarErrorCategory[]): void {
+    if (categories.length === 0) return;
+    setErrorTally((current) => {
+      const next = { ...current };
+      for (const category of categories) next[category] = (next[category] ?? 0) + 1;
+      return next;
+    });
+  }
+
+  async function advance(extra?: {
+    grammarScore?: number;
+    ratings?: readonly ReviewRating[];
+    scenarioScore?: number | null;
+  }): Promise<void> {
+    const next = completeStep(session, {
+      learnerProduced: true,
+      grammarScore: extra?.grammarScore,
+    });
     setSession(next);
     if (next.status === 'completed') {
       await completeSession({
         session: next,
-        warmupRatings: [],
-        imageIdResults: [],
-        scenarioScore: null,
+        warmupRatings: [...(extra?.ratings ?? warmupRatings)],
+        imageIdResults: [...imageIdResults],
+        scenarioScore: extra?.scenarioScore !== undefined ? extra.scenarioScore : scenarioScore,
+        skillScores: readingScore === null ? {} : { reading: readingScore },
+        errorsByCategory: errorTally,
       });
       setDone(true);
     } else {
@@ -57,7 +106,8 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
         <h2 className="text-xl font-medium">Session complete!</h2>
         <p>
           Rule practiced: {payload.grammarItem.name}. New words started: {payload.dayWords.length}.
-          Tomorrow rotates to the next skill.
+          {warmupRatings.length > 0 ? ` Cards reviewed: ${warmupRatings.length}.` : ''} Tomorrow
+          rotates to the next skill.
         </p>
         <button
           type="button"
@@ -75,30 +125,42 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
     return (
       <section className="flex flex-col gap-4" data-testid="step-warm-up-view">
         <h2 className="text-xl font-medium">Warm-up</h2>
-        {step.queueWordIds.length === 0 ? (
-          <p>No review cards due yet; they start accumulating from today&apos;s new words.</p>
+        {payload.warmupWords.length === 0 ? (
+          <div className="flex flex-col gap-3">
+            <p>No review cards due yet; they start accumulating from today&apos;s new words.</p>
+            <button
+              type="button"
+              className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
+              onClick={() => void advance()}
+              data-testid="warmup-continue"
+            >
+              Continue
+            </button>
+          </div>
         ) : (
-          <p>{step.queueWordIds.length} cards to review.</p>
+          <WarmupReview
+            words={payload.warmupWords}
+            onRate={async (wordId, rating) => {
+              await rateCardAction(wordId, rating);
+            }}
+            onDone={(ratings) => {
+              setWarmupRatings(ratings);
+              void advance({ ratings });
+            }}
+          />
         )}
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-          onClick={() => void advance()}
-          data-testid="warmup-continue"
-        >
-          Continue
-        </button>
       </section>
     );
   }
 
   if (step.kind === 'new-vocabulary') {
     const word = echoWords[echoIndex];
+    const imageItem = payload.imageId[imageIdIndex];
     return (
       <section className="flex flex-col gap-4" data-testid="step-vocab-view">
         <h2 className="text-xl font-medium">
           New vocabulary: {step.theme} ({Math.min(echoIndex + 1, echoWords.length)} of{' '}
-          {echoWords.length} echoed, {payload.dayWords.length} in today&apos;s set)
+          {echoWords.length} echoed, {payload.dayWords.length} in today&apos;s set)
         </h2>
         {word && payload.wordAudio[word.id] ? (
           <EchoFlow
@@ -107,6 +169,45 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
             audio={payload.wordAudio[word.id]!}
             onDone={() => setEchoIndex((index) => index + 1)}
           />
+        ) : imageItem ? (
+          <div className="flex flex-col gap-3" data-testid="vocab-image-id">
+            <p className="text-sm text-ink-muted">
+              Which word matches the picture? ({imageIdIndex + 1} of {payload.imageId.length})
+            </p>
+            <ImageIdExercise
+              key={imageItem.word.id}
+              exercise={imageItem.exercise}
+              image={imageItem.image}
+              result={imageIdResult}
+              onChoose={(chosenWordId) => {
+                const result = gradeRecognition(
+                  imageItem.exercise,
+                  imageItem.word,
+                  chosenWordId,
+                  new Date().toISOString(),
+                );
+                setImageIdResult(result);
+                setImageIdResults((current) => [...current, result.correct]);
+                if (result.logEntry) {
+                  tallyErrors([result.logEntry.category]);
+                  void logGrammarErrorsAction([result.logEntry]);
+                }
+              }}
+            />
+            {imageIdResult ? (
+              <button
+                type="button"
+                className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
+                onClick={() => {
+                  setImageIdResult(null);
+                  setImageIdIndex((index) => index + 1);
+                }}
+                data-testid="image-id-next"
+              >
+                Continue
+              </button>
+            ) : null}
+          </div>
         ) : (
           <div className="flex flex-col gap-3">
             <p>Preview of the rest of today&apos;s set:</p>
@@ -118,7 +219,13 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
             <button
               type="button"
               className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-              onClick={() => void advance()}
+              onClick={() => {
+                // Today's words enter FSRS now, due immediately, so the next
+                // warm-up reviews them (GT-104 introduction policy).
+                void introduceWordsAction(payload.dayWords.map((dayWord) => dayWord.id)).then(() =>
+                  advance(),
+                );
+              }}
               data-testid="vocab-continue"
             >
               Continue
@@ -209,14 +316,82 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
         </section>
       );
     }
-    // Non-listening slots practice the deterministic tile exercise until
-    // their dedicated runners join the daily flow (scenario/reading need the
-    // brain at runtime; Practice hosts their components).
+
+    if (step.slot === 'reading') {
+      return (
+        <section className="flex flex-col gap-4" data-testid="step-skill-view">
+          <h2 className="text-xl font-medium">Skill practice: reading</h2>
+          <ReadingPanel
+            load={getReadingExerciseAction}
+            tap={tapWordAction}
+            submit={submitReadingAction}
+            onDone={(score) => {
+              setReadingScore(score);
+              void advance();
+            }}
+          />
+        </section>
+      );
+    }
+
+    if (step.slot === 'scenario') {
+      return (
+        <section className="flex flex-col gap-4" data-testid="step-skill-view">
+          <h2 className="text-xl font-medium">Skill practice: scenario</h2>
+          <ScenarioChat
+            start={getScenarioForTodayAction}
+            turn={scenarioTurnAction}
+            end={endScenarioAction}
+            onDone={(score) => {
+              setScenarioScore(score);
+              void advance({ scenarioScore: score });
+            }}
+          />
+        </section>
+      );
+    }
+
+    // Writing slot, A1 progression (PRD 4.6): word tiles first, then a
+    // dictation round from a day word's example sentence.
+    if (writingStage === 'dictation' && payload.dictation) {
+      return (
+        <section className="flex flex-col gap-4" data-testid="step-skill-view">
+          <h2 className="text-xl font-medium">Skill practice: writing (dictation)</h2>
+          <DictationExercise
+            audio={payload.dictation.audio}
+            result={dictationResult}
+            onSubmit={(submitted) => {
+              const result = gradeDictation(
+                payload.dictation!.text,
+                submitted,
+                new Date().toISOString(),
+              );
+              setDictationResult(result);
+              if (result.logEntries.length > 0) {
+                tallyErrors(result.logEntries.map((entry) => entry.category));
+                void logGrammarErrorsAction([...result.logEntries]);
+              }
+            }}
+          />
+          {dictationResult ? (
+            <button
+              type="button"
+              className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
+              onClick={() => void advance()}
+              data-testid="skill-continue"
+            >
+              Continue
+            </button>
+          ) : null}
+        </section>
+      );
+    }
+
     return (
       <section className="flex flex-col gap-4" data-testid="step-skill-view">
-        <h2 className="text-xl font-medium">Skill practice: {step.slot} (tile drill)</h2>
+        <h2 className="text-xl font-medium">Skill practice: writing (word tiles)</h2>
         <p className="text-sm text-ink-muted">Build: {payload.tileItem.translation}</p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2" data-testid="tile-tray">
           {payload.tileItem.tiles
             .filter((tile) => !tileOrder.includes(tile))
             .map((tile) => (
@@ -251,6 +426,10 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
                   ? 'Richtig! Verb second, just like that.'
                   : `Not quite: try "${result.acceptedExample.join(' ')}".`,
               );
+              if (result.logEntry) {
+                tallyErrors([result.logEntry.category]);
+                void logGrammarErrorsAction([result.logEntry]);
+              }
             }}
             data-testid="tile-check"
           >
@@ -262,14 +441,25 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
             <p role="status" data-testid="tile-feedback">
               {tileFeedback}
             </p>
-            <button
-              type="button"
-              className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-              onClick={() => void advance()}
-              data-testid="skill-continue"
-            >
-              Continue
-            </button>
+            {payload.dictation ? (
+              <button
+                type="button"
+                className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
+                onClick={() => setWritingStage('dictation')}
+                data-testid="writing-to-dictation"
+              >
+                Next: dictation
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
+                onClick={() => void advance()}
+                data-testid="skill-continue"
+              >
+                Continue
+              </button>
+            )}
           </div>
         ) : null}
       </section>
