@@ -143,6 +143,23 @@ function inCorpus(token: string, lemmas: ReadonlySet<string>, stems: readonly st
   );
 }
 
+// Shared with the dialogue envelope: the fraction of tokens falling outside
+// the learned corpus (inflection-tolerant). Verb conjugations count as
+// in-corpus via the infinitive stem: kommt matches kommen, kaufe matches
+// kaufen, möchtest matches möchten.
+export function outOfCorpusRate(text: string, corpus: readonly VocabularyWord[]): number {
+  const tokens = tokenizeGerman(text);
+  if (tokens.length === 0) return 0;
+  const lemmas = new Set(corpus.map((word) => word.german.toLowerCase()));
+  const stems = [...lemmas].flatMap((lemma) => {
+    const variants = [lemma];
+    if (lemma.endsWith('en')) variants.push(lemma.slice(0, -2));
+    else if (lemma.endsWith('n')) variants.push(lemma.slice(0, -1));
+    return variants;
+  });
+  return tokens.filter((token) => !inCorpus(token, lemmas, stems)).length / tokens.length;
+}
+
 export function validateReadingEnvelope(
   candidate: { format: string; text: string },
   level: Level,
@@ -163,10 +180,7 @@ export function validateReadingEnvelope(
       detail: `${tokens.length} words exceeds the ${LENGTH_CAP_WORDS[level]}-word ${level} cap`,
     });
   }
-  const lemmas = new Set(corpus.map((word) => word.german.toLowerCase()));
-  const stems = [...lemmas].filter((lemma) => lemma.length >= 3);
-  const outOfCorpus = tokens.filter((token) => !inCorpus(token, lemmas, stems));
-  const rate = tokens.length === 0 ? 0 : outOfCorpus.length / tokens.length;
+  const rate = outOfCorpusRate(candidate.text, corpus);
   if (rate > STRETCH_BUDGET) {
     violations.push({
       rule: 'stretch-budget',

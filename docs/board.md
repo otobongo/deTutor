@@ -50,6 +50,19 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **Dialogue lab (done 2026-07-10, owner-directed).** The listening slot is now a spoken
+      two-person conversation: brain-generated on the unit theme inside a code-owned envelope
+      (6-10 turns, level length caps, corpus stretch budget with verb-stem inflection matching),
+      curated A1 fallbacks (db/seed/dialogue-fallback.ts) when the brain is unreachable, and
+      two-voice audio (Anna=Kore, Ben=Puck) through the on-demand TTS cache keyed by content
+      hash. Phases: listen without transcript (real audio; captioned placeholder audio keeps the
+      transcript per GT-007), identify heard words vs decoys (pure, deterministic, scored),
+      explain the conversation in English (GT-206 evaluator, recoverable offline), then the
+      transcript reveals with normal and slower replay. Identification score records to
+      SkillScore(listening) and the session report. New fast-tier call site dialogue-generation.
+      The old single-clip ListeningExercise and the payload's listeningClip were removed as dead
+      code (unit listening clips remain in the seed and audio script).
+
 - [x] **Word workspace (done 2026-07-10, owner-directed).** The vocab step now presents each
       word Google Translate style: focus zone (display-size word, article colored and as text,
       IPA, pronunciation audio), the echo production strip directly beneath, then a context zone
