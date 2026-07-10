@@ -5,11 +5,15 @@ import { seedGrammarItems, seedUnits } from '@/db/seed/units';
 import { cumulativeCorpus } from '@/db/seed/seed-vocab';
 import {
   learnerPaths,
+  learnerProfileConverter,
   learnerProfileSchema,
+  retentionScoreConverter,
+  retentionScoreSchema,
   unitProgressConverter,
   unitProgressSchema,
   type UnitProgressDoc,
 } from '@/lib/db/learner';
+import { initialRetention } from '@/lib/assessment/retention';
 import { getDataStore } from '@/lib/db/store';
 import type { Skill, Unit } from '@/lib/db/curriculum';
 import { getGeminiClient } from '@/lib/gemini/client';
@@ -117,6 +121,45 @@ const submissionInput = z.object({
 export interface SubmissionOutcome {
   readonly progress: UnitProgressDoc;
   readonly complete: boolean;
+  // The unit the profile advanced to, or null when it stayed (not the
+  // current unit, mid-level gate, or already advanced earlier).
+  readonly advancedToUnitId: string | null;
+}
+
+// Completing a unit has two side effects the loop depends on: the retention
+// record starts (passedAt anchors the 7/14/30/60-day retest schedule), and
+// the profile advances to the next unit within the level. Level boundaries
+// do not auto-advance: the level gate exam (GT-306) is its own event.
+async function onUnitComplete(unitId: string): Promise<string | null> {
+  const store = getDataStore();
+  const nowIso = new Date().toISOString();
+
+  const retentionDoc = store.collection(learnerPaths.retentionScores()).doc(unitId);
+  const existingRetention = await retentionDoc.get();
+  if (!existingRetention || !retentionScoreSchema.safeParse(existingRetention).success) {
+    await retentionDoc.set(
+      retentionScoreConverter.toFirestore(
+        retentionScoreSchema.parse({ ...initialRetention(unitId), passedAt: nowIso }),
+      ),
+    );
+  }
+
+  const [learners, learnerId] = learnerPaths.root().split('/') as [string, string];
+  const profileDoc = store.collection(learners).doc(learnerId);
+  const rawProfile = await profileDoc.get();
+  const profile = rawProfile ? learnerProfileSchema.safeParse(rawProfile) : null;
+  // Advance only when the learner is actually standing on this unit
+  // (a retake of an older unit never moves the profile).
+  if (!profile?.success || profile.data.unitId !== unitId) return null;
+  const index = seedUnits.findIndex((unit) => unit.id === unitId);
+  const next = seedUnits[index + 1];
+  if (!next || next.level !== profile.data.level) return null;
+  await profileDoc.set(
+    learnerProfileConverter.toFirestore(
+      learnerProfileSchema.parse({ ...profile.data, unitId: next.id }),
+    ),
+  );
+  return next.id;
 }
 
 export async function submitUnitTest(rawInput: unknown): Promise<SubmissionOutcome> {
@@ -133,7 +176,9 @@ export async function submitUnitTest(rawInput: unknown): Promise<SubmissionOutco
   }
   const progress = startUnitProgress(input.test.unitId, outcomes);
   await saveProgress(progress);
-  return { progress: toDoc(progress), complete: unitComplete(progress) };
+  const complete = unitComplete(progress);
+  const advancedToUnitId = complete ? await onUnitComplete(input.test.unitId) : null;
+  return { progress: toDoc(progress), complete, advancedToUnitId };
 }
 
 export async function markRemediationDone(unitId: string, skill: Skill): Promise<UnitProgressDoc> {
@@ -188,5 +233,7 @@ export async function submitRetake(rawInput: unknown): Promise<SubmissionOutcome
   await recordSkillScore(getDataStore(), input.unitId, input.skill, retakeScore.score, nowIso);
   const progress = applyRetake(fromDoc(doc), input.skill, retakeScore.score);
   await saveProgress(progress);
-  return { progress: toDoc(progress), complete: unitComplete(progress) };
+  const complete = unitComplete(progress);
+  const advancedToUnitId = complete ? await onUnitComplete(input.unitId) : null;
+  return { progress: toDoc(progress), complete, advancedToUnitId };
 }

@@ -29,9 +29,9 @@ describe('level dashboard aggregates (GT-310)', () => {
 
   it('retention heat reflects stored scores with banded severity', () => {
     const heat = retentionHeat([
-      { unitId: 'a1-2', score: 55, lastRetestAt: null },
-      { unitId: 'a1-1', score: 88, lastRetestAt: null },
-      { unitId: 'a1-3', score: 65, lastRetestAt: null },
+      { unitId: 'a1-2', score: 55, lastRetestAt: null, passedAt: null },
+      { unitId: 'a1-1', score: 88, lastRetestAt: null, passedAt: null },
+      { unitId: 'a1-3', score: 65, lastRetestAt: null, passedAt: null },
     ]);
     expect(heat).toEqual([
       { unitId: 'a1-1', score: 88, band: 'healthy' },

@@ -23,6 +23,7 @@ import {
   type TodaySessionPayload,
 } from '@/app/actions/lesson';
 import { introduceWordsAction, rateCardAction } from '@/app/actions/cards';
+import { submitRetestResultAction } from '@/app/actions/retention';
 import { logGrammarErrorsAction } from '@/app/actions/grammar';
 import {
   getReadingExerciseAction,
@@ -128,7 +129,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
     return (
       <section className="flex flex-col gap-4" data-testid="step-warm-up-view">
         <FocusHeading key={step.kind}>Warm-up</FocusHeading>
-        {payload.warmupWords.length === 0 ? (
+        {payload.warmupItems.length === 0 ? (
           <div className="flex flex-col gap-3">
             <p>No review cards due yet; they start accumulating from today&apos;s new words.</p>
             <ActionRow>
@@ -139,9 +140,15 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
           </div>
         ) : (
           <WarmupReview
-            words={payload.warmupWords}
-            onRate={async (wordId, rating) => {
-              await rateCardAction(wordId, rating);
+            items={payload.warmupItems}
+            onRate={async (item, rating) => {
+              // Reviews feed FSRS; disguised retests silently move the
+              // unit's retention (recalled means anything above "again").
+              if (item.kind === 'review') {
+                await rateCardAction(item.word.id, rating);
+              } else {
+                await submitRetestResultAction(item.unitId, rating !== 'again');
+              }
             }}
             onDone={(ratings) => {
               setWarmupRatings(ratings);
@@ -318,8 +325,9 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
             start={getScenarioForTodayAction}
             turn={scenarioTurnAction}
             end={endScenarioAction}
-            onDone={(score) => {
+            onDone={(score, errorCategories) => {
               setScenarioScore(score);
+              tallyErrors(errorCategories);
               void advance({ scenarioScore: score });
             }}
           />

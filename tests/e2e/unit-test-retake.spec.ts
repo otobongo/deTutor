@@ -59,4 +59,9 @@ test('a failed skill routes through remediation to a single-skill retake', async
   }
 
   await expect(page.getByTestId('unit-complete')).toBeVisible();
+  // Completing the current unit advances the profile and starts the
+  // retention clock (gap closed 2026-07-10).
+  await expect(page.getByTestId('unit-complete')).toContainText('You advance to A1-2');
+  await page.goto('/today');
+  await expect(page.getByTestId('today-summary')).toContainText('A1-2');
 });

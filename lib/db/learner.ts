@@ -65,6 +65,10 @@ export const retentionScoreSchema = z.object({
   unitId: z.string().min(1),
   score: scoreSchema,
   lastRetestAt: isoDateTime.nullable(),
+  // When the unit test was passed; the retest schedule counts from here.
+  // Nullable with a default so records written before 2026-07-10 still
+  // parse (they simply never schedule retests).
+  passedAt: isoDateTime.nullable().default(null),
 });
 export type RetentionScore = z.infer<typeof retentionScoreSchema>;
 

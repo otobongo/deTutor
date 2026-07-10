@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { VocabularyWord } from '@/lib/db/curriculum';
+import type { WarmupDisplayItem } from '@/app/actions/lesson';
 import { REVIEW_RATINGS, type ReviewRating } from '@/lib/fsrs/scheduler';
 import { Button } from './ui';
 
@@ -18,12 +18,14 @@ const RATING_LABELS: Readonly<Record<ReviewRating, string>> = {
 };
 
 export function WarmupReview({
-  words,
+  items,
   onRate,
   onDone,
 }: {
-  words: readonly VocabularyWord[];
-  onRate: (wordId: string, rating: ReviewRating) => Promise<void>;
+  items: readonly WarmupDisplayItem[];
+  // The caller routes by item kind (review -> FSRS, retest -> retention);
+  // this component treats every card identically, keeping the disguise.
+  onRate: (item: WarmupDisplayItem, rating: ReviewRating) => Promise<void>;
   onDone: (ratings: readonly ReviewRating[]) => void;
 }) {
   const [index, setIndex] = useState(0);
@@ -31,16 +33,17 @@ export function WarmupReview({
   const [ratings, setRatings] = useState<readonly ReviewRating[]>([]);
   const [saving, setSaving] = useState(false);
 
-  const word = words[index];
-  if (!word) return null;
+  const item = items[index];
+  const word = item?.word;
+  if (!item || !word) return null;
 
   async function rate(rating: ReviewRating): Promise<void> {
-    if (!word || saving) return;
+    if (!item || saving) return;
     setSaving(true);
-    await onRate(word.id, rating);
+    await onRate(item, rating);
     const nextRatings = [...ratings, rating];
     setSaving(false);
-    if (index + 1 >= words.length) {
+    if (index + 1 >= items.length) {
       onDone(nextRatings);
       return;
     }
@@ -52,7 +55,7 @@ export function WarmupReview({
   return (
     <div className="flex flex-col gap-4" data-testid="warmup-review">
       <p className="text-sm text-ink-muted" aria-live="polite" data-testid="warmup-progress">
-        Card {index + 1} of {words.length}
+        Card {index + 1} of {items.length}
       </p>
       <div className="flex flex-col gap-2 rounded-lg border bg-surface p-4">
         <p className="text-2xl font-medium" lang="de" data-testid="warmup-front">

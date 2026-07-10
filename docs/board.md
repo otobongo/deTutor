@@ -50,6 +50,19 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **Retention loop closed (done 2026-07-10, owner-directed gap fixes).** Passing a unit now
+      writes its retention record (retentionScoreSchema gained nullable passedAt anchoring the
+      7/14/30/60-day schedule; old records parse via default) and advances the profile to the
+      next unit within the level (level boundaries wait for the GT-306 gate exam; retakes of
+      older units never move the profile). Due retests now actually ride the warm-up: the
+      GT-304 injector is wired into session composition, each due retest wears a deterministic
+      corpus word as its face (lib/lesson/retest-disguise.ts), renders identically to a review,
+      and its rating silently applies applyRetestResult (recalled = anything above "again")
+      via app/actions/retention.ts, never touching FSRS state. Scenario corrections now count
+      in the session report's errorsByCategory tally. e2e: disguised-retest journey asserts
+      the +10 and lastRetestAt stamp in the store; the retake journey asserts advancement to
+      A1-2 on Today. 23 Playwright checks green.
+
 - [x] **App-wide design standards pass (done 2026-07-10, owner-directed; plan in
       docs/clarifyask-plan-design.md, rules in docs/design-standards-appendix.md).** Shared
       primitives in app/components/ui.tsx (Button, ButtonLink, ActionRow, ProgressBar,
