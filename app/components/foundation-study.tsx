@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import type { AudioAsset } from '@/lib/media/provider';
 import type { FoundationTopic } from '@/db/seed/foundations';
 import type { FoundationQuizOutcome } from '@/app/actions/learn';
 import { AudioPlayer } from './audio-player';
+import { ActionRow, Button, ButtonLink } from './ui';
 
 // Foundation study page body (owner-directed 2026-07-10): explanation
 // sections with tables and audible examples, then a scored self-check.
@@ -147,20 +147,17 @@ export function FoundationStudy({
                   const chosen = answers[questionIndex] === optionIndex;
                   const showState =
                     result !== null && (optionIndex === question.correctIndex || chosen);
+                  const isCorrectAnswer = result !== null && optionIndex === question.correctIndex;
                   return (
-                    <button
+                    <Button
                       key={optionIndex}
-                      type="button"
+                      variant={chosen ? 'primary' : 'secondary'}
+                      size="sm"
                       lang="de"
-                      className={`rounded-md border px-3 py-1 text-sm ${
-                        chosen
-                          ? 'border-border-strong bg-action text-action-inverse'
-                          : 'border-border-default bg-surface hover:bg-surface-2'
-                      } ${
-                        showState && optionIndex === question.correctIndex
-                          ? 'ring-2 ring-[var(--color-success)]'
-                          : ''
-                      }`}
+                      aria-pressed={chosen}
+                      className={
+                        showState && isCorrectAnswer ? 'ring-2 ring-[var(--color-success)]' : ''
+                      }
                       disabled={result !== null}
                       onClick={() =>
                         setAnswers((current) => ({ ...current, [questionIndex]: optionIndex }))
@@ -168,7 +165,8 @@ export function FoundationStudy({
                       data-testid={`quiz-${questionIndex}-${optionIndex}`}
                     >
                       {option}
-                    </button>
+                      {isCorrectAnswer ? <span className="sr-only"> (correct answer)</span> : null}
+                    </Button>
                   );
                 })}
               </span>
@@ -176,24 +174,21 @@ export function FoundationStudy({
           ))}
         </ol>
         {result === null ? (
-          <button
-            type="button"
-            className="self-start rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
+          <Button
             disabled={!allAnswered || busy}
             onClick={() => void submit()}
             data-testid="quiz-submit"
           >
             Check answers
-          </button>
+          </Button>
         ) : (
-          <div className="flex flex-col gap-2">
+          <ActionRow className="flex-col items-start gap-2">
             <p role="status" data-testid="quiz-result">
               {result.correct} of {result.total} correct: {result.score} / 100, grade {result.grade}
               . Best: {result.bestScore} / 100.
             </p>
-            <button
-              type="button"
-              className="self-start rounded-md border border-border-default bg-surface px-4 py-2"
+            <Button
+              variant="secondary"
               onClick={() => {
                 setAnswers({});
                 setResult(null);
@@ -201,27 +196,24 @@ export function FoundationStudy({
               data-testid="quiz-retake"
             >
               Try again
-            </button>
-          </div>
+            </Button>
+          </ActionRow>
         )}
       </section>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          className={`rounded-md px-4 py-2 disabled:opacity-40 ${
-            marked ? 'border border-border-default bg-surface' : 'bg-action text-action-inverse'
-          }`}
+      <ActionRow>
+        <Button
+          variant={marked ? 'secondary' : 'primary'}
           disabled={busy}
           onClick={() => void toggleMarked()}
           data-testid="foundation-mark"
         >
           {marked ? 'Learned ✓ (tap to unmark)' : 'Mark as learned'}
-        </button>
-        <Link className="text-sm underline" href="/learn">
+        </Button>
+        <ButtonLink variant="ghost" href="/learn">
           Back to Learn
-        </Link>
-      </div>
+        </ButtonLink>
+      </ActionRow>
     </div>
   );
 }

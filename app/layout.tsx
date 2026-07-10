@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { Inter, Inter_Tight, JetBrains_Mono } from 'next/font/google';
-import { ThemeControls } from './components/theme-controls';
+import { NavLinks } from './components/nav-links';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-ui-loaded' });
@@ -51,43 +50,24 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script dangerouslySetInnerHTML={{ __html: PREHYDRATION_THEME_SCRIPT }} />
       </head>
       <body className="antialiased">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-20 focus:rounded-md focus:bg-action focus:px-4 focus:py-2 focus:text-action-inverse"
+        >
+          Skip to main content
+        </a>
         <header className="sticky top-0 z-10 border-b border-border-default bg-surface">
           <nav
             aria-label="Main"
             className="shell-width mx-auto flex min-h-[var(--header-h)] flex-wrap items-center gap-4 px-6 text-sm"
           >
             <span className="font-display text-base font-semibold tracking-tight">deTutor</span>
-            <Link className="text-ink-muted hover:text-ink" href="/today" data-testid="nav-today">
-              Today
-            </Link>
-            <Link className="text-ink-muted hover:text-ink" href="/learn" data-testid="nav-learn">
-              Learn
-            </Link>
-            <Link
-              className="text-ink-muted hover:text-ink"
-              href="/practice"
-              data-testid="nav-practice"
-            >
-              Practice
-            </Link>
-            <Link
-              className="text-ink-muted hover:text-ink"
-              href="/progress"
-              data-testid="nav-progress"
-            >
-              Progress
-            </Link>
-            <Link
-              className="text-ink-muted hover:text-ink"
-              href="/settings"
-              data-testid="nav-settings"
-            >
-              Settings
-            </Link>
-            <ThemeControls />
+            <NavLinks />
           </nav>
         </header>
-        {children}
+        <div id="main-content" tabIndex={-1} className="outline-none">
+          {children}
+        </div>
       </body>
     </html>
   );

@@ -5,6 +5,8 @@ import type { DialogueLabPayload } from '@/app/actions/dialogue';
 import type { ListeningEvaluationOutcome } from '@/app/actions/lesson';
 import { gradeWordIdentification, type IdentificationResult } from '@/lib/exercises/dialogue';
 import { AudioPlayer } from './audio-player';
+import { ActionRow, Button, Chip } from './ui';
+import { FocusHeading } from './focus-heading';
 
 // Dialogue lab (owner-directed 2026-07-10): a spoken conversation heard
 // before it is read. Phases: listen (transcript hidden when the audio is
@@ -53,20 +55,21 @@ export function DialogueLab({
   }, [load]);
 
   if (payload === 'loading') {
-    return <p data-testid="dialogue-loading">Setting up today&apos;s conversation&hellip;</p>;
+    return (
+      <p role="status" data-testid="dialogue-loading">
+        Setting up today&apos;s conversation&hellip;
+      </p>
+    );
   }
   if (payload === null) {
     return (
       <div className="flex flex-col gap-3">
         <p role="status">The conversation could not be prepared today.</p>
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-          onClick={() => onDone(null)}
-          data-testid="dialogue-skip"
-        >
-          Continue
-        </button>
+        <ActionRow>
+          <Button onClick={() => onDone(null)} data-testid="dialogue-skip">
+            Continue
+          </Button>
+        </ActionRow>
       </div>
     );
   }
@@ -111,8 +114,18 @@ export function DialogueLab({
     onDone(score);
   }
 
+  const phaseLabel: Record<Phase, string> = {
+    listen: 'Listen to the conversation',
+    identify: 'Which words did you hear?',
+    explain: 'What happened?',
+    transcript: 'Transcript',
+  };
+
   return (
     <div className="flex flex-col gap-5" data-testid="dialogue-lab">
+      <FocusHeading key={phase} className="sr-only">
+        {phaseLabel[phase]}
+      </FocusHeading>
       <div className="flex flex-col gap-2 rounded-lg border bg-surface p-4">
         <h3 className="font-medium" lang="de" data-testid="dialogue-title">
           {payload.dialogue.title}
@@ -148,14 +161,11 @@ export function DialogueLab({
       ) : null}
 
       {phase === 'listen' ? (
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-          onClick={() => setPhase('identify')}
-          data-testid="dialogue-to-identify"
-        >
-          I listened, on to the words
-        </button>
+        <ActionRow>
+          <Button onClick={() => setPhase('identify')} data-testid="dialogue-to-identify">
+            I listened, on to the words
+          </Button>
+        </ActionRow>
       ) : null}
 
       {phase === 'identify' ? (
@@ -163,47 +173,33 @@ export function DialogueLab({
           <p className="text-sm font-medium">Which of these words did you hear?</p>
           <div className="flex flex-wrap gap-2">
             {payload.identification.map((option) => (
-              <button
+              <Chip
                 key={option.wordId}
-                type="button"
-                className={`rounded-pill border px-3 py-1 text-sm ${
-                  selected.has(option.wordId)
-                    ? 'border-border-strong bg-action text-action-inverse'
-                    : 'border-border-default bg-surface hover:bg-surface-2'
-                }`}
+                selected={selected.has(option.wordId)}
                 disabled={identification !== null}
                 onClick={() => toggleWord(option.wordId)}
-                aria-pressed={selected.has(option.wordId)}
                 data-testid={`identify-${option.wordId}`}
               >
                 <span lang="de">{option.label}</span>
-              </button>
+              </Chip>
             ))}
           </div>
           {identification === null ? (
-            <button
-              type="button"
-              className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-              onClick={checkIdentification}
-              data-testid="identify-check"
-            >
-              Check
-            </button>
+            <ActionRow>
+              <Button onClick={checkIdentification} data-testid="identify-check">
+                Check
+              </Button>
+            </ActionRow>
           ) : (
-            <div className="flex flex-col gap-2">
+            <ActionRow className="flex-col items-start gap-2">
               <p role="status" data-testid="identify-score">
                 {identification.correct} of {identification.total} right: {identification.score} /
                 100.
               </p>
-              <button
-                type="button"
-                className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-                onClick={() => setPhase('explain')}
-                data-testid="dialogue-to-explain"
-              >
+              <Button onClick={() => setPhase('explain')} data-testid="dialogue-to-explain">
                 Next: what happened?
-              </button>
-            </div>
+              </Button>
+            </ActionRow>
           )}
         </div>
       ) : null}
@@ -221,29 +217,24 @@ export function DialogueLab({
             />
           </label>
           {feedback === null ? (
-            <button
-              type="button"
-              className="self-start rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
-              disabled={busy || explanation.trim().length === 0}
-              onClick={() => void submitExplanation()}
-              data-testid="explain-submit"
-            >
-              Check my understanding
-            </button>
+            <ActionRow>
+              <Button
+                disabled={busy || explanation.trim().length === 0}
+                onClick={() => void submitExplanation()}
+                data-testid="explain-submit"
+              >
+                Check my understanding
+              </Button>
+            </ActionRow>
           ) : (
-            <div className="flex flex-col gap-2">
+            <ActionRow className="flex-col items-start gap-2">
               <p role="status" data-testid="explain-feedback">
                 {feedback}
               </p>
-              <button
-                type="button"
-                className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-                onClick={() => setPhase('transcript')}
-                data-testid="dialogue-to-transcript"
-              >
+              <Button onClick={() => setPhase('transcript')} data-testid="dialogue-to-transcript">
                 Show the transcript
-              </button>
-            </div>
+              </Button>
+            </ActionRow>
           )}
         </div>
       ) : null}
@@ -253,14 +244,11 @@ export function DialogueLab({
           <p className="text-sm text-ink-muted">
             Read along and replay lines you found hard; repeating them aloud is the best finish.
           </p>
-          <button
-            type="button"
-            className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-            onClick={() => void finish()}
-            data-testid="skill-continue"
-          >
-            Continue
-          </button>
+          <ActionRow>
+            <Button onClick={() => void finish()} data-testid="skill-continue">
+              Continue
+            </Button>
+          </ActionRow>
         </div>
       ) : null}
     </div>

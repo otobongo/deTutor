@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { AudioAsset } from '@/lib/media/provider';
 import type { DictationResult } from '@/lib/exercises/dictation';
+import { Button } from './ui';
 
 // Dictation flow (GT-211). Captions stay hidden during the attempt even for
 // silent placeholder assets; after submission they appear so placeholder
@@ -29,14 +30,9 @@ export function DictationExercise({
 
   return (
     <div className="flex flex-col gap-4" data-testid="dictation-exercise">
-      <button
-        type="button"
-        className="self-start rounded-md bg-action px-3 py-1 text-sm text-action-inverse"
-        onClick={play}
-        data-testid={`dictation-play-${audio.clipId}`}
-      >
+      <Button size="sm" onClick={play} data-testid={`dictation-play-${audio.clipId}`}>
         Play
-      </button>
+      </Button>
 
       {result === null ? (
         <form
@@ -53,24 +49,25 @@ export function DictationExercise({
             onChange={(event) => setAttempt(event.target.value)}
             placeholder="Type exactly what you hear"
             aria-label="Dictation attempt"
+            lang="de"
             data-testid="dictation-input"
           />
-          <button
+          <Button
             type="submit"
-            className="rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
             disabled={attempt.trim().length === 0}
             data-testid="dictation-submit"
           >
             Check
-          </button>
+          </Button>
         </form>
       ) : (
         <div className="flex flex-col gap-2">
-          <p className="flex flex-wrap gap-1" data-testid="dictation-diff">
+          <p className="flex flex-wrap gap-1" role="status" data-testid="dictation-diff">
             {result.segments.map((segment, index) => (
               <span
                 key={index}
                 data-diff={segment.kind}
+                lang="de"
                 className={
                   segment.kind === 'correct'
                     ? 'text-success'

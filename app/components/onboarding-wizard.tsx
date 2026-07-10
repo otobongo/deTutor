@@ -2,37 +2,24 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import type { PlacementProbe } from '@/db/seed/placement-probes';
-import type { Dialect } from '@/lib/db/learner';
-import type { AudioAsset } from '@/lib/media/provider';
 import { nextStage, type PlacementAnswer } from '@/lib/placement/engine';
 import type { Level } from '@/lib/db/curriculum';
-import {
-  completeOnboarding,
-  type OnboardingOutcome,
-  type VoiceOption,
-} from '../actions/onboarding';
-import { AudioPlayer } from './audio-player';
+import { completeOnboarding, type OnboardingOutcome } from '../actions/onboarding';
+import { ActionRow, Button } from './ui';
+import { FocusHeading } from './focus-heading';
 
-// Onboarding wizard (GT-107): voice, then dialect, then the placement ladder,
-// in that order (PRD 4.1). Conducted in English. Selections are changeable
-// later in Settings (GT-204).
+// Onboarding wizard (GT-107, slimmed 2026-07-10 by owner decision): defaults
+// over forced choices. Voice, dialect, image style, and theme all start at
+// sensible defaults and live in Settings; onboarding is a welcome plus the
+// placement ladder, conducted in English.
 
-type WizardStage = 'voice' | 'dialect' | 'placement' | 'result';
+type WizardStage = 'welcome' | 'placement' | 'result';
 
-export function OnboardingWizard({
-  voices,
-  samples,
-  probes,
-}: {
-  voices: readonly VoiceOption[];
-  samples: Readonly<Record<string, AudioAsset>>;
-  probes: readonly PlacementProbe[];
-}) {
+export function OnboardingWizard({ probes }: { probes: readonly PlacementProbe[] }) {
   const router = useRouter();
-  const [stage, setStage] = useState<WizardStage>('voice');
-  const [voice, setVoice] = useState<string | null>(null);
-  const [dialect, setDialect] = useState<Dialect | null>(null);
+  const [stage, setStage] = useState<WizardStage>('welcome');
   const [answers, setAnswers] = useState<PlacementAnswer[]>([]);
   const [textAnswer, setTextAnswer] = useState('');
   const [outcome, setOutcome] = useState<OnboardingOutcome | null>(null);
@@ -53,11 +40,7 @@ export function OnboardingWizard({
     setSubmitting(true);
     setError(null);
     try {
-      const result = await completeOnboarding({
-        voice: voice ?? 'warm-1',
-        dialect: dialect ?? 'hochdeutsch',
-        answers: finalAnswers,
-      });
+      const result = await completeOnboarding({ answers: finalAnswers });
       setOutcome(result);
       setStage('result');
     } catch {
@@ -77,88 +60,21 @@ export function OnboardingWizard({
     }
   }
 
-  if (stage === 'voice') {
+  if (stage === 'welcome') {
     return (
-      <section className="flex flex-col gap-4" aria-labelledby="voice-heading">
-        <h2 id="voice-heading" className="text-xl font-medium">
-          Choose your tutor&apos;s voice
-        </h2>
-        <div className="grid gap-3 sm:grid-cols-3">
-          {voices.map((option) => {
-            const sample = samples[option.id];
-            return (
-              <div
-                key={option.id}
-                className={`flex flex-col gap-2 rounded-lg border bg-surface p-4 ${
-                  voice === option.id
-                    ? 'border-[var(--color-ink)] ring-2 ring-[var(--color-ink)]'
-                    : ''
-                }`}
-              >
-                <p className="font-medium">
-                  {option.name} <span className="text-sm text-ink-muted">({option.group})</span>
-                </p>
-                {sample ? <AudioPlayer asset={sample} label="Play sample" /> : null}
-                <button
-                  type="button"
-                  className="rounded-md bg-action px-3 py-1 text-sm text-action-inverse"
-                  onClick={() => setVoice(option.id)}
-                  data-testid={`choose-voice-${option.id}`}
-                >
-                  Choose {option.name}
-                </button>
-              </div>
-            );
-          })}
-        </div>
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
-          disabled={voice === null}
-          onClick={() => setStage('dialect')}
-          data-testid="voice-continue"
-        >
-          Continue
-        </button>
-      </section>
-    );
-  }
-
-  if (stage === 'dialect') {
-    return (
-      <section className="flex flex-col gap-4" aria-labelledby="dialect-heading">
-        <h2 id="dialect-heading" className="text-xl font-medium">
-          Dialect preference
-        </h2>
-        <p className="text-sm text-ink-muted">
-          Standard Hochdeutsch is the default. Berlin mode adds labeled Berlin expressions.
+      <section className="flex flex-col gap-4">
+        <FocusHeading data-testid="welcome-heading">Willkommen!</FocusHeading>
+        <p className="max-w-prose">
+          A five-minute placement check finds your starting point; then a 15-to-20-minute daily
+          session builds your German from there. Your tutor starts with a warm voice and standard
+          Hochdeutsch; you can change the voice, dialect, images, and appearance any time in
+          Settings.
         </p>
-        <div className="flex gap-3">
-          <button
-            type="button"
-            className={`rounded-md border bg-surface px-4 py-2 ${dialect === 'hochdeutsch' ? 'border-[var(--color-ink)] ring-2 ring-[var(--color-ink)]' : ''}`}
-            onClick={() => setDialect('hochdeutsch')}
-            data-testid="dialect-hochdeutsch"
-          >
-            Hochdeutsch
-          </button>
-          <button
-            type="button"
-            className={`rounded-md border bg-surface px-4 py-2 ${dialect === 'berlin' ? 'border-[var(--color-ink)] ring-2 ring-[var(--color-ink)]' : ''}`}
-            onClick={() => setDialect('berlin')}
-            data-testid="dialect-berlin"
-          >
-            Berlin dialect mode
-          </button>
-        </div>
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-          onClick={() => setStage('placement')}
-          data-testid="dialect-continue"
-        >
-          {dialect === null ? 'Skip (use Hochdeutsch)' : 'Continue'}
-        </button>
+        <ActionRow>
+          <Button onClick={() => setStage('placement')} data-testid="onboarding-start">
+            Start the placement check
+          </Button>
+        </ActionRow>
       </section>
     );
   }
@@ -168,50 +84,49 @@ export function OnboardingWizard({
       probes.some((probe) => probe.id === answer.probeId && probe.level === currentLevel),
     ).length;
     return (
-      <section className="flex flex-col gap-4" aria-labelledby="placement-heading">
-        <h2 id="placement-heading" className="text-xl font-medium">
+      <section className="flex flex-col gap-4">
+        <FocusHeading key="placement">
           Placement check: {currentLevel} ({stageAnswered + 1} of 5)
-        </h2>
-        <p data-testid="probe-prompt">{currentProbe.prompt}</p>
+        </FocusHeading>
+        <p data-testid="probe-prompt" lang="de">
+          {currentProbe.prompt}
+        </p>
         {currentProbe.kind === 'multiple-choice' && currentProbe.options ? (
-          <div className="flex flex-col items-start gap-2">
+          <div className="flex flex-col items-stretch gap-2 sm:items-start">
             {currentProbe.options.map((option) => (
-              <button
+              <Button
                 key={option}
-                type="button"
-                className="rounded-md border bg-surface px-3 py-2 text-left hover:bg-surface-2"
+                variant="secondary"
+                className="justify-start text-left"
+                lang="de"
                 onClick={() => answerProbe(option)}
                 data-testid="probe-option"
               >
                 {option}
-              </button>
+              </Button>
             ))}
           </div>
         ) : (
           <form
-            className="flex gap-2"
+            className="flex flex-col gap-2 sm:flex-row"
             onSubmit={(event) => {
               event.preventDefault();
               answerProbe(textAnswer);
             }}
           >
             <input
-              className="rounded-md border bg-surface px-3 py-2"
+              className="min-h-11 rounded-md border bg-surface px-3 py-2"
               value={textAnswer}
               onChange={(event) => setTextAnswer(event.target.value)}
               aria-label="Your answer"
               data-testid="probe-text-input"
             />
-            <button
-              type="submit"
-              className="rounded-md bg-action px-4 py-2 text-action-inverse"
-              data-testid="probe-text-submit"
-            >
+            <Button type="submit" data-testid="probe-text-submit">
               Answer
-            </button>
+            </Button>
           </form>
         )}
-        {submitting ? <p>Scoring your placement...</p> : null}
+        {submitting ? <p role="status">Scoring your placement...</p> : null}
         {error ? <p role="alert">{error}</p> : null}
       </section>
     );
@@ -219,10 +134,8 @@ export function OnboardingWizard({
 
   if (stage === 'result' && outcome) {
     return (
-      <section className="flex flex-col gap-4" aria-labelledby="result-heading">
-        <h2 id="result-heading" className="text-xl font-medium">
-          Your starting point
-        </h2>
+      <section className="flex flex-col gap-4">
+        <FocusHeading key="result">Your starting point</FocusHeading>
         <p data-testid="placement-result">
           You are starting at {outcome.result.startingLevel}, unit{' '}
           {outcome.result.startingUnitId.toUpperCase()}.{' '}
@@ -231,20 +144,20 @@ export function OnboardingWizard({
             : 'You already have a foundation, so we skip what you have demonstrated and start where the work begins.'}
         </p>
         <p className="text-sm text-ink-muted" data-testid="profile-summary">
-          Voice: {outcome.profile.settings.voice}. Dialect: {outcome.profile.settings.dialect}. You
-          can change both in Settings later.
+          Tutor voice: warm (Mia), Hochdeutsch. Change these and the app&apos;s appearance in{' '}
+          <Link className="underline" href="/settings">
+            Settings
+          </Link>
+          .
         </p>
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-          onClick={() => router.push('/today')}
-          data-testid="start-day-1"
-        >
-          Start Day 1
-        </button>
+        <ActionRow>
+          <Button onClick={() => router.push('/today')} data-testid="start-day-1">
+            Start Day 1
+          </Button>
+        </ActionRow>
       </section>
     );
   }
 
-  return <p>Loading...</p>;
+  return <p role="status">Loading...</p>;
 }

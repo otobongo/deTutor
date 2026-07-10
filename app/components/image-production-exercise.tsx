@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { ImageAsset } from '@/lib/media/provider';
 import type { ProductionResult } from '@/lib/exercises/image-id';
+import { Button } from './ui';
 
 // Production-phase image identification (GT-203): image alone, the learner
 // types (or dictates) the word WITH its article. Grading and FSRS rating
@@ -25,6 +26,8 @@ export function ImageProductionExercise({
         <div
           className="max-w-xs"
           data-testid="image-production-image"
+          role="img"
+          aria-label="Picture of a vocabulary word to identify"
           // Own provider output from validated vocabulary data; not untrusted.
           dangerouslySetInnerHTML={{ __html: image.source.svg }}
         />
@@ -32,7 +35,7 @@ export function ImageProductionExercise({
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
           src={image.source.url}
-          alt=""
+          alt="Picture of a vocabulary word to identify"
           className="max-w-xs"
           data-testid="image-production-image"
         />
@@ -55,14 +58,14 @@ export function ImageProductionExercise({
           disabled={result !== null}
           data-testid="image-production-input"
         />
-        <button
+        <Button
           type="submit"
-          className="rounded-md bg-action px-3 py-1 text-action-inverse disabled:opacity-40"
+          size="sm"
           disabled={input.trim().length === 0 || result !== null}
           data-testid="image-production-submit"
         >
           Submit
-        </button>
+        </Button>
       </form>
 
       {result ? (

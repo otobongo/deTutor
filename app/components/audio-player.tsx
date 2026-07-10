@@ -65,15 +65,20 @@ export function AudioPlayer({
         title={label}
         className={
           variant === 'icon'
-            ? 'inline-flex h-9 w-9 shrink-0 items-center justify-center self-start rounded-pill border border-border-default bg-surface text-ink-muted hover:bg-surface-2 hover:text-ink'
-            : 'self-start rounded-md border bg-surface px-3 py-1 text-sm hover:bg-surface-2'
+            ? 'inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center self-start rounded-pill border border-border-default bg-surface text-ink-muted hover:bg-surface-2 hover:text-ink'
+            : 'inline-flex min-h-11 items-center self-start rounded-md border bg-surface px-3 py-1 text-sm hover:bg-surface-2'
         }
         data-testid={`play-${asset.clipId}`}
       >
         {variant === 'icon' ? <SpeakerIcon /> : label}
       </button>
       {asset.captionsRequired && played ? (
-        <p className="text-sm italic text-ink-muted" data-testid={`captions-${asset.clipId}`}>
+        <p
+          className="text-sm italic text-ink-muted"
+          role="status"
+          lang={asset.source.type === 'speech-synthesis' ? asset.source.lang : undefined}
+          data-testid={`captions-${asset.clipId}`}
+        >
           {asset.captionText}
         </p>
       ) : null}

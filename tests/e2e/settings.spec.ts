@@ -1,37 +1,33 @@
 import { test, expect } from '@playwright/test';
-import { resetStore } from './helpers';
+import { completeOnboarding, resetStore } from './helpers';
 
-// GT-204: settings reachable, editable, and the placement re-run entry
-// exists. Depends on a completed onboarding (profile present) from the
-// onboarding spec ordering, so this spec creates its own profile first.
+// GT-204 (consolidated 2026-07-10): every preference lives in Settings with
+// its default; edits persist; theme and mode controls live here now; the
+// placement re-run entry exists.
 
 test('settings edits persist and placement re-run is reachable', async ({ page }) => {
   resetStore();
-  // Ensure a profile exists: run a minimal onboarding.
-  await page.goto('/');
-  await page.getByTestId('choose-voice-warm-1').click();
-  await page.getByTestId('voice-continue').click();
-  await page.getByTestId('dialect-continue').click();
-  for (let index = 0; index < 5; index += 1) {
-    const textInput = page.getByTestId('probe-text-input');
-    if (await textInput.isVisible().catch(() => false)) {
-      await textInput.fill('wrong');
-      await page.getByTestId('probe-text-submit').click();
-    } else {
-      await page.getByTestId('probe-option').first().click();
-    }
-  }
-  await expect(page.getByTestId('placement-result')).toBeVisible();
+  await completeOnboarding(page);
 
   await page.goto('/settings');
+  // Defaults from the slimmed onboarding.
+  await expect(page.getByTestId('settings-voice-warm-1')).toBeChecked();
+  await expect(page.getByTestId('settings-dialect')).toHaveValue('hochdeutsch');
+
+  await page.getByTestId('settings-voice-energetic-1').check();
   await page.getByTestId('image-style-flat').check();
   await page.getByTestId('settings-dialect').selectOption('berlin');
   await page.getByTestId('settings-save').click();
   await expect(page.getByRole('status')).toContainText('Saved');
 
   await page.reload();
+  await expect(page.getByTestId('settings-voice-energetic-1')).toBeChecked();
   await expect(page.getByTestId('image-style-flat')).toBeChecked();
   await expect(page.getByTestId('settings-dialect')).toHaveValue('berlin');
+
+  // Appearance moved here from the header.
+  await expect(page.getByTestId('mode-toggle')).toBeVisible();
+  await expect(page.getByTestId('theme-toggle')).toBeVisible();
 
   await expect(page.getByTestId('rerun-placement')).toHaveAttribute('href', '/');
 });

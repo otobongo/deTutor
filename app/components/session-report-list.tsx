@@ -1,4 +1,5 @@
 import type { GrammarErrorLogEntry, SessionReport } from '@/lib/db/learner';
+import { StatusChip } from '@/app/components/ui';
 
 // Session report view (GT-308). Honest presentation: every number renders
 // verbatim from the stored report, drill-down lists the actual grammar-log
@@ -37,7 +38,9 @@ export function SessionReportList({
               <dt>Words reviewed</dt>
               <dd data-testid="report-words-reviewed">{report.wordsReviewed}</dd>
               <dt>Recall rate</dt>
-              <dd data-testid="report-recall">{Math.round(report.recallRate * 100)}%</dd>
+              <dd data-testid="report-recall">
+                <StatusChip tone="accent">{Math.round(report.recallRate * 100)}%</StatusChip>
+              </dd>
               <dt>New words</dt>
               <dd data-testid="report-new-words">{report.newWords}</dd>
               <dt>Image-ID accuracy</dt>
@@ -48,7 +51,11 @@ export function SessionReportList({
               </dd>
               <dt>Scenario score</dt>
               <dd data-testid="report-scenario">
-                {report.scenarioScore === null ? 'no scenario' : `${report.scenarioScore} / 10`}
+                {report.scenarioScore === null ? (
+                  'no scenario'
+                ) : (
+                  <StatusChip tone="accent">{report.scenarioScore} / 10</StatusChip>
+                )}
               </dd>
               <dt>Rule practiced</dt>
               <dd data-testid="report-grammar-item">{report.grammarItemPracticed ?? 'none'}</dd>

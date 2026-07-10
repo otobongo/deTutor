@@ -205,6 +205,9 @@ test('mobile viewport renders without horizontal scroll', async ({ page }) => {
 test('the shell navigation reaches every section by keyboard', async ({ page }) => {
   await page.goto('/practice');
   await expect(page.getByTestId('nav-today')).toBeVisible();
+  // First focusable is the skip link (a11y pass 2026-07-10); nav follows.
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(page.getByTestId('nav-today')).toBeFocused();
   await page.keyboard.press('Enter');

@@ -37,6 +37,8 @@ import {
 import { getWordExtrasAction } from '@/app/actions/vocab';
 import { getDialogueLabAction, recordListeningScoreAction } from '@/app/actions/dialogue';
 import { getWordAudioAction } from '@/app/actions/learn';
+import { ActionRow, Button, Chip } from '@/app/components/ui';
+import { FocusHeading } from '@/app/components/focus-heading';
 
 // The daily session runner (GT-220): walks the five GT-108 steps in order,
 // persisting after each so an interrupted session resumes at its step. Every
@@ -107,20 +109,17 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
   if (done) {
     return (
       <section className="flex flex-col gap-4" data-testid="session-complete">
-        <h2 className="text-xl font-medium">Session complete!</h2>
+        <FocusHeading key="session-complete">Session complete!</FocusHeading>
         <p>
           Rule practiced: {payload.grammarItem.name}. New words started: {payload.dayWords.length}.
           {warmupRatings.length > 0 ? ` Cards reviewed: ${warmupRatings.length}.` : ''} Tomorrow
           rotates to the next skill.
         </p>
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-          onClick={() => router.push('/today')}
-          data-testid="back-to-today"
-        >
-          Back to Today
-        </button>
+        <ActionRow>
+          <Button onClick={() => router.push('/today')} data-testid="back-to-today">
+            Back to Today
+          </Button>
+        </ActionRow>
       </section>
     );
   }
@@ -128,18 +127,15 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
   if (step.kind === 'warm-up') {
     return (
       <section className="flex flex-col gap-4" data-testid="step-warm-up-view">
-        <h2 className="text-xl font-medium">Warm-up</h2>
+        <FocusHeading key={step.kind}>Warm-up</FocusHeading>
         {payload.warmupWords.length === 0 ? (
           <div className="flex flex-col gap-3">
             <p>No review cards due yet; they start accumulating from today&apos;s new words.</p>
-            <button
-              type="button"
-              className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-              onClick={() => void advance()}
-              data-testid="warmup-continue"
-            >
-              Continue
-            </button>
+            <ActionRow>
+              <Button onClick={() => void advance()} data-testid="warmup-continue">
+                Continue
+              </Button>
+            </ActionRow>
           </div>
         ) : (
           <WarmupReview
@@ -164,9 +160,9 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
       <section className="flex flex-col gap-4" data-testid="step-vocab-view">
         {/* One template string: this Next version's JSX compiler drops the
             space between an expression and a following word. */}
-        <h2 className="text-xl font-medium">
+        <FocusHeading key={step.kind}>
           {`New vocabulary: ${step.theme} (${Math.min(echoIndex + 1, echoWords.length)} of ${echoWords.length} echoed, ${payload.dayWords.length} in today's set)`}
-        </h2>
+        </FocusHeading>
         {word && payload.wordAudio[word.id] ? (
           <WordWorkspace
             key={word.id}
@@ -203,17 +199,17 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
               }}
             />
             {imageIdResult ? (
-              <button
-                type="button"
-                className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-                onClick={() => {
-                  setImageIdResult(null);
-                  setImageIdIndex((index) => index + 1);
-                }}
-                data-testid="image-id-next"
-              >
-                Continue
-              </button>
+              <ActionRow>
+                <Button
+                  onClick={() => {
+                    setImageIdResult(null);
+                    setImageIdIndex((index) => index + 1);
+                  }}
+                  data-testid="image-id-next"
+                >
+                  Continue
+                </Button>
+              </ActionRow>
             ) : null}
           </div>
         ) : (
@@ -224,20 +220,20 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
                 <VocabCard key={preview.id} word={preview} />
               ))}
             </div>
-            <button
-              type="button"
-              className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-              onClick={() => {
-                // Today's words enter FSRS now, due immediately, so the next
-                // warm-up reviews them (GT-104 introduction policy).
-                void introduceWordsAction(payload.dayWords.map((dayWord) => dayWord.id)).then(() =>
-                  advance(),
-                );
-              }}
-              data-testid="vocab-continue"
-            >
-              Continue
-            </button>
+            <ActionRow>
+              <Button
+                onClick={() => {
+                  // Today's words enter FSRS now, due immediately, so the next
+                  // warm-up reviews them (GT-104 introduction policy).
+                  void introduceWordsAction(payload.dayWords.map((dayWord) => dayWord.id)).then(
+                    () => advance(),
+                  );
+                }}
+                data-testid="vocab-continue"
+              >
+                Continue
+              </Button>
+            </ActionRow>
           </div>
         )}
       </section>
@@ -247,7 +243,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
   if (step.kind === 'grammar-focus') {
     return (
       <section className="flex flex-col gap-4" data-testid="step-grammar-view">
-        <h2 className="text-xl font-medium">Grammar focus: {payload.grammarItem.name}</h2>
+        <FocusHeading key={step.kind}>Grammar focus: {payload.grammarItem.name}</FocusHeading>
         <p className="text-sm text-ink-muted">
           One rule per session. Try producing one sentence that uses it:
         </p>
@@ -264,16 +260,16 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
             value={grammarProduction}
             onChange={(event) => setGrammarProduction(event.target.value)}
             aria-label="Your sentence"
+            lang="de"
             data-testid="grammar-production"
           />
-          <button
+          <Button
             type="submit"
-            className="rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
             disabled={grammarProduction.trim().length === 0}
             data-testid="grammar-continue"
           >
             Continue
-          </button>
+          </Button>
         </form>
       </section>
     );
@@ -283,7 +279,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
     if (step.slot === 'listening') {
       return (
         <section className="flex flex-col gap-4" data-testid="step-skill-view">
-          <h2 className="text-xl font-medium">Skill practice: listening</h2>
+          <FocusHeading key={`${step.kind}-listening`}>Skill practice: listening</FocusHeading>
           <DialogueLab
             load={getDialogueLabAction}
             evaluate={evaluateListeningAction}
@@ -300,7 +296,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
     if (step.slot === 'reading') {
       return (
         <section className="flex flex-col gap-4" data-testid="step-skill-view">
-          <h2 className="text-xl font-medium">Skill practice: reading</h2>
+          <FocusHeading key={`${step.kind}-reading`}>Skill practice: reading</FocusHeading>
           <ReadingPanel
             load={getReadingExerciseAction}
             tap={tapWordAction}
@@ -317,7 +313,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
     if (step.slot === 'scenario') {
       return (
         <section className="flex flex-col gap-4" data-testid="step-skill-view">
-          <h2 className="text-xl font-medium">Skill practice: scenario</h2>
+          <FocusHeading key={`${step.kind}-scenario`}>Skill practice: scenario</FocusHeading>
           <ScenarioChat
             start={getScenarioForTodayAction}
             turn={scenarioTurnAction}
@@ -336,7 +332,9 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
     if (writingStage === 'dictation' && payload.dictation) {
       return (
         <section className="flex flex-col gap-4" data-testid="step-skill-view">
-          <h2 className="text-xl font-medium">Skill practice: writing (dictation)</h2>
+          <FocusHeading key={`${step.kind}-writing-dictation`}>
+            Skill practice: writing (dictation)
+          </FocusHeading>
           <DictationExercise
             audio={payload.dictation.audio}
             result={dictationResult}
@@ -354,14 +352,11 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
             }}
           />
           {dictationResult ? (
-            <button
-              type="button"
-              className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-              onClick={() => void advance()}
-              data-testid="skill-continue"
-            >
-              Continue
-            </button>
+            <ActionRow>
+              <Button onClick={() => void advance()} data-testid="skill-continue">
+                Continue
+              </Button>
+            </ActionRow>
           ) : null}
         </section>
       );
@@ -369,35 +364,32 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
 
     return (
       <section className="flex flex-col gap-4" data-testid="step-skill-view">
-        <h2 className="text-xl font-medium">Skill practice: writing (word tiles)</h2>
+        <FocusHeading key={`${step.kind}-writing-tiles`}>
+          Skill practice: writing (word tiles)
+        </FocusHeading>
         <p className="text-sm text-ink-muted">Build: {payload.tileItem.translation}</p>
         <div className="flex flex-wrap gap-2" data-testid="tile-tray">
           {payload.tileItem.tiles
             .filter((tile) => !tileOrder.includes(tile))
             .map((tile) => (
-              <button
+              <Chip
                 key={tile}
-                type="button"
-                className="rounded-md border bg-surface px-3 py-1"
+                selected={false}
                 onClick={() => setTileOrder([...tileOrder, tile])}
                 data-testid={`tile-${tile}`}
               >
                 {tile}
-              </button>
+              </Chip>
             ))}
         </div>
-        <p data-testid="tile-order">{tileOrder.join(' ')}</p>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            className="rounded-md border bg-surface px-3 py-1"
-            onClick={() => setTileOrder([])}
-          >
+        <p data-testid="tile-order" lang="de">
+          {tileOrder.join(' ')}
+        </p>
+        <ActionRow>
+          <Button variant="secondary" onClick={() => setTileOrder([])}>
             Reset
-          </button>
-          <button
-            type="button"
-            className="rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
+          </Button>
+          <Button
             disabled={tileOrder.length !== payload.tileItem.tiles.length}
             onClick={() => {
               const result = gradeTileOrder(payload.tileItem, tileOrder, new Date().toISOString());
@@ -414,31 +406,28 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
             data-testid="tile-check"
           >
             Check
-          </button>
-        </div>
+          </Button>
+        </ActionRow>
         {tileFeedback ? (
           <div className="flex flex-col gap-2">
             <p role="status" data-testid="tile-feedback">
               {tileFeedback}
             </p>
             {payload.dictation ? (
-              <button
-                type="button"
-                className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-                onClick={() => setWritingStage('dictation')}
-                data-testid="writing-to-dictation"
-              >
-                Next: dictation
-              </button>
+              <ActionRow>
+                <Button
+                  onClick={() => setWritingStage('dictation')}
+                  data-testid="writing-to-dictation"
+                >
+                  Next: dictation
+                </Button>
+              </ActionRow>
             ) : (
-              <button
-                type="button"
-                className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-                onClick={() => void advance()}
-                data-testid="skill-continue"
-              >
-                Continue
-              </button>
+              <ActionRow>
+                <Button onClick={() => void advance()} data-testid="skill-continue">
+                  Continue
+                </Button>
+              </ActionRow>
             )}
           </div>
         ) : null}
@@ -448,7 +437,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
 
   return (
     <section className="flex flex-col gap-4" data-testid="step-wrapup-view">
-      <h2 className="text-xl font-medium">Wrap-up</h2>
+      <FocusHeading key={step.kind}>Wrap-up</FocusHeading>
       <label className="flex flex-col gap-1">
         <span>How confident are you with {payload.grammarItem.name}? (0 to 10)</span>
         <input
@@ -461,14 +450,11 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
           data-testid="wrapup-grammar-score"
         />
       </label>
-      <button
-        type="button"
-        className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-        onClick={() => void advance({ grammarScore })}
-        data-testid="wrapup-finish"
-      >
-        Finish session
-      </button>
+      <ActionRow>
+        <Button onClick={() => void advance({ grammarScore })} data-testid="wrapup-finish">
+          Finish session
+        </Button>
+      </ActionRow>
     </section>
   );
 }

@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import type { VocabularyWord } from '@/lib/db/curriculum';
 import type { AudioAsset } from '@/lib/media/provider';
 import type { WordExtrasPayload } from '@/app/actions/vocab';
 import { gradeFor } from '@/lib/learn/progress';
 import { WordWorkspace } from './word-workspace';
+import { ActionRow, Button, ButtonLink, StatusChip } from './ui';
 
 // The Learn flow (owner-directed 2026-07-10): read, recite, understand,
 // mark, next. One word at a time through a group, starting at the first
@@ -105,15 +105,13 @@ export function LearnFlow({
       <section className="flex flex-col gap-3" data-testid="learn-flow-done">
         <p role="status">
           {learnedIds.size} of {words.length} words in {groupTitle} marked as learned ({percent}%,
-          grade {gradeFor(percent)}).
+          grade <StatusChip tone="accent">{gradeFor(percent)}</StatusChip>).
         </p>
-        <Link
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-          href="/learn"
-          data-testid="learn-back"
-        >
-          Back to Learn
-        </Link>
+        <ActionRow>
+          <ButtonLink href="/learn" data-testid="learn-back">
+            Back to Learn
+          </ButtonLink>
+        </ActionRow>
       </section>
     );
   }
@@ -123,7 +121,7 @@ export function LearnFlow({
 
   return (
     <section className="flex flex-col gap-5" data-testid="learn-flow">
-      <p className="text-sm text-ink-muted" data-testid="learn-progress">
+      <p className="text-sm text-ink-muted" aria-live="polite" data-testid="learn-progress">
         {groupTitle}: {learnedIds.size} of {words.length} learned ({percent}%, grade{' '}
         {gradeFor(percent)}). Word {index + 1}.
       </p>
@@ -142,37 +140,28 @@ export function LearnFlow({
         <p data-testid="learn-word-loading">Preparing {word.german}&hellip;</p>
       )}
 
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          className="rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
+      <ActionRow>
+        <Button
           disabled={busy || audio === null}
           onClick={() => void markAndNext()}
           data-testid="learn-mark-next"
         >
           Mark as learned, next word
-        </button>
-        <button
-          type="button"
-          className="rounded-md border border-border-default bg-surface px-4 py-2 disabled:opacity-40"
-          disabled={busy}
-          onClick={skip}
-          data-testid="learn-skip"
-        >
+        </Button>
+        <Button variant="secondary" disabled={busy} onClick={skip} data-testid="learn-skip">
           Skip for now
-        </button>
+        </Button>
         {isLearned ? (
-          <button
-            type="button"
-            className="rounded-md border border-border-default bg-surface px-4 py-2 disabled:opacity-40"
+          <Button
+            variant="secondary"
             disabled={busy}
             onClick={() => void unmark()}
             data-testid="learn-unmark"
           >
             Unmark
-          </button>
+          </Button>
         ) : null}
-      </div>
+      </ActionRow>
     </section>
   );
 }

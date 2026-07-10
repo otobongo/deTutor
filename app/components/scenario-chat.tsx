@@ -9,6 +9,7 @@ import type {
 } from '@/app/actions/scenario';
 import type { ScenarioSummary } from '@/lib/scenarios/summary';
 import { ScenarioSummaryView } from './scenario-summary';
+import { ActionRow, Button } from './ui';
 
 // Scenario chat (GT-216/218 UI): the learner talks, the persona answers in
 // scene, corrections ride inline in the fixed Gut!/Fast! format, and ending
@@ -55,14 +56,11 @@ export function ScenarioChat({
     return (
       <div className="flex flex-col gap-3">
         <p role="status">No scenario is available today.</p>
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-          onClick={() => onDone(null)}
-          data-testid="scenario-skip"
-        >
-          Continue
-        </button>
+        <ActionRow>
+          <Button onClick={() => onDone(null)} data-testid="scenario-skip">
+            Continue
+          </Button>
+        </ActionRow>
       </div>
     );
   }
@@ -80,14 +78,11 @@ export function ScenarioChat({
         {ending.score !== null ? (
           <p data-testid="scenario-score">Scenario score: {ending.score} / 10.</p>
         ) : null}
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-          onClick={() => onDone(ending.score)}
-          data-testid="skill-continue"
-        >
-          Continue
-        </button>
+        <ActionRow>
+          <Button onClick={() => onDone(ending.score)} data-testid="skill-continue">
+            Continue
+          </Button>
+        </ActionRow>
       </div>
     );
   }
@@ -148,17 +143,16 @@ export function ScenarioChat({
             {message.text}
           </li>
         ))}
+        {lastCorrection && lastMessage?.role === 'tutor' ? (
+          <li
+            className="list-none rounded-md border border-border-default bg-surface p-2 text-sm"
+            data-testid="scenario-correction"
+          >
+            <span className="font-medium">{lastCorrection.acknowledgment}</span>{' '}
+            <span lang="de">{lastCorrection.better}</span> ({lastCorrection.reason})
+          </li>
+        ) : null}
       </ol>
-
-      {lastCorrection && lastMessage?.role === 'tutor' ? (
-        <p
-          className="rounded-md border border-border-default bg-surface p-2 text-sm"
-          data-testid="scenario-correction"
-        >
-          <span className="font-medium">{lastCorrection.acknowledgment}</span>{' '}
-          <span lang="de">{lastCorrection.better}</span> ({lastCorrection.reason})
-        </p>
-      ) : null}
 
       {offline ? (
         <p
@@ -186,26 +180,26 @@ export function ScenarioChat({
           disabled={busy}
           data-testid="scenario-input"
         />
-        <button
+        <Button
           type="submit"
-          className="rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
           disabled={busy || draft.trim().length === 0}
           data-testid="scenario-send"
         >
           Send
-        </button>
+        </Button>
       </form>
 
       {learnerTurns >= MIN_TURNS_TO_END || offline ? (
-        <button
-          type="button"
-          className="self-start rounded-md border border-border-default bg-surface px-4 py-2 disabled:opacity-40"
-          disabled={busy}
-          onClick={() => void finish()}
-          data-testid="scenario-end"
-        >
-          End scene
-        </button>
+        <ActionRow>
+          <Button
+            variant="secondary"
+            disabled={busy}
+            onClick={() => void finish()}
+            data-testid="scenario-end"
+          >
+            End scene
+          </Button>
+        </ActionRow>
       ) : null}
     </div>
   );

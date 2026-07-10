@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { ReadingExercisePayload, ReadingSubmission, TapOutcome } from '@/app/actions/reading';
+import { ActionRow, Button, Chip } from './ui';
 
 // Reading slot (GT-207/208/209 UI): the text renders word by word so every
 // word is tappable; tapping shows the card essentials and quietly enqueues
@@ -36,20 +37,21 @@ export function ReadingPanel({
   }, [load]);
 
   if (exercise === 'loading') {
-    return <p data-testid="reading-loading">Preparing today&apos;s text&hellip;</p>;
+    return (
+      <p role="status" data-testid="reading-loading">
+        Preparing today&apos;s text&hellip;
+      </p>
+    );
   }
   if (exercise === null || exercise.task.format !== 'richtig-falsch') {
     return (
       <div className="flex flex-col gap-3">
         <p role="status">The reading exercise could not be prepared today.</p>
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-          onClick={() => onDone(null)}
-          data-testid="reading-skip"
-        >
-          Continue
-        </button>
+        <ActionRow>
+          <Button onClick={() => onDone(null)} data-testid="reading-skip">
+            Continue
+          </Button>
+        </ActionRow>
       </div>
     );
   }
@@ -106,20 +108,15 @@ export function ReadingPanel({
             <span lang="de">{item.statement}</span>
             <span className="flex gap-2" role="group" aria-label={`Statement ${index + 1}`}>
               {[true, false].map((value) => (
-                <button
+                <Chip
                   key={String(value)}
-                  type="button"
-                  className={`rounded-md border px-3 py-1 ${
-                    answers[index] === value
-                      ? 'border-border-strong bg-action text-action-inverse'
-                      : 'border-border-default bg-surface'
-                  }`}
+                  selected={answers[index] === value}
                   disabled={result !== null}
                   onClick={() => setAnswers({ ...answers, [index]: value })}
                   data-testid={`reading-answer-${index}-${value ? 'richtig' : 'falsch'}`}
                 >
                   {value ? 'Richtig' : 'Falsch'}
-                </button>
+                </Chip>
               ))}
             </span>
           </li>
@@ -127,37 +124,34 @@ export function ReadingPanel({
       </ol>
 
       {result === null ? (
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
-          disabled={!allAnswered || busy}
-          onClick={() => {
-            setBusy(true);
-            void submit(
-              exercise.task,
-              items.map((_, index) => answers[index] as boolean),
-            ).then((submission) => {
-              setBusy(false);
-              setResult(submission ?? { correct: 0, total: items.length, score: 0 });
-            });
-          }}
-          data-testid="reading-submit"
-        >
-          Check answers
-        </button>
+        <ActionRow>
+          <Button
+            disabled={!allAnswered || busy}
+            onClick={() => {
+              setBusy(true);
+              void submit(
+                exercise.task,
+                items.map((_, index) => answers[index] as boolean),
+              ).then((submission) => {
+                setBusy(false);
+                setResult(submission ?? { correct: 0, total: items.length, score: 0 });
+              });
+            }}
+            data-testid="reading-submit"
+          >
+            Check answers
+          </Button>
+        </ActionRow>
       ) : (
         <div className="flex flex-col gap-2">
           <p role="status" data-testid="reading-score">
             {result.correct} of {result.total} correct: {result.score} / 100.
           </p>
-          <button
-            type="button"
-            className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-            onClick={() => onDone(result.score)}
-            data-testid="skill-continue"
-          >
-            Continue
-          </button>
+          <ActionRow>
+            <Button onClick={() => onDone(result.score)} data-testid="skill-continue">
+              Continue
+            </Button>
+          </ActionRow>
         </div>
       )}
     </div>

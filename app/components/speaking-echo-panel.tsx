@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { VocabularyWord } from '@/lib/db/curriculum';
 import type { AudioAsset } from '@/lib/media/provider';
 import type { EchoAttemptOutcome, EchoSnapshot } from '@/app/actions/speaking';
 import { MAX_ATTEMPTS } from '@/lib/exercises/speaking-echo';
 import { AudioPlayer } from './audio-player';
+import { ActionRow, Button, StatusChip } from './ui';
 
 // Speaking echo practice (GT-215 UI): target by target, the learner hears
 // the word, says it, and types what they said (the fallback voice channel);
@@ -18,6 +19,36 @@ interface EchoTarget {
 
 function targetLabel(word: VocabularyWord): string {
   return word.article ? `${word.article} ${word.german}` : word.german;
+}
+
+// Keyed by target word id so next() mounts a fresh block and carries focus
+// to it, announcing the new target to keyboard and screen-reader users.
+function TargetWordBlock({ target }: { target: EchoTarget }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    ref.current?.focus();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      tabIndex={-1}
+      className="flex flex-col gap-2 rounded-lg border bg-surface p-4 outline-none"
+    >
+      <p className="text-2xl font-medium" lang="de" data-testid="speaking-target">
+        {target.word.article ? (
+          <span style={{ color: `var(--article-${target.word.article})` }}>
+            {target.word.article}{' '}
+          </span>
+        ) : null}
+        {target.word.german}
+      </p>
+      <p className="text-sm text-ink-muted">{target.word.translation}</p>
+      {target.word.ipa ? <p className="font-mono text-sm">{target.word.ipa}</p> : null}
+      <AudioPlayer asset={target.audio} label="Hear it" variant="icon" />
+    </div>
+  );
 }
 
 export function SpeakingEchoPanel({
@@ -38,7 +69,8 @@ export function SpeakingEchoPanel({
   if (!target) {
     return (
       <p role="status" data-testid="speaking-done">
-        Alle geschafft! You worked through every echo target. Come back tomorrow for new words.
+        <StatusChip tone="success">Alle geschafft!</StatusChip> You worked through every echo
+        target. Come back tomorrow for new words.
       </p>
     );
   }
@@ -96,19 +128,7 @@ export function SpeakingEchoPanel({
         Word {index + 1} of {targets.length}: attempt {Math.min(current.attempts + 1, MAX_ATTEMPTS)}{' '}
         of {MAX_ATTEMPTS}
       </p>
-      <div className="flex flex-col gap-2 rounded-lg border bg-surface p-4">
-        <p className="text-2xl font-medium" lang="de" data-testid="speaking-target">
-          {target.word.article ? (
-            <span style={{ color: `var(--article-${target.word.article})` }}>
-              {target.word.article}{' '}
-            </span>
-          ) : null}
-          {target.word.german}
-        </p>
-        <p className="text-sm text-ink-muted">{target.word.translation}</p>
-        {target.word.ipa ? <p className="font-mono text-sm">{target.word.ipa}</p> : null}
-        <AudioPlayer asset={target.audio} label="Hear it" variant="icon" />
-      </div>
+      <TargetWordBlock key={target.word.id} target={target} />
 
       {!settled ? (
         <form
@@ -127,14 +147,13 @@ export function SpeakingEchoPanel({
             disabled={busy}
             data-testid="speaking-transcript"
           />
-          <button
+          <Button
             type="submit"
-            className="rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
             disabled={busy || transcript.trim().length === 0}
             data-testid="speaking-submit"
           >
             Check
-          </button>
+          </Button>
         </form>
       ) : null}
 
@@ -145,14 +164,11 @@ export function SpeakingEchoPanel({
       ) : null}
 
       {settled ? (
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-          onClick={next}
-          data-testid="speaking-next"
-        >
-          Next word
-        </button>
+        <ActionRow>
+          <Button onClick={next} data-testid="speaking-next">
+            Next word
+          </Button>
+        </ActionRow>
       ) : null}
     </div>
   );

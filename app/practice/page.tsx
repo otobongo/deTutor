@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ButtonLink } from '@/app/components/ui';
 
 // Practice: the skills library (GT-220). Listening, reading, writing, and
 // scenario dialogue rotate through the daily session; the echo loop is also
@@ -45,13 +46,15 @@ export default function PracticePage() {
             <h2 className="font-medium capitalize">{entry.skill}</h2>
             <p className="text-sm text-ink-muted">{entry.description}</p>
             {entry.href ? (
-              <Link
-                className="mt-2 inline-block rounded-md bg-action px-3 py-1 text-sm text-action-inverse"
+              <ButtonLink
+                variant="primary"
+                size="sm"
+                className="mt-2"
                 href={entry.href}
                 data-testid={`practice-${entry.skill}-link`}
               >
                 Start echo practice
-              </Link>
+              </ButtonLink>
             ) : null}
           </li>
         ))}

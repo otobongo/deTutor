@@ -6,6 +6,7 @@ import { foundationProgressSchema, learnedWordSchema, learnerPaths } from '@/lib
 import { getDataStore } from '@/lib/db/store';
 import { loadLearnerProfile } from '@/lib/db/profile';
 import { gradeFor, groupProgress } from '@/lib/learn/progress';
+import { ProgressBar, StatusChip } from '@/app/components/ui';
 
 // Learn (owner-directed 2026-07-10): the whole curriculum browsable and
 // markable, nothing gated. Foundations first (the structures that
@@ -60,8 +61,8 @@ export default async function LearnPage() {
         <h1 className="text-3xl font-semibold">Learn</h1>
         <p className="text-ink-muted" data-testid="learn-summary">
           {totalLearned} of {totalWords} A1 words learned ({overallPercent}%, grade{' '}
-          {gradeFor(overallPercent)}). Study anything in any order; nothing here is locked, and the
-          unit test stays open too.
+          <StatusChip tone="accent">{gradeFor(overallPercent)}</StatusChip>). Study anything in any
+          order; nothing here is locked, and the unit test stays open too.
         </p>
       </div>
 
@@ -83,11 +84,20 @@ export default async function LearnPage() {
                 >
                   <span className="font-medium">{topic.title}</span>
                   <span className="text-sm text-ink-muted">{topic.blurb}</span>
-                  <span className="mt-auto pt-2 text-xs text-ink-subtle">
-                    {progress?.marked ? 'Learned ✓' : 'Not marked yet'}
-                    {progress?.bestScore !== null && progress?.bestScore !== undefined
-                      ? ` · best ${progress.bestScore}/100 (${gradeFor(progress.bestScore)})`
-                      : ' · self-check waiting'}
+                  <span className="mt-auto flex flex-wrap items-center gap-1 pt-2 text-xs text-ink-subtle">
+                    {progress?.marked ? (
+                      <StatusChip tone="success">Learned ✓</StatusChip>
+                    ) : (
+                      'Not marked yet'
+                    )}
+                    {progress?.bestScore !== null && progress?.bestScore !== undefined ? (
+                      <>
+                        · best {progress.bestScore}/100 (
+                        <StatusChip tone="accent">{gradeFor(progress.bestScore)}</StatusChip>)
+                      </>
+                    ) : (
+                      ' · self-check waiting'
+                    )}
                   </span>
                 </Link>
               </li>
@@ -112,22 +122,15 @@ export default async function LearnPage() {
                   data-testid={`group-card-${group.id}`}
                 >
                   <span className="font-medium">{group.title}</span>
-                  <span className="text-sm text-ink-muted">
-                    {progress.learned} of {progress.total} learned · grade {progress.grade}
+                  <span className="flex items-center gap-1 text-sm text-ink-muted">
+                    {progress.learned} of {progress.total} learned · grade{' '}
+                    <StatusChip tone="accent">{progress.grade}</StatusChip>
                   </span>
-                  <span
-                    className="h-2 w-full overflow-hidden rounded-pill bg-surface-2"
-                    role="progressbar"
-                    aria-valuenow={progress.percent}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-label={`${group.title} progress`}
-                  >
-                    <span
-                      className="block h-full bg-action"
-                      style={{ width: `${progress.percent}%` }}
-                    />
-                  </span>
+                  <ProgressBar
+                    percent={progress.percent}
+                    label={`${group.title} progress`}
+                    tone="accent"
+                  />
                 </Link>
               </li>
             );
