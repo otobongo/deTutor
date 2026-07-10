@@ -50,6 +50,20 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **B1 exam content wired and generated (done 2026-07-10, owner-directed; completes
+      GT-307).** Each Goethe module generates on demand (new deep call site
+      b1-exam-generation, fifth justified deep site) into the code-owned blueprint, validated
+      against the official part/item counts with one retry, and caches forever in the
+      b1ExamContent store collection; a deterministic corpus filler (never cached) keeps every
+      sitting possible without the brain, labeled honestly. New /exam/[skill] pages run a
+      full timed sitting: the official clock auto-submits at zero, objective modules run item
+      by item (Lesen 5/30, Hören 4/30), production modules (Schreiben, Sprechen 3 tasks each)
+      self-score against content points; results normalize 0-100, persist per module, and the
+      overview shows scores plus Bestanden when all four clear 60. Owner decision: the exam
+      stays open at any level for testing. Real content generated live with the owner's key
+      (all four modules cached in the dev store). 25 Playwright checks green incl. two full
+      exam sittings.
+
 - [x] **Retention loop closed (done 2026-07-10, owner-directed gap fixes).** Passing a unit now
       writes its retention record (retentionScoreSchema gained nullable passedAt anchoring the
       7/14/30/60-day schedule; old records parse via default) and advances the profile to the

@@ -41,6 +41,7 @@ export type GeminiCallSite =
   | 'writing-correction'
   | 'remediation-generation'
   | 'unit-test-generation'
+  | 'b1-exam-generation'
   | 'weekly-summary'
   | 'vocab-enrichment';
 
@@ -58,6 +59,8 @@ export const ESCALATION_MAP: Readonly<Record<GeminiCallSite, GeminiTier>> = {
   'remediation-generation': 'fast',
   // Generated tests must be valid, balanced, and answer-keyed (GT-301).
   'unit-test-generation': 'deep',
+  // The exit exam decides the certificate simulation; validity over speed.
+  'b1-exam-generation': 'deep',
   // Weekly pattern synthesis across the full error log (GT-309).
   'weekly-summary': 'deep',
   // Build-time batch filling IPA and example sentences (GT-D1).

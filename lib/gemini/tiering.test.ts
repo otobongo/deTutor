@@ -41,12 +41,13 @@ describe('model tiering (GT-110)', () => {
     expect(logs[0]?.tier).toBe('deep');
   });
 
-  it('maps exactly the four planned deep call sites', () => {
+  it('maps exactly the five planned deep call sites', () => {
     const deepSites = Object.entries(ESCALATION_MAP)
       .filter(([, tier]) => tier === 'deep')
       .map(([site]) => site)
       .sort();
     expect(deepSites).toEqual([
+      'b1-exam-generation',
       'listening-nuance-b1',
       'unit-test-generation',
       'weekly-summary',

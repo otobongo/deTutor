@@ -89,6 +89,15 @@ export function validateExamModule(module: ExamModule): string[] {
   return problems;
 }
 
+// A module's persisted result: normalized 0-100, 60 passes (GT-302 rule).
+export const examResultSchema = z.object({
+  skill: z.enum(['listening', 'reading', 'writing', 'speaking']),
+  score: z.number().min(0).max(100),
+  passed: z.boolean(),
+  at: z.string().datetime(),
+});
+export type ExamResult = z.infer<typeof examResultSchema>;
+
 // Module timer: pure clock math the UI enforces.
 export interface ModuleTimer {
   readonly remainingSeconds: number;

@@ -17,7 +17,7 @@ function hashString(input: string): number {
   return hash;
 }
 
-function articleItem(word: VocabularyWord, grammarItemId: string): ObjectiveItem {
+export function articleItem(word: VocabularyWord, grammarItemId: string): ObjectiveItem {
   const article = word.article ?? 'das';
   return {
     stimulus: word.exampleDe ?? `___ ${word.german}`,
@@ -28,7 +28,7 @@ function articleItem(word: VocabularyWord, grammarItemId: string): ObjectiveItem
   };
 }
 
-function meaningItem(
+export function meaningItem(
   word: VocabularyWord,
   distractors: readonly VocabularyWord[],
   grammarItemId: string,
