@@ -50,6 +50,17 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **Voice preference wired to all audio (done 2026-07-10, owner-reported robotic voice).**
+      Root cause of the robotic voice: MEDIA_PROVIDER=placeholder in the owner's .env.local, so
+      the app only ever used browser speech synthesis; flipped to gemini. The Settings/onboarding
+      voice profile now drives every generated clip: VOICE_NAME_BY_PROFILE (warm-1=Sulafat,
+      neutral-1=Kore, energetic-1=Puck) moved to lib/media/tts.ts and is shared by on-demand TTS,
+      the batch script default, and the Live session. Audio cache keys are voice-aware
+      ({clipId}@{Voice} for non-default voices; the bare key stays for Kore so the 55
+      pre-generated clips remain valid), so changing the voice in Settings mints fresh clips
+      immediately. Onboarding voice samples now speak in their own voices. Verified live:
+      warm-1 profile minted word/dict clips as @Sulafat.
+
 - [x] **Dialogue lab (done 2026-07-10, owner-directed).** The listening slot is now a spoken
       two-person conversation: brain-generated on the unit theme inside a code-owned envelope
       (6-10 turns, level length caps, corpus stretch budget with verb-stem inflection matching),

@@ -4,6 +4,7 @@ import { getDataStore } from '@/lib/db/store';
 import { loadLearnerProfile } from '@/lib/db/profile';
 import { getMediaProvider } from '@/lib/media';
 import { registerPlaceholderClip } from '@/lib/media/placeholder-clips';
+import { narratorFor } from '@/lib/media/tts';
 import { echoAttemptAction } from '@/app/actions/speaking';
 import { SpeakingEchoPanel } from '@/app/components/speaking-echo-panel';
 
@@ -40,9 +41,10 @@ export default async function SpeakingPracticePage() {
   const words = [...corpus, ...corpus].slice(start, start + TARGETS_PER_VISIT);
 
   const provider = getMediaProvider();
+  const narrator = narratorFor(profile.settings.voice);
   for (const word of words) {
     const label = word.article ? `${word.article} ${word.german}` : word.german;
-    registerPlaceholderClip(`word-${word.id}`, label);
+    registerPlaceholderClip(`word-${word.id}`, label, { speakers: narrator });
   }
   // Concurrent fetch so on-demand synthesis waits overlap instead of stacking.
   const audios = await Promise.all(words.map((word) => provider.getAudio(`word-${word.id}`)));

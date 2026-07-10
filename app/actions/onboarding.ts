@@ -5,6 +5,7 @@ import { dialectSchema, type LearnerProfile } from '@/lib/db/learner';
 import { getDataStore } from '@/lib/db/store';
 import { getMediaProvider, type AudioAsset } from '@/lib/media';
 import { registerPlaceholderClip } from '@/lib/media/placeholder-clips';
+import { narratorFor } from '@/lib/media/tts';
 import { runPlacement, type PlacementAnswer, type PlacementResult } from '@/lib/placement/engine';
 import { persistPlacement } from '@/lib/placement/persist';
 import { z } from 'zod';
@@ -26,9 +27,17 @@ const VOICE_SAMPLES: readonly VoiceOption[] = [
   { id: 'energetic-1', name: 'Lena', group: 'Energetic', sampleClipId: 'voice-sample-energetic-1' },
 ];
 
-registerPlaceholderClip('voice-sample-warm-1', 'Hallo! Ich bin Mia. Schön, dich kennenzulernen.');
-registerPlaceholderClip('voice-sample-neutral-1', 'Guten Tag. Ich bin Jonas. Fangen wir an?');
-registerPlaceholderClip('voice-sample-energetic-1', 'Hi! Ich bin Lena. Los geht es!');
+// Each sample speaks in ITS profile's Gemini voice, so choosing a voice at
+// onboarding previews the real tutor sound.
+registerPlaceholderClip('voice-sample-warm-1', 'Hallo! Ich bin Mia. Schön, dich kennenzulernen.', {
+  speakers: narratorFor('warm-1'),
+});
+registerPlaceholderClip('voice-sample-neutral-1', 'Guten Tag. Ich bin Jonas. Fangen wir an?', {
+  speakers: narratorFor('neutral-1'),
+});
+registerPlaceholderClip('voice-sample-energetic-1', 'Hi! Ich bin Lena. Los geht es!', {
+  speakers: narratorFor('energetic-1'),
+});
 
 export async function getVoiceOptions(): Promise<readonly VoiceOption[]> {
   return Promise.resolve(VOICE_SAMPLES);

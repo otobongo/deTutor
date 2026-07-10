@@ -72,6 +72,9 @@ export function SettingsForm({ profile }: { profile: LearnerProfile }) {
             </option>
           ))}
         </select>
+        <span className="text-xs text-ink-muted">
+          Used for all spoken audio: words, sentences, explanations, and live conversation.
+        </span>
       </label>
 
       <label className="flex flex-col gap-1">

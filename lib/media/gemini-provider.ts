@@ -4,7 +4,7 @@ import type { AudioAsset, ImageAsset, MediaProvider, VoiceConfig, VoiceSession }
 import { buildPlaceholderImageAsset } from './placeholder-images';
 import { lookupPlaceholderClipEntry, type ClipEntry } from './placeholder-clips';
 import { MEDIA_DIR, readManifest, writeManifest } from './manifest';
-import { DEFAULT_TTS_VOICE, sdkTtsSynthesizer, type TtsSynthesizer } from './tts';
+import { audioCacheKey, DEFAULT_TTS_VOICE, sdkTtsSynthesizer, type TtsSynthesizer } from './tts';
 import {
   GeminiLiveVoiceSession,
   sdkLiveTransport,
@@ -55,11 +55,14 @@ export class GeminiProvider implements MediaProvider {
   async getAudio(clipId: string): Promise<AudioAsset> {
     const entry = lookupPlaceholderClipEntry(clipId);
     const captionText = entry?.text ?? '';
-    const served = this.servedAsset(clipId, captionText);
+    // The cache key carries the voice mix, so a Settings voice change mints
+    // fresh clips instead of replaying the old sound.
+    const cacheKey = audioCacheKey(clipId, entry?.speakers ?? null);
+    const served = this.servedAsset(clipId, cacheKey, captionText);
     if (served) return served;
 
     if (entry && Date.now() >= this.cooldownUntil) {
-      const generation = this.generateClip(clipId, entry);
+      const generation = this.generateClip(cacheKey, entry);
       // Bounded wait: serve the fresh clip when synthesis is quick, or fall
       // back now and let the background generation land it for next time.
       const done = await Promise.race([
@@ -67,7 +70,7 @@ export class GeminiProvider implements MediaProvider {
         new Promise<false>((resolve) => setTimeout(() => resolve(false), this.onDemandWaitMs)),
       ]);
       if (done) {
-        const fresh = this.servedAsset(clipId, captionText);
+        const fresh = this.servedAsset(clipId, cacheKey, captionText);
         if (fresh) return fresh;
       }
     }
@@ -82,8 +85,8 @@ export class GeminiProvider implements MediaProvider {
     };
   }
 
-  private servedAsset(clipId: string, captionText: string): AudioAsset | null {
-    const file = readManifest(this.mediaDir).audio[clipId];
+  private servedAsset(clipId: string, cacheKey: string, captionText: string): AudioAsset | null {
+    const file = readManifest(this.mediaDir).audio[cacheKey];
     if (!file || !existsSync(path.join(this.mediaDir, file))) return null;
     return {
       clipId,
@@ -95,10 +98,11 @@ export class GeminiProvider implements MediaProvider {
     };
   }
 
-  // One synthesis per clip at a time; resolves true when the clip landed on
-  // disk. Failures open the cooldown and resolve false, never throw.
-  private generateClip(clipId: string, entry: ClipEntry): Promise<boolean> {
-    const existing = this.inFlight.get(clipId);
+  // One synthesis per cache key at a time; resolves true when the clip
+  // landed on disk. Failures open the cooldown and resolve false, never
+  // throw.
+  private generateClip(cacheKey: string, entry: ClipEntry): Promise<boolean> {
+    const existing = this.inFlight.get(cacheKey);
     if (existing) return existing;
     const generation = (async (): Promise<boolean> => {
       try {
@@ -108,20 +112,20 @@ export class GeminiProvider implements MediaProvider {
           lang: entry.lang,
         });
         mkdirSync(path.join(this.mediaDir, 'audio'), { recursive: true });
-        const fileName = `audio/${clipId}.wav`;
+        const fileName = `audio/${cacheKey}.wav`;
         writeFileSync(path.join(this.mediaDir, fileName), wav);
         const manifest = readManifest(this.mediaDir);
-        manifest.audio[clipId] = fileName;
+        manifest.audio[cacheKey] = fileName;
         writeManifest(manifest, this.mediaDir);
         return true;
       } catch {
         this.cooldownUntil = Date.now() + SYNTH_COOLDOWN_MS;
         return false;
       } finally {
-        this.inFlight.delete(clipId);
+        this.inFlight.delete(cacheKey);
       }
     })();
-    this.inFlight.set(clipId, generation);
+    this.inFlight.set(cacheKey, generation);
     return generation;
   }
 
