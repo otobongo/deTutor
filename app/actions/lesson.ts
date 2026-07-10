@@ -4,11 +4,14 @@ import { seedGrammarItems, seedUnits } from '@/db/seed/units';
 import { loadVocabSeedFile } from '@/db/seed/seed-vocab';
 import { listeningClipId, UNIT_LISTENING_CLIPS } from '@/db/seed/listening-clips';
 import {
+  fsrsCardStateSchema,
   learnerPaths,
   learnerProfileSchema,
   lessonSessionConverter,
   lessonSessionSchema,
   retentionScoreSchema,
+  type FsrsCardState,
+  type GrammarErrorCategory,
   type LessonSession,
   type SkillSlot,
 } from '@/lib/db/learner';
@@ -19,9 +22,11 @@ import { needsRemediation } from '@/lib/assessment/retention';
 import { buildSessionReport, persistSessionReport } from '@/lib/lesson/wrap-up';
 import { evaluateListening, type ListeningEvaluation } from '@/lib/exercises/listening-eval';
 import { GeminiError, getGeminiClient } from '@/lib/gemini/client';
-import { getMediaProvider, type AudioAsset } from '@/lib/media';
+import { getMediaProvider, type AudioAsset, type ImageAsset } from '@/lib/media';
 import { registerPlaceholderClip } from '@/lib/media/placeholder-clips';
 import { TILE_ITEMS, type TileItem } from '@/lib/exercises/word-tiles';
+import { buildRecognitionExercise, type RecognitionExercise } from '@/lib/exercises/image-id';
+import { resolveImageStyle } from '@/lib/exercises/image-style';
 import type { ReviewRating } from '@/lib/fsrs/scheduler';
 
 // Lesson server actions (GT-220): compose or resume today's session, persist
@@ -33,6 +38,17 @@ for (const [unitId, text] of Object.entries(UNIT_LISTENING_CLIPS)) {
   registerPlaceholderClip(listeningClipId(unitId), text);
 }
 
+export interface ImageIdPayload {
+  readonly word: VocabularyWord;
+  readonly exercise: RecognitionExercise;
+  readonly image: ImageAsset;
+}
+
+export interface DictationPayload {
+  readonly text: string;
+  readonly audio: AudioAsset;
+}
+
 export interface TodaySessionPayload {
   readonly session: LessonSession;
   readonly unit: Unit;
@@ -42,6 +58,11 @@ export interface TodaySessionPayload {
   readonly listeningClip: AudioAsset;
   readonly tileItem: TileItem;
   readonly decayedUnitIds: readonly string[];
+  // Warm-up display data for the step's queueWordIds, in queue order. Cards
+  // whose ids fall outside the corpus (brain-minted mini cards) are omitted.
+  readonly warmupWords: readonly VocabularyWord[];
+  readonly imageId: readonly ImageIdPayload[];
+  readonly dictation: DictationPayload | null;
 }
 
 // Rotation and remediation inputs come from stored state: the most recent
@@ -102,6 +123,13 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
   const sessionId = `session-${now.toISOString().slice(0, 10)}`;
   const existing = await loadActiveSession(sessionId);
   const corpus = loadVocabSeedFile(profile.data.level);
+  const rawCards = await store.list(learnerPaths.cards());
+  const cards = rawCards
+    .map((data) => fsrsCardStateSchema.safeParse(data))
+    .flatMap((parsed): FsrsCardState[] => (parsed.success ? [parsed.data] : []));
+  // Words already carrying a card were introduced in an earlier session and
+  // must not reappear as "new".
+  const learnedWordIds = new Set(cards.map((card) => card.wordId));
   const planning = await planningInputs();
   const remediationItems = seedGrammarItems.filter((item) =>
     planning.poorGrammarItemIds.includes(item.id),
@@ -115,8 +143,8 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
         ...remediationItems.filter((item) => !unit.grammarItemIds.includes(item.id)),
       ],
       corpus,
-      learnedWordIds: new Set<string>(),
-      cards: [],
+      learnedWordIds,
+      cards,
       lastSkillSlot: planning.lastSkillSlot,
       poorGrammarItemIds: planning.poorGrammarItemIds,
       now,
@@ -149,6 +177,37 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
       (item) => grammarStep?.kind === 'grammar-focus' && item.id === grammarStep.grammarItemId,
     ) ?? (seedGrammarItems[0] as GrammarItem);
 
+  const warmupStep = session.steps.find((step) => step.kind === 'warm-up');
+  const warmupWords = (warmupStep?.kind === 'warm-up' ? warmupStep.queueWordIds : [])
+    .map((id) => wordsById.get(id))
+    .filter((word): word is VocabularyWord => word !== undefined);
+
+  // Image identification inside the vocab step (PRD 4.3): up to two
+  // picturable words from today's set, recognition phase, adapter-served
+  // images in the learner's resolved style.
+  const imageId: ImageIdPayload[] = [];
+  for (const word of dayWords.filter((candidate) => candidate.picturable).slice(0, 2)) {
+    const style = resolveImageStyle(profile.data.settings.imageStyle, word);
+    const label = word.article ? `${word.article} ${word.german}` : word.german;
+    imageId.push({
+      word,
+      exercise: buildRecognitionExercise(word, corpus),
+      image: await provider.getImage(label, style),
+    });
+  }
+
+  // Dictation rides the writing slot using a day word's example sentence, so
+  // the dictated German is always level-bound corpus material.
+  const dictationWord = dayWords.find((word) => word.exampleDe !== null);
+  let dictation: DictationPayload | null = null;
+  if (dictationWord?.exampleDe) {
+    registerPlaceholderClip(`dict-${dictationWord.id}`, dictationWord.exampleDe);
+    dictation = {
+      text: dictationWord.exampleDe,
+      audio: await provider.getAudio(`dict-${dictationWord.id}`),
+    };
+  }
+
   return {
     session,
     unit,
@@ -158,6 +217,9 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
     listeningClip: await provider.getAudio(listeningClipId(unit.id)),
     tileItem: TILE_ITEMS[0] as TileItem,
     decayedUnitIds: planning.decayed,
+    warmupWords,
+    imageId,
+    dictation,
   };
 }
 
@@ -191,6 +253,8 @@ export async function completeSession(input: {
   warmupRatings: ReviewRating[];
   imageIdResults: boolean[];
   scenarioScore: number | null;
+  skillScores?: Partial<Record<'listening' | 'reading' | 'writing' | 'speaking', number>>;
+  errorsByCategory?: Partial<Record<GrammarErrorCategory, number>>;
 }): Promise<void> {
   const session = lessonSessionSchema.parse(input.session);
   const store = getDataStore();
@@ -205,8 +269,8 @@ export async function completeSession(input: {
     newWordIds: vocabStep?.kind === 'new-vocabulary' ? vocabStep.wordIds : [],
     imageIdResults: input.imageIdResults,
     scenarioScore: input.scenarioScore,
-    skillScores: {},
-    errorsByCategory: {},
+    skillScores: input.skillScores ?? {},
+    errorsByCategory: input.errorsByCategory ?? {},
   });
   await persistSessionReport(store, session, report);
 }

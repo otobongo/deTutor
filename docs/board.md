@@ -5,6 +5,22 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 
 ## State of the build
 
+**2026-07-10, Claude (Fable 5), builder.** A1 skill surfaces are live in the daily flow
+(owner directive 2026-07-10: build effectiveness first, A1 content only). The session runner
+now runs real exercises in every slot: interactive card-by-card warm-up with the four FSRS
+ratings persisting through learners/default/cards (new words are introduced on vocab-step
+completion and come due the same day), image identification inside the vocabulary step for
+picturable day words, word tiles plus dictation in the writing slot, reading with brain-generated
+text falling back to curated A1 exercises (db/seed/reading-fallback.ts) with tap-to-queue and
+richtig/falsch scoring into SkillScore(reading), and scenario chat with inline corrections,
+summary table, and 0-10 score into the session report. /practice/speaking hosts the on-demand
+echo loop (exact matches confirm without the brain). All brain outages render as recoverable
+states. New server actions: cards, grammar, reading, scenario, speaking. `npm run ci` green:
+327 unit/component tests, 19 Playwright checks including a four-session rotation journey
+through all skill slots and axe WCAG A/AA on six flows. Content generation everywhere keys off
+the profile level: an A1 learner only ever sees A1 scenarios, A1 reading, A1 corpus words.
+Next: B1 exam item generation, Phase 6 auth (blocked on owner Firebase credentials), deployment.
+
 **2026-07-09, Claude (Fable 5), builder.** Phases 0 to 4 complete (GT-001 to GT-404 plus GT-D1),
 all merged and pushed to github.com/otobongo/deTutor. `npm run ci` green: lint, format,
 typecheck, 4 guards, 300+ unit/component tests, 17 Playwright checks including the five GT-401
@@ -33,6 +49,16 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 - [x] GitHub remote added 2026-07-09: https://github.com/otobongo/deTutor (push after each issue).
 
 ## Discovered work (not yet in the plan)
+
+- [x] **A1 skill surfaces in the daily flow (done 2026-07-10, owner-directed).** Interactive
+      warm-up reviews (FSRS ratings persisted per card; introduction on vocab completion),
+      image-ID in the vocab step, tiles+dictation writing slot, reading slot with curated A1
+      fallback and tap-to-queue, scenario chat with corrections/summary/score, /practice/speaking
+      echo loop. Known limits, by design: disguised retest items do not yet render in the warm-up
+      UI (they only exist once units pass; the engine seam is unchanged), scenario corrections
+      count into the grammar log but not the client-side errorsByCategory tally, and cards minted
+      from brain mini-cards (out-of-corpus taps) are skipped in warm-up display until their words
+      join the corpus.
 
 - [x] **Design system applied (2026-07-10, owner-supplied).** docs/design-system.md (LiD Prep
       tokens) is now the authoritative styling spec: full token layer with Cal x Readwise
