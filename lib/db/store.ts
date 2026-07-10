@@ -55,10 +55,8 @@ class FirestoreStore implements DocumentStore {
   }
 }
 
-const DEV_STORE_FILE = path.join(process.cwd(), '.dev-data', 'store.json');
-
 export class DevFileStore implements DocumentStore {
-  constructor(private readonly file: string = DEV_STORE_FILE) {}
+  constructor(private readonly file: string = path.join(process.cwd(), getConfig().devStoreFile)) {}
 
   list(collectionPath: string): Promise<DocumentData[]> {
     const prefix = `${collectionPath}/`;

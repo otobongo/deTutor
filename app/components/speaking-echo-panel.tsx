@@ -107,7 +107,7 @@ export function SpeakingEchoPanel({
         </p>
         <p className="text-sm text-ink-muted">{target.word.translation}</p>
         {target.word.ipa ? <p className="font-mono text-sm">{target.word.ipa}</p> : null}
-        <AudioPlayer asset={target.audio} label="Hear it" />
+        <AudioPlayer asset={target.audio} label="Hear it" variant="icon" />
       </div>
 
       {!settled ? (

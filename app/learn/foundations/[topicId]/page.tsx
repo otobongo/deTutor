@@ -34,11 +34,19 @@ export default async function FoundationPage({ params }: { params: Promise<{ top
     );
   }
 
-  // Example audio in the learner's chosen voice, cached like everything.
+  // Example audio in the learner's chosen voice, plus a spoken version of
+  // each section intro (English) for on-demand listening. Cached like
+  // everything else.
   const narrator = narratorFor(profile.settings.voice);
   const provider = getMediaProvider();
   const jobs: Array<{ key: string; clipId: string }> = [];
   topic.sections.forEach((section, sectionIndex) => {
+    const introClipId = `found-${topic.id}-s${sectionIndex}-intro`;
+    registerPlaceholderClip(introClipId, `${section.heading}. ${section.body}`, {
+      lang: 'en-US',
+      speakers: narrator,
+    });
+    jobs.push({ key: `s${sectionIndex}-intro`, clipId: introClipId });
     section.examples?.forEach((example, exampleIndex) => {
       const clipId = `found-${topic.id}-s${sectionIndex}-e${exampleIndex}`;
       registerPlaceholderClip(clipId, example.de, { speakers: narrator });

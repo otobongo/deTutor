@@ -50,6 +50,16 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **Audio polish + hermetic e2e (done 2026-07-10, owner-directed).** All contextual "Hear
+      it" buttons are now compact speaker-icon buttons (AudioPlayer icon variant, aria-labeled);
+      example blocks are fluid by count (one example full width, two or more as columns);
+      foundation section intros are listenable on demand (spoken English via the en-US TTS
+      path). Infrastructure fix after the third stale-server e2e breakage: Playwright now runs
+      its own dev server on port 3100 with reuseExistingServer off and a dedicated store file
+      (DEV_STORE_FILE=.dev-data/e2e-store.json, new optional env read in lib/config.ts), so
+      test runs never collide with the owner's live dev server on 3000 and never wipe the
+      owner's local learner data again.
+
 - [x] **Learn before testing (done 2026-07-10, owner-directed; plan in
       docs/clarifyask-plan-learn.md).** New /learn section: Foundations shelf (12 curated study
       topics in db/seed/foundations.ts covering numbers, pronouns, accusative, dative, and every
