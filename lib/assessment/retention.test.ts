@@ -39,7 +39,7 @@ describe('spaced retest scheduler (GT-304)', () => {
 
   it('a taken retest clears the point until the next one arrives', () => {
     const afterRetest = passedUnit({
-      retention: { unitId: 'a1-1', score: 90, lastRetestAt: day(7).toISOString() },
+      retention: { unitId: 'a1-1', score: 90, lastRetestAt: day(7).toISOString(), passedAt: null },
     });
     expect(dueSchedulePoints(afterRetest, day(8))).toEqual([]);
     expect(dueSchedulePoints(afterRetest, day(14))).toEqual([14]);
@@ -76,7 +76,7 @@ describe('retention decay (GT-305)', () => {
 
   it('a decayed unit inserts remediation into the next daily plan', () => {
     const failedTwice = passedUnit({
-      retention: { unitId: 'a1-1', score: 50, lastRetestAt: day(14).toISOString() },
+      retention: { unitId: 'a1-1', score: 50, lastRetestAt: day(14).toISOString(), passedAt: null },
     });
     const decayed = decayedUnitIds([failedTwice], day(15));
     expect(decayed).toEqual(['a1-1']);
@@ -111,6 +111,7 @@ describe('retention decay (GT-305)', () => {
       unitId: 'a1-1',
       score: 50,
       lastRetestAt: day(14).toISOString(),
+      passedAt: null,
     };
     retention = applyRetestResult(retention, true, day(30).toISOString());
     retention = applyRetestResult(retention, true, day(31).toISOString());
@@ -122,10 +123,20 @@ describe('retention decay (GT-305)', () => {
   });
 
   it('retention scores stay clamped to 0..100', () => {
-    let retention = { unitId: 'a1-1', score: 5, lastRetestAt: null as string | null };
+    let retention = {
+      unitId: 'a1-1',
+      score: 5,
+      lastRetestAt: null as string | null,
+      passedAt: null as string | null,
+    };
     retention = applyRetestResult(retention, false, day(7).toISOString());
     expect(retention.score).toBe(0);
-    let high = { unitId: 'a1-1', score: 95, lastRetestAt: null as string | null };
+    let high = {
+      unitId: 'a1-1',
+      score: 95,
+      lastRetestAt: null as string | null,
+      passedAt: null as string | null,
+    };
     high = applyRetestResult(high, true, day(7).toISOString());
     expect(high.score).toBe(100);
   });

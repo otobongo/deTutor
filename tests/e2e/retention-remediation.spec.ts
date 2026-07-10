@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { test, expect } from '@playwright/test';
 import { DEFAULT_PROFILE, resetStore } from './helpers';
 
@@ -33,4 +35,37 @@ test('retention decay inserts remediation into the daily plan', async ({ page })
   });
   await page.reload();
   await expect(page.getByTestId('remediation-notice')).toHaveCount(0);
+});
+
+test('a due retest rides the warm-up disguised as a review and scores retention', async ({
+  page,
+}) => {
+  const passedAt = new Date(Date.now() - 8 * 86_400_000).toISOString();
+  resetStore({
+    'learners/default': { ...DEFAULT_PROFILE, unitId: 'a1-2' },
+    // a1-1 passed 8 days ago: the 7-day schedule point is due, untaken.
+    'learners/default/retentionScores/a1-1': {
+      unitId: 'a1-1',
+      score: 80,
+      lastRetestAt: null,
+      passedAt,
+    },
+  });
+
+  await page.goto('/today/session');
+  // No FSRS cards exist, so the only warm-up item IS the disguised retest,
+  // rendered exactly like a review card.
+  await expect(page.getByTestId('warmup-review')).toBeVisible();
+  await expect(page.getByTestId('warmup-progress')).toContainText('Card 1 of 1');
+  await page.getByTestId('warmup-reveal').click();
+  await page.getByTestId('warmup-rate-good').click();
+
+  // The rating landed silently on the unit's retention record (+10, stamped).
+  await expect(page.getByTestId('step-vocab-view')).toBeVisible();
+  const store = JSON.parse(
+    readFileSync(path.resolve(__dirname, '../../.dev-data/e2e-store.json'), 'utf8'),
+  ) as Record<string, { score?: number; lastRetestAt?: string | null }>;
+  const retention = store['learners/default/retentionScores/a1-1'];
+  expect(retention?.score).toBe(90);
+  expect(retention?.lastRetestAt).not.toBeNull();
 });

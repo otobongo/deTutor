@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 import type { LearnerProfile } from '@/lib/db/learner';
 import { advanceProfile, evaluateLevelGate, gateFailureReport } from './level-gate';
 
-const retention = (unitId: string, score: number) => ({ unitId, score, lastRetestAt: null });
+const retention = (unitId: string, score: number) => ({
+  unitId,
+  score,
+  lastRetestAt: null,
+  passedAt: null,
+});
 
 const healthyRetentions = ['a1-1', 'a1-2', 'a1-3', 'a1-4', 'a1-5', 'a1-6'].map((unitId) =>
   retention(unitId, 80),

@@ -38,6 +38,7 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
   const [speakingPoints, setSpeakingPoints] = useState<boolean[]>([]);
   const [progress, setProgress] = useState<UnitProgressDoc | null>(null);
   const [complete, setComplete] = useState(false);
+  const [advancedTo, setAdvancedTo] = useState<string | null>(null);
   const [retakeSkill, setRetakeSkill] = useState<Skill | null>(null);
   const [retakeAnswers, setRetakeAnswers] = useState<boolean[]>([]);
   const [busy, setBusy] = useState(false);
@@ -80,6 +81,7 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
     });
     setProgress(outcome.progress);
     setComplete(outcome.complete);
+    setAdvancedTo(outcome.advancedToUnitId);
     setPhase('result');
     setBusy(false);
   }
@@ -108,6 +110,7 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
     });
     setProgress(outcome.progress);
     setComplete(outcome.complete);
+    setAdvancedTo(outcome.advancedToUnitId);
     setPhase('result');
     setBusy(false);
   }
@@ -244,6 +247,9 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
       {complete ? (
         <p data-testid="unit-complete">
           Unit {test.unitId.toUpperCase()} complete! All skills passed.
+          {advancedTo
+            ? ` You advance to ${advancedTo.toUpperCase()}; retention retests on this unit start in 7 days.`
+            : ''}
         </p>
       ) : (
         <div className="flex flex-col gap-2">

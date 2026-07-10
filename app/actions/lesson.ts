@@ -18,7 +18,13 @@ import {
 import { getDataStore } from '@/lib/db/store';
 import type { GrammarItem, Unit, VocabularyWord } from '@/lib/db/curriculum';
 import { composeSession, poorGrammarItemsFrom } from '@/lib/lesson/engine';
-import { needsRemediation } from '@/lib/assessment/retention';
+import {
+  dueRetests,
+  makeRetestInjector,
+  needsRemediation,
+  type DueRetest,
+} from '@/lib/assessment/retention';
+import { disguiseWordFor } from '@/lib/lesson/retest-disguise';
 import { buildSessionReport, persistSessionReport } from '@/lib/lesson/wrap-up';
 import { evaluateListening, type ListeningEvaluation } from '@/lib/exercises/listening-eval';
 import { GeminiError, getGeminiClient } from '@/lib/gemini/client';
@@ -46,6 +52,17 @@ export interface DictationPayload {
   readonly audio: AudioAsset;
 }
 
+// The warm-up presents reviews and disguised retests identically; only the
+// runner's rating routing knows the difference (GT-304).
+export type WarmupDisplayItem =
+  | { readonly kind: 'review'; readonly word: VocabularyWord }
+  | {
+      readonly kind: 'retest';
+      readonly word: VocabularyWord;
+      readonly retestId: string;
+      readonly unitId: string;
+    };
+
 export interface TodaySessionPayload {
   readonly session: LessonSession;
   readonly unit: Unit;
@@ -54,9 +71,9 @@ export interface TodaySessionPayload {
   readonly wordAudio: Readonly<Record<string, AudioAsset>>;
   readonly tileItem: TileItem;
   readonly decayedUnitIds: readonly string[];
-  // Warm-up display data for the step's queueWordIds, in queue order. Cards
-  // whose ids fall outside the corpus (brain-minted mini cards) are omitted.
-  readonly warmupWords: readonly VocabularyWord[];
+  // Reviews (from the step's queueWordIds; cards whose ids fall outside the
+  // corpus are omitted) followed by due disguised retests.
+  readonly warmupItems: readonly WarmupDisplayItem[];
   readonly imageId: readonly ImageIdPayload[];
   readonly dictation: DictationPayload | null;
 }
@@ -64,10 +81,11 @@ export interface TodaySessionPayload {
 // Rotation and remediation inputs come from stored state: the most recent
 // completed session drives the skill slot and grammar resurfacing (GT-108),
 // and decayed retention (GT-305) adds its units' grammar items.
-async function planningInputs(): Promise<{
+async function planningInputs(now: Date): Promise<{
   lastSkillSlot: SkillSlot | null;
   poorGrammarItemIds: string[];
   decayed: string[];
+  dueRetestItems: DueRetest[];
 }> {
   const store = getDataStore();
   const [rawSessions, rawRetentions] = await Promise.all([
@@ -82,18 +100,28 @@ async function planningInputs(): Promise<{
     .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   const last = completed[completed.length - 1] ?? null;
   const lastSlotStep = last?.steps.find((step) => step.kind === 'skill-practice');
-  const decayed = rawRetentions
+  const retentions = rawRetentions
     .map((data) => retentionScoreSchema.safeParse(data))
-    .flatMap((parsed) =>
-      parsed.success && needsRemediation(parsed.data) ? [parsed.data.unitId] : [],
-    );
+    .flatMap((parsed) => (parsed.success ? [parsed.data] : []));
+  const decayed = retentions
+    .filter((retention) => needsRemediation(retention))
+    .map((retention) => retention.unitId);
   const decayedGrammar = seedUnits
     .filter((unit) => decayed.includes(unit.id))
     .flatMap((unit) => unit.grammarItemIds);
+  // Passed units (passedAt set) feed the 7/14/30/60-day retest schedule.
+  const passedUnits = retentions
+    .filter((retention) => retention.passedAt !== null)
+    .map((retention) => ({
+      unitId: retention.unitId,
+      passedAt: retention.passedAt as string,
+      retention,
+    }));
   return {
     lastSkillSlot: lastSlotStep?.kind === 'skill-practice' ? lastSlotStep.slot : null,
     poorGrammarItemIds: [...poorGrammarItemsFrom(last), ...decayedGrammar],
     decayed,
+    dueRetestItems: dueRetests(passedUnits, now),
   };
 }
 
@@ -135,7 +163,7 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
       .map((data) => learnedWordSchema.safeParse(data))
       .flatMap((parsed) => (parsed.success ? [parsed.data.wordId] : [])),
   ]);
-  const planning = await planningInputs();
+  const planning = await planningInputs(now);
   const remediationItems = seedGrammarItems.filter((item) =>
     planning.poorGrammarItemIds.includes(item.id),
   );
@@ -153,6 +181,7 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
       lastSkillSlot: planning.lastSkillSlot,
       poorGrammarItemIds: planning.poorGrammarItemIds,
       now,
+      injectExtras: makeRetestInjector(planning.dueRetestItems),
     });
   if (!existing) {
     await store
@@ -203,11 +232,23 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
 
   // Warm-up display spans everything a card can reference, including the
   // foundation entries (numbers, pronouns) learned in the Learn section.
+  // Due retests follow the reviews, each wearing a deterministic corpus word
+  // as its face (GT-304: indistinguishable from a review).
   const warmupStep = session.steps.find((step) => step.kind === 'warm-up');
   const lookupById = new Map(lookupCorpus().map((word) => [word.id, word]));
-  const warmupWords = (warmupStep?.kind === 'warm-up' ? warmupStep.queueWordIds : [])
+  const reviewItems: WarmupDisplayItem[] = (
+    warmupStep?.kind === 'warm-up' ? warmupStep.queueWordIds : []
+  )
     .map((id) => lookupById.get(id))
-    .filter((word): word is VocabularyWord => word !== undefined);
+    .filter((word): word is VocabularyWord => word !== undefined)
+    .map((word) => ({ kind: 'review', word }));
+  const retestItems: WarmupDisplayItem[] = planning.dueRetestItems.flatMap((retest) => {
+    const word = disguiseWordFor(retest.retestId, corpus);
+    return word
+      ? [{ kind: 'retest' as const, word, retestId: retest.retestId, unitId: retest.unitId }]
+      : [];
+  });
+  const warmupItems = [...reviewItems, ...retestItems];
 
   // Image identification inside the vocab step (PRD 4.3): up to two
   // picturable words from today's set, recognition phase, adapter-served
@@ -238,7 +279,7 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
     wordAudio,
     tileItem: TILE_ITEMS[0] as TileItem,
     decayedUnitIds: planning.decayed,
-    warmupWords,
+    warmupItems,
     imageId,
     dictation,
   };

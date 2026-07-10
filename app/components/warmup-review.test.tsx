@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { VocabularyWord } from '@/lib/db/curriculum';
+import type { WarmupDisplayItem } from '@/app/actions/lesson';
 import { WarmupReview } from './warmup-review';
 
 const words: VocabularyWord[] = [
@@ -35,11 +36,16 @@ const words: VocabularyWord[] = [
   },
 ];
 
+const items: WarmupDisplayItem[] = [
+  { kind: 'review', word: words[0]! },
+  { kind: 'retest', word: words[1]!, retestId: 'retest-a1-1-d7', unitId: 'a1-1' },
+];
+
 afterEach(cleanup);
 
 describe('interactive warm-up review', () => {
   it('hides the answer until revealed, then offers the four FSRS ratings', () => {
-    render(<WarmupReview words={words} onRate={vi.fn()} onDone={vi.fn()} />);
+    render(<WarmupReview items={items} onRate={vi.fn()} onDone={vi.fn()} />);
     expect(screen.getByTestId('warmup-front').textContent).toContain('Hund');
     expect(screen.queryByTestId('warmup-back')).toBeNull();
     expect(screen.queryByTestId('warmup-rate-good')).toBeNull();
@@ -54,16 +60,17 @@ describe('interactive warm-up review', () => {
   it('rates each card, advances, and reports all ratings on completion', async () => {
     const onRate = vi.fn().mockResolvedValue(undefined);
     const onDone = vi.fn();
-    render(<WarmupReview words={words} onRate={onRate} onDone={onDone} />);
+    render(<WarmupReview items={items} onRate={onRate} onDone={onDone} />);
 
     fireEvent.click(screen.getByTestId('warmup-reveal'));
     fireEvent.click(screen.getByTestId('warmup-rate-good'));
     await waitFor(() => expect(screen.getByTestId('warmup-front').textContent).toContain('Brot'));
-    expect(onRate).toHaveBeenCalledWith('hund-noun', 'good');
+    expect(onRate).toHaveBeenCalledWith(items[0], 'good');
 
     fireEvent.click(screen.getByTestId('warmup-reveal'));
     fireEvent.click(screen.getByTestId('warmup-rate-again'));
     await waitFor(() => expect(onDone).toHaveBeenCalledWith(['good', 'again']));
-    expect(onRate).toHaveBeenCalledWith('brot-noun', 'again');
+    // The disguised retest rates through the same surface, item and all.
+    expect(onRate).toHaveBeenCalledWith(items[1], 'again');
   });
 });

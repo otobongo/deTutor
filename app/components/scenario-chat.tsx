@@ -8,6 +8,7 @@ import type {
   ScenarioTurnOutcome,
 } from '@/app/actions/scenario';
 import type { ScenarioSummary } from '@/lib/scenarios/summary';
+import type { GrammarErrorCategory } from '@/lib/db/learner';
 import { ScenarioSummaryView } from './scenario-summary';
 import { ActionRow, Button } from './ui';
 
@@ -27,7 +28,9 @@ export function ScenarioChat({
   start: () => Promise<ScenarioStartPayload | null>;
   turn: (snapshot: ScenarioSnapshot, learnerInput: string) => Promise<ScenarioTurnOutcome>;
   end: (snapshot: ScenarioSnapshot) => Promise<ScenarioEndOutcome>;
-  onDone: (scenarioScore: number | null) => void;
+  // Corrections' grammar categories ride along so the session report's
+  // error tally counts scenario mistakes too (gap closed 2026-07-10).
+  onDone: (scenarioScore: number | null, errorCategories: readonly GrammarErrorCategory[]) => void;
 }) {
   const [payload, setPayload] = useState<ScenarioStartPayload | null | 'loading'>('loading');
   const [snapshot, setSnapshot] = useState<ScenarioSnapshot | null>(null);
@@ -57,7 +60,7 @@ export function ScenarioChat({
       <div className="flex flex-col gap-3">
         <p role="status">No scenario is available today.</p>
         <ActionRow>
-          <Button onClick={() => onDone(null)} data-testid="scenario-skip">
+          <Button onClick={() => onDone(null, [])} data-testid="scenario-skip">
             Continue
           </Button>
         </ActionRow>
@@ -79,7 +82,15 @@ export function ScenarioChat({
           <p data-testid="scenario-score">Scenario score: {ending.score} / 10.</p>
         ) : null}
         <ActionRow>
-          <Button onClick={() => onDone(ending.score)} data-testid="skill-continue">
+          <Button
+            onClick={() =>
+              onDone(
+                ending.score,
+                snapshot.corrections.map((correction) => correction.category),
+              )
+            }
+            data-testid="skill-continue"
+          >
             Continue
           </Button>
         </ActionRow>

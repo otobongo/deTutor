@@ -51,6 +51,7 @@ const retention: RetentionScore = {
   unitId: 'a1-1',
   score: 88,
   lastRetestAt: null,
+  passedAt: null,
 };
 
 const grammarError: GrammarErrorLogEntry = {

@@ -19,7 +19,7 @@ export const LAPSE_DELTA = -10;
 export const DEFAULT_RETENTION_THRESHOLD = 60;
 
 export function initialRetention(unitId: string): RetentionScore {
-  return { unitId, score: INITIAL_RETENTION, lastRetestAt: null };
+  return { unitId, score: INITIAL_RETENTION, lastRetestAt: null, passedAt: null };
 }
 
 export interface PassedUnit {

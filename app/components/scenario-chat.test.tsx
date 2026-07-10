@@ -110,7 +110,7 @@ describe('scenario chat', () => {
     expect(screen.getByTestId('scenario-score').textContent).toContain('7');
 
     fireEvent.click(screen.getByTestId('skill-continue'));
-    expect(onDone).toHaveBeenCalledWith(7);
+    expect(onDone).toHaveBeenCalledWith(7, ['case']);
   });
 
   it('a brain outage is a recoverable state with a way onward', async () => {
@@ -132,6 +132,6 @@ describe('scenario chat', () => {
     fireEvent.click(screen.getByTestId('scenario-end'));
     await waitFor(() => expect(screen.getByTestId('scenario-summary-offline')).toBeTruthy());
     fireEvent.click(screen.getByTestId('skill-continue'));
-    expect(onDone).toHaveBeenCalledWith(null);
+    expect(onDone).toHaveBeenCalledWith(null, []);
   });
 });

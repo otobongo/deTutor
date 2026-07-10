@@ -64,7 +64,9 @@ const input = {
   thisWeekReports: [report(0, 0.7), report(1, 0.8)],
   priorWeekReports: [report(-7, 0.6)],
   errors: [caseError(1), caseError(2), caseError(3)],
-  retentions: [{ unitId: 'a1-1', score: 85, lastRetestAt: weekStart.toISOString() }],
+  retentions: [
+    { unitId: 'a1-1', score: 85, lastRetestAt: weekStart.toISOString(), passedAt: null },
+  ],
 };
 
 describe('weekly summary generator (GT-309)', () => {
