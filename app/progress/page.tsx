@@ -16,6 +16,7 @@ import { allLearnGroups } from '@/db/seed/learn-groups';
 import { gradeFor } from '@/lib/learn/progress';
 import { LevelDashboard } from '@/app/components/level-dashboard';
 import { SessionReportList } from '@/app/components/session-report-list';
+import { StatusChip } from '@/app/components/ui';
 
 // Progress tab: session view (GT-308), level dashboard (GT-310), and the
 // Learn measurement (owner-directed 2026-07-10): words and foundations
@@ -59,7 +60,7 @@ export default async function ProgressPage() {
     .filter((parsed) => parsed.success && parsed.data.marked).length;
 
   return (
-    <main className="mx-auto flex min-h-screen w-full readable-width flex-col gap-6 p-8">
+    <main className="mx-auto flex min-h-screen w-full shell-width flex-col gap-6 p-4 sm:p-8">
       <h1 className="text-3xl font-semibold">Progress</h1>
       <section aria-labelledby="learning-heading" className="flex flex-col gap-3">
         <h2 id="learning-heading" className="text-xl font-medium">
@@ -67,30 +68,32 @@ export default async function ProgressPage() {
         </h2>
         <p data-testid="learn-progress-summary">
           {totalLearned} of {totalWords} A1 words learned ({learnPercent}%, grade{' '}
-          {gradeFor(learnPercent)}). Foundations marked: {foundationsMarked} of{' '}
-          {FOUNDATION_TOPICS.length}.{' '}
+          <StatusChip tone="accent">{gradeFor(learnPercent)}</StatusChip>). Foundations marked:{' '}
+          {foundationsMarked} of {FOUNDATION_TOPICS.length}.{' '}
           <Link className="underline" href="/learn">
             Continue in Learn.
           </Link>
         </p>
       </section>
-      <section aria-labelledby="sessions-heading" className="flex flex-col gap-3">
-        <h2 id="sessions-heading" className="text-xl font-medium">
-          Sessions
-        </h2>
-        <SessionReportList reports={reports} errors={errors} />
-      </section>
-      <section aria-labelledby="dashboard-heading" className="flex flex-col gap-3">
-        <h2 id="dashboard-heading" className="text-xl font-medium">
-          Level dashboard
-        </h2>
-        <LevelDashboard
-          skillScores={skillScores}
-          retentions={retentions}
-          errors={errors}
-          now={new Date()}
-        />
-      </section>
+      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2">
+        <section aria-labelledby="sessions-heading" className="flex flex-col gap-3">
+          <h2 id="sessions-heading" className="text-xl font-medium">
+            Sessions
+          </h2>
+          <SessionReportList reports={reports} errors={errors} />
+        </section>
+        <section aria-labelledby="dashboard-heading" className="flex flex-col gap-3">
+          <h2 id="dashboard-heading" className="text-xl font-medium">
+            Level dashboard
+          </h2>
+          <LevelDashboard
+            skillScores={skillScores}
+            retentions={retentions}
+            errors={errors}
+            now={new Date()}
+          />
+        </section>
+      </div>
     </main>
   );
 }

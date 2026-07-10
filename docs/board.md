@@ -50,6 +50,23 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **App-wide design standards pass (done 2026-07-10, owner-directed; plan in
+      docs/clarifyask-plan-design.md, rules in docs/design-standards-appendix.md).** Shared
+      primitives in app/components/ui.tsx (Button, ButtonLink, ActionRow, ProgressBar,
+      StatusChip, Chip) now carry every action in the app; two specialist subagent audits
+      (frontend design on Opus, accessibility on Sonnet, 30 findings each) drove the fix list
+      and three Sonnet workers migrated the session runner, all skill panels, and every page in
+      parallel. Sparing accents from existing tokens: gold progress bars and grade chips,
+      success tints for learned/done, never color alone. Desktop composes (Today plan + aside,
+      Progress two-column, workspace two-column) while mobile stacks full-width. Accessibility:
+      FocusHeading moves focus on every swapped view, skip-to-content link, aria-pressed on all
+      selectable chips/options, aria-expanded on neighbor chips, role=status on async feedback,
+      lang="de" on all German content, 44px touch targets, exercise images carry alt text.
+      Onboarding slimmed to welcome + placement with defaults (voice warm-1, Hochdeutsch,
+      mixed images, theme follows system); every preference including theme/mode lives in
+      Settings with audible voice samples; nav is wordmark + five links with aria-current
+      active state. Today's plan speaks the grammar item's human name, not its id.
+
 - [x] **Audio polish + hermetic e2e (done 2026-07-10, owner-directed).** All contextual "Hear
       it" buttons are now compact speaker-icon buttons (AudioPlayer icon variant, aria-labeled);
       example blocks are fluid by count (one example full width, two or more as columns);

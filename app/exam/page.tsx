@@ -1,4 +1,5 @@
 import { B1_EXAM_BLUEPRINT, moduleTimer } from '@/lib/assessment/b1-exam';
+import { StatusChip } from '@/app/components/ui';
 
 // B1 exit exam (GT-401 journey 5 smoke): the full Goethe structure rendered
 // from the blueprint. Item generation into this frame runs on demand when a
@@ -29,12 +30,13 @@ export default function ExamPage() {
           return (
             <li
               key={module.skill}
-              className="rounded-lg border bg-surface p-4"
+              className="flex flex-col gap-2 rounded-lg border bg-surface p-4"
               data-testid={`exam-module-${module.skill}`}
             >
-              <h2 className="font-medium">
-                {MODULE_LABELS[module.skill]} ({module.minutes} minutes)
-              </h2>
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="font-medium">{MODULE_LABELS[module.skill]}</h2>
+                <StatusChip tone="neutral">{module.minutes} minutes</StatusChip>
+              </div>
               {module.parts.length > 0 ? (
                 <p data-testid={`exam-structure-${module.skill}`}>
                   {module.parts.length} parts, {totalItems} items:{' '}
@@ -46,7 +48,10 @@ export default function ExamPage() {
                 </p>
               )}
               <p className="text-sm text-ink-muted" data-testid={`exam-timer-${module.skill}`}>
-                Timer: {Math.round(timer.remainingSeconds / 60)} minutes when started
+                Timer:{' '}
+                <StatusChip tone="neutral">
+                  {Math.round(timer.remainingSeconds / 60)} minutes when started
+                </StatusChip>
               </p>
             </li>
           );

@@ -13,7 +13,7 @@ export function ScenarioSummaryView({ summary }: { summary: ScenarioSummary }) {
         <>
           <table className="border-collapse text-sm" data-testid="summary-table">
             <thead>
-              <tr>
+              <tr className="bg-surface-2 font-medium">
                 <th className="border px-2 py-1 text-left">Your version</th>
                 <th className="border px-2 py-1 text-left">Correct version</th>
                 <th className="border px-2 py-1 text-left">Rule</th>
@@ -22,8 +22,12 @@ export function ScenarioSummaryView({ summary }: { summary: ScenarioSummary }) {
             <tbody>
               {summary.rows.map((row, index) => (
                 <tr key={index} data-testid="summary-row">
-                  <td className="border px-2 py-1">{row.yourVersion}</td>
-                  <td className="border px-2 py-1">{row.correctVersion}</td>
+                  <td className="border px-2 py-1" lang="de">
+                    {row.yourVersion}
+                  </td>
+                  <td className="border px-2 py-1" lang="de">
+                    {row.correctVersion}
+                  </td>
                   <td className="border px-2 py-1">{row.rule}</td>
                 </tr>
               ))}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Button } from './ui';
 
 // Theme and mode controls (design-system.md sections 1 and 9). Scales live
 // in CSS; switching only toggles the lid-mode class and data-lid-theme
@@ -37,10 +38,10 @@ export function ThemeControls() {
   }, []);
 
   return (
-    <span className="ml-auto flex items-center gap-2">
-      <button
-        type="button"
-        className="rounded-md border border-border-default px-2 py-1 text-xs text-ink-muted hover:bg-surface-2 hover:text-ink"
+    <span className="flex items-center gap-2">
+      <Button
+        variant="secondary"
+        size="sm"
         onClick={() => {
           const next: Mode = mode === 'dark' ? 'light' : 'dark';
           setMode(next);
@@ -50,10 +51,10 @@ export function ThemeControls() {
         data-testid="mode-toggle"
       >
         {mode === 'dark' ? 'Light mode' : 'Dark mode'}
-      </button>
-      <button
-        type="button"
-        className="rounded-md border border-border-default px-2 py-1 text-xs text-ink-muted hover:bg-surface-2 hover:text-ink"
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
         onClick={() => {
           const next: ThemeId =
             theme === 'monochrome-stark' ? 'cal-readwise-hybrid' : 'monochrome-stark';
@@ -64,7 +65,7 @@ export function ThemeControls() {
         data-testid="theme-toggle"
       >
         {theme === 'monochrome-stark' ? 'Default theme' : 'High contrast'}
-      </button>
+      </Button>
     </span>
   );
 }

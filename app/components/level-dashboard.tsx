@@ -5,6 +5,7 @@ import {
   retentionHeat,
   skillTrajectories,
 } from '@/lib/analytics/dashboard';
+import { StatusChip } from '@/app/components/ui';
 
 // Level dashboard (GT-310): per-skill trajectories, retention heat by unit,
 // and hard-area error trends, all rendered from stored aggregates with
@@ -14,6 +15,13 @@ const BAND_CLASSES: Record<string, string> = {
   healthy: 'bg-success-tint',
   warm: 'bg-[color-mix(in_srgb,var(--color-warning)_20%,transparent)]',
   decayed: 'bg-error-tint',
+};
+
+// Band names render as visible text, not color alone (accessibility audit).
+const BAND_LABELS: Record<string, string> = {
+  healthy: 'healthy',
+  warm: 'warm',
+  decayed: 'decayed',
 };
 
 export function LevelDashboard({
@@ -46,12 +54,18 @@ export function LevelDashboard({
         <h3 id="trajectories-heading" className="font-medium">
           Skill trajectories
         </h3>
-        {Object.entries(trajectories).map(([skill, points]) => (
-          <p key={skill} className="text-sm" data-testid={`trajectory-${skill}`}>
-            <span className="capitalize">{skill}: </span>
-            {points.map((point) => point.score).join(' -> ')}
-          </p>
-        ))}
+        {Object.entries(trajectories).map(([skill, points]) => {
+          const earlier = points.slice(0, -1);
+          const latest = points[points.length - 1];
+          return (
+            <p key={skill} className="text-sm" data-testid={`trajectory-${skill}`}>
+              <span className="capitalize">{skill}: </span>
+              {earlier.map((point) => point.score).join(' -> ')}
+              {earlier.length > 0 ? ' -> ' : ''}
+              {latest ? <StatusChip tone="accent">{latest.score}</StatusChip> : null}
+            </p>
+          );
+        })}
       </section>
 
       <section aria-labelledby="retention-heading">
@@ -66,7 +80,7 @@ export function LevelDashboard({
               data-testid={`retention-${cell.unitId}`}
               data-band={cell.band}
             >
-              {cell.unitId.toUpperCase()}: {cell.score}
+              {cell.unitId.toUpperCase()}: {cell.score} ({BAND_LABELS[cell.band]})
             </li>
           ))}
         </ul>

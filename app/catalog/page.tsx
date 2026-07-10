@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { cumulativeCorpus } from '@/db/seed/seed-vocab';
+import { StatusChip } from '@/app/components/ui';
 
 // Generated-media catalog: every image from the manifest with its word,
 // translation, level, style, and the vision-audit verdict, so generation
@@ -95,14 +96,16 @@ export default function CatalogPage() {
                 className="aspect-[4/3] w-full rounded object-cover"
                 loading="lazy"
               />
-              <p className="text-sm font-medium">{card.german}</p>
+              <p className="text-sm font-medium" lang="de">
+                {card.german}
+              </p>
               <p className="text-xs text-ink-muted">
                 {card.translation} · {card.level} · {card.style}
               </p>
               {card.audit ? (
-                <p className={`text-xs ${card.audit.match ? 'text-success' : 'text-error'}`}>
+                <StatusChip tone={card.audit.match ? 'success' : 'neutral'}>
                   {card.audit.match ? '✓ verified' : `✗ audit saw: ${card.audit.seen}`}
-                </p>
+                </StatusChip>
               ) : (
                 <p className="text-xs text-ink-subtle">not audited yet</p>
               )}

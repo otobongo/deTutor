@@ -11,7 +11,7 @@ export function VocabCard({ word }: { word: VocabularyWord }) {
       className="flex flex-col gap-1 rounded-lg border bg-surface p-4 text-sm"
       data-testid={`vocab-card-${word.id}`}
     >
-      <p>
+      <p lang="de">
         <span aria-hidden>🇩🇪 </span>
         {word.article ? (
           <>
@@ -40,7 +40,7 @@ export function VocabCard({ word }: { word: VocabularyWord }) {
       ) : null}
       {word.exampleDe ? (
         <div className="rounded-sm bg-reading-surface p-2 font-reading text-reading-ink">
-          <p>
+          <p lang="de">
             <span aria-hidden>📝 </span>Beispiel:{' '}
             <span data-testid="card-example">{word.exampleDe}</span>
           </p>

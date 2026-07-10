@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { checkContentPoints, wordCount, type WritingPrompt } from '@/lib/exercises/composers';
+import { Button } from './ui';
 
 // Writing composer (GT-212): visible content-point checklist, live word
 // count, and a soft warning (never a block) when points look uncovered.
@@ -38,8 +39,13 @@ export function WritingComposer({
 
       <ul className="flex flex-col gap-1 text-sm" data-testid="content-checklist">
         {coverage.map((result) => (
-          <li key={result.point.description} data-covered={result.covered}>
-            <span aria-hidden>{result.covered ? '✓ ' : '○ '}</span>
+          <li
+            key={result.point.description}
+            data-covered={result.covered}
+            role="checkbox"
+            aria-checked={result.covered}
+          >
+            <span aria-hidden>{result.covered ? '[covered] ' : '[not covered] '}</span>
             {result.point.description}
           </li>
         ))}
@@ -66,15 +72,13 @@ export function WritingComposer({
         </p>
       ) : null}
 
-      <button
-        type="button"
-        className="self-start rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
+      <Button
         disabled={text.trim().length === 0 || submitting}
         onClick={submit}
         data-testid="composer-submit"
       >
         {submitting ? 'Correcting...' : warned && uncovered.length > 0 ? 'Submit anyway' : 'Submit'}
-      </button>
+      </Button>
     </div>
   );
 }

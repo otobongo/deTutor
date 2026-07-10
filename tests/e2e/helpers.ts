@@ -22,9 +22,7 @@ export const DEFAULT_PROFILE = {
 
 export async function completeOnboarding(page: Page): Promise<void> {
   await page.goto('/');
-  await page.getByTestId('choose-voice-warm-1').click();
-  await page.getByTestId('voice-continue').click();
-  await page.getByTestId('dialect-continue').click();
+  await page.getByTestId('onboarding-start').click();
   for (let index = 0; index < 5; index += 1) {
     const textInput = page.getByTestId('probe-text-input');
     if (await textInput.isVisible().catch(() => false)) {

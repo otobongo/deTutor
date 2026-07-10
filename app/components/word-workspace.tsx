@@ -6,6 +6,7 @@ import type { AudioAsset } from '@/lib/media/provider';
 import type { WordExtrasPayload } from '@/app/actions/vocab';
 import { AudioPlayer } from './audio-player';
 import { EchoFlow } from './echo-flow';
+import { Chip } from './ui';
 
 // The word workspace (owner-directed 2026-07-10): a focus word presented the
 // way Google Translate presents a translation. Desktop uses a deliberate
@@ -138,14 +139,11 @@ export function WordWorkspace({
             <p className="text-sm font-medium text-ink-muted">Words nearby</p>
             <div className="flex flex-wrap gap-2">
               {extras.related.map(({ word: neighbor, relation }) => (
-                <button
+                <Chip
                   key={neighbor.id}
-                  type="button"
-                  className={`rounded-pill border px-3 py-1 text-sm ${
-                    openRelated === neighbor.id
-                      ? 'border-border-strong bg-surface-2'
-                      : 'border-border-default bg-surface hover:bg-surface-2'
-                  }`}
+                  selected={openRelated === neighbor.id}
+                  aria-expanded={openRelated === neighbor.id}
+                  aria-controls={`related-detail-${neighbor.id}`}
                   onClick={() => void tapRelated(neighbor.id)}
                   data-testid={`related-${neighbor.id}`}
                   data-relation={relation}
@@ -156,7 +154,7 @@ export function WordWorkspace({
                     </span>
                   ) : null}
                   <span lang="de">{neighbor.german}</span>
-                </button>
+                </Chip>
               ))}
             </div>
             {openRelated
@@ -165,6 +163,7 @@ export function WordWorkspace({
                   .map(({ word: neighbor }) => (
                     <div
                       key={neighbor.id}
+                      id={`related-detail-${neighbor.id}`}
                       className="flex flex-col gap-1 rounded-md border border-border-default bg-surface p-2 text-sm"
                       role="status"
                       data-testid="related-detail"

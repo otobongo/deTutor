@@ -49,8 +49,11 @@ export async function getVoiceSample(voiceId: string): Promise<AudioAsset> {
   return getMediaProvider().getAudio(voice.sampleClipId);
 }
 
+// Defaults over forced choices (owner decision 2026-07-10): onboarding only
+// collects placement answers; voice, dialect, and image style start at their
+// defaults and change in Settings.
 const completeOnboardingInput = z.object({
-  voice: z.string().min(1),
+  voice: z.string().min(1).default('warm-1'),
   dialect: dialectSchema.default('hochdeutsch'),
   answers: z.array(z.object({ probeId: z.string().min(1), answer: z.string() })),
 });

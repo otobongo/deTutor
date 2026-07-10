@@ -11,6 +11,8 @@ import {
   submitUnitTest,
   type UnitTestPayload,
 } from '@/app/actions/assessment';
+import { ActionRow, Button } from '@/app/components/ui';
+import { FocusHeading } from '@/app/components/focus-heading';
 
 // Unit test runner (GT-401 journey 3). Objective sections are clicked
 // through; production sections use the visible content-point checklist as a
@@ -113,23 +115,27 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
   if (phase === 'objective' && currentItem) {
     return (
       <section className="flex flex-col gap-4" data-testid="unit-test-objective">
-        <h2 className="text-xl font-medium capitalize">
+        <FocusHeading key={`objective-${cursor.section}-${cursor.index}`} className="capitalize">
           {cursor.section} ({cursor.index + 1} of {items.length})
-        </h2>
-        <p className="italic">{currentItem.stimulus}</p>
-        <p data-testid="unit-test-question">{currentItem.question}</p>
+        </FocusHeading>
+        <p className="italic" lang="de">
+          {currentItem.stimulus}
+        </p>
+        <p data-testid="unit-test-question" lang="de">
+          {currentItem.question}
+        </p>
         <div className="flex flex-col items-start gap-2">
           {currentItem.options.map((option, optionIndex) => (
-            <button
+            <Button
               key={option + optionIndex}
-              type="button"
-              className="rounded-md border bg-surface px-3 py-2"
+              variant="secondary"
+              lang="de"
               data-testid="unit-test-option"
               data-correct={optionIndex === currentItem.correctIndex}
               onClick={() => answerObjective(optionIndex === currentItem.correctIndex)}
             >
               {option}
-            </button>
+            </Button>
           ))}
         </div>
       </section>
@@ -139,11 +145,12 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
   if (phase === 'production') {
     return (
       <section className="flex flex-col gap-4" data-testid="unit-test-production">
-        <h2 className="text-xl font-medium">Writing</h2>
-        <p>{test.writing.instruction}</p>
+        <FocusHeading key="production-writing">Writing</FocusHeading>
+        <p lang="de">{test.writing.instruction}</p>
         <textarea
           className="min-h-24 rounded-md border bg-surface px-3 py-2"
           aria-label="Your text"
+          lang="de"
         />
         {test.writing.contentPoints.map((point, index) => (
           <label key={point} className="flex items-center gap-2 text-sm">
@@ -157,11 +164,11 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
               }
               data-testid={`writing-point-${index}`}
             />
-            {point}
+            <span lang="de">{point}</span>
           </label>
         ))}
-        <h2 className="text-xl font-medium">Speaking</h2>
-        <p>{test.speaking.instruction}</p>
+        <h3 className="font-display text-xl font-semibold">Speaking</h3>
+        <p lang="de">{test.speaking.instruction}</p>
         {test.speaking.contentPoints.map((point, index) => (
           <label key={point} className="flex items-center gap-2 text-sm">
             <input
@@ -174,18 +181,14 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
               }
               data-testid={`speaking-point-${index}`}
             />
-            {point}
+            <span lang="de">{point}</span>
           </label>
         ))}
-        <button
-          type="button"
-          className="self-start rounded-md bg-action px-4 py-2 text-action-inverse disabled:opacity-40"
-          disabled={busy}
-          onClick={() => void submit()}
-          data-testid="unit-test-submit"
-        >
-          Submit unit test
-        </button>
+        <ActionRow>
+          <Button disabled={busy} onClick={() => void submit()} data-testid="unit-test-submit">
+            Submit unit test
+          </Button>
+        </ActionRow>
       </section>
     );
   }
@@ -196,17 +199,19 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
     if (!item) return <p>Loading retake...</p>;
     return (
       <section className="flex flex-col gap-4" data-testid="unit-test-retake">
-        <h2 className="text-xl font-medium">
+        <FocusHeading key={`retake-${retakeSkill}-${retakeAnswers.length}`}>
           Retake: {retakeSkill} ({retakeAnswers.length + 1} of {retakeItems.length})
-        </h2>
-        <p className="italic">{item.stimulus}</p>
-        <p>{item.question}</p>
+        </FocusHeading>
+        <p className="italic" lang="de">
+          {item.stimulus}
+        </p>
+        <p lang="de">{item.question}</p>
         <div className="flex flex-col items-start gap-2">
           {item.options.map((option, optionIndex) => (
-            <button
+            <Button
               key={option + optionIndex}
-              type="button"
-              className="rounded-md border bg-surface px-3 py-2"
+              variant="secondary"
+              lang="de"
               data-testid="retake-option"
               data-correct={optionIndex === item.correctIndex}
               onClick={() => {
@@ -216,7 +221,7 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
               }}
             >
               {option}
-            </button>
+            </Button>
           ))}
         </div>
       </section>
@@ -225,7 +230,7 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
 
   return (
     <section className="flex flex-col gap-4" data-testid="unit-test-result">
-      <h2 className="text-xl font-medium">Results ({payload.source} test)</h2>
+      <FocusHeading key="result">Results ({payload.source} test)</FocusHeading>
       <ul className="flex flex-col gap-1">
         {progress
           ? Object.entries(progress.skills).map(([skill, entry]) => (
@@ -252,15 +257,16 @@ export function UnitTestRunner({ initial }: { initial: UnitTestPayload }) {
                       {test.unitId} grammar ({payload.unit.grammarItemIds.join(', ')}), then retake
                       that skill only.
                     </p>
-                    <button
-                      type="button"
-                      className="self-start rounded-md bg-action px-3 py-1 text-action-inverse disabled:opacity-40"
-                      disabled={busy}
-                      onClick={() => void startRetake(skill as Skill)}
-                      data-testid={`remediate-and-retake-${skill}`}
-                    >
-                      Complete remediation and retake {skill}
-                    </button>
+                    <ActionRow>
+                      <Button
+                        size="sm"
+                        disabled={busy}
+                        onClick={() => void startRetake(skill as Skill)}
+                        data-testid={`remediate-and-retake-${skill}`}
+                      >
+                        Complete remediation and retake {skill}
+                      </Button>
+                    </ActionRow>
                   </div>
                 ))
             : null}

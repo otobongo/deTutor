@@ -6,6 +6,7 @@ import type { AudioAsset } from '@/lib/media/provider';
 import { advanceEcho, startEcho, type EchoState } from '@/lib/lesson/echo';
 import { AudioPlayer } from './audio-player';
 import { VocabCard } from './vocab-card';
+import { Button } from './ui';
 
 // Echo flow (GT-201): present twice (adapter audio), learner produces, then
 // a faster second pass. The advance button is disabled until the machine
@@ -41,14 +42,9 @@ export function EchoFlow({
             Listen ({state.stage === 'present-1' ? 'first' : 'second'} time), then repeat it aloud.
           </p>
           <AudioPlayer asset={audio} label="Play" />
-          <button
-            type="button"
-            className="self-start rounded-md bg-action px-3 py-1 text-sm text-action-inverse"
-            onClick={presented}
-            data-testid="echo-heard"
-          >
+          <Button size="sm" onClick={presented} data-testid="echo-heard">
             I listened and repeated
-          </button>
+          </Button>
         </div>
       ) : null}
 
@@ -67,16 +63,17 @@ export function EchoFlow({
             onChange={(event) => setProduction(event.target.value)}
             placeholder="Type (or say) it yourself"
             aria-label="Your production"
+            lang="de"
             data-testid="echo-production-input"
           />
-          <button
+          <Button
             type="submit"
-            className="rounded-md bg-action px-3 py-1 text-action-inverse disabled:opacity-40"
+            size="sm"
             disabled={production.trim().length === 0}
             data-testid="echo-produce"
           >
             Submit
-          </button>
+          </Button>
         </form>
       ) : null}
 
@@ -84,9 +81,8 @@ export function EchoFlow({
         <div className="flex flex-col gap-2">
           <p className="text-sm text-ink-muted">Faster second pass: listen and repeat once more.</p>
           <AudioPlayer asset={audio} label="Play (faster)" rate={1.3} />
-          <button
-            type="button"
-            className="self-start rounded-md bg-action px-3 py-1 text-sm text-action-inverse"
+          <Button
+            size="sm"
             onClick={() => {
               setState((current) => advanceEcho(current, { type: 'fast-pass-done' }));
               onDone(state.production ?? '');
@@ -94,7 +90,7 @@ export function EchoFlow({
             data-testid="echo-fast-pass-done"
           >
             Done
-          </button>
+          </Button>
         </div>
       ) : null}
     </div>

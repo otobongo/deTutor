@@ -39,6 +39,11 @@ export default async function WordsPage({
 
   const flaggedCount = Object.values(audit).filter((entry) => !entry.ok).length;
 
+  const filterLinkClasses = (active: boolean) =>
+    active
+      ? 'rounded-pill bg-action px-2 py-0.5 text-action-inverse underline-offset-2'
+      : 'underline';
+
   return (
     <main className="mx-auto flex min-h-screen w-full shell-width flex-col gap-6 p-8">
       <h1 className="text-3xl font-semibold">Word review</h1>
@@ -46,23 +51,39 @@ export default async function WordsPage({
         {words.length} words shown. Translation audit: {Object.keys(audit).length} checked,{' '}
         {flaggedCount} flagged (shown first).
       </p>
-      <p className="flex gap-3 text-sm">
-        {['A1', 'A2', 'B1'].map((level) => (
-          <Link key={level} className="underline" href={`/words?level=${level}`}>
-            {level}
-          </Link>
-        ))}
-        <Link className="underline" href="/words?flagged=1">
+      <p className="flex flex-wrap gap-3 text-sm">
+        {['A1', 'A2', 'B1'].map((level) => {
+          const active = !flaggedOnly && levelFilter === level;
+          return (
+            <Link
+              key={level}
+              className={filterLinkClasses(active)}
+              aria-current={active ? 'true' : undefined}
+              href={`/words?level=${level}`}
+            >
+              {level}
+            </Link>
+          );
+        })}
+        <Link
+          className={filterLinkClasses(flaggedOnly)}
+          aria-current={flaggedOnly ? 'true' : undefined}
+          href="/words?flagged=1"
+        >
           flagged only
         </Link>
-        <Link className="underline" href="/words">
+        <Link
+          className={filterLinkClasses(!levelFilter && !flaggedOnly)}
+          aria-current={!levelFilter && !flaggedOnly ? 'true' : undefined}
+          href="/words"
+        >
           all
         </Link>
       </p>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="text-left">
+            <tr className="bg-surface-2 text-left font-medium">
               <th className="border-b px-2 py-1">Word</th>
               <th className="border-b px-2 py-1">Translation</th>
               <th className="border-b px-2 py-1">IPA</th>
@@ -75,14 +96,16 @@ export default async function WordsPage({
               const verdict = audit[word.id];
               return (
                 <tr key={word.id} data-testid="word-row" data-level={word.cefrLevel}>
-                  <td className="border-b px-2 py-1 font-medium">
+                  <td className="border-b px-2 py-1 font-medium" lang="de">
                     {word.article ? `${word.article} ` : ''}
                     {word.german}
                     <span className="ml-1 text-xs text-ink-subtle">{word.cefrLevel}</span>
                   </td>
                   <td className="border-b px-2 py-1">{word.translation}</td>
                   <td className="border-b px-2 py-1 text-xs">{word.ipa ?? 'pending'}</td>
-                  <td className="border-b px-2 py-1 text-xs">{word.exampleDe ?? 'pending'}</td>
+                  <td className="border-b px-2 py-1 text-xs" lang="de">
+                    {word.exampleDe ?? 'pending'}
+                  </td>
                   <td className="border-b px-2 py-1 text-xs">
                     {verdict === undefined ? (
                       <span className="text-ink-subtle">unchecked</span>

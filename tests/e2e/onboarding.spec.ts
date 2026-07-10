@@ -1,12 +1,13 @@
 import { test, expect, type Page } from '@playwright/test';
+import { resetStore } from './helpers';
 
-// GT-107 journeys. Placement probe content mirrors db/seed/placement-probes.ts.
+// GT-107 journeys, slimmed onboarding (owner decision 2026-07-10): welcome
+// with defaults, then the placement ladder. Voice samples moved to Settings.
+// Placement probe content mirrors db/seed/placement-probes.ts.
 
-async function chooseVoiceAndSkipDialect(page: Page): Promise<void> {
+async function startPlacement(page: Page): Promise<void> {
   await page.goto('/');
-  await page.getByTestId('choose-voice-warm-1').click();
-  await page.getByTestId('voice-continue').click();
-  await page.getByTestId('dialect-continue').click();
+  await page.getByTestId('onboarding-start').click();
 }
 
 async function answerA1Stage(page: Page, correctCount: number): Promise<void> {
@@ -29,14 +30,15 @@ async function answerA1Stage(page: Page, correctCount: number): Promise<void> {
   }
 }
 
-test('complete onboarding lands on the Day 1 plan', async ({ page }) => {
-  await chooseVoiceAndSkipDialect(page);
+test('complete onboarding lands on the Day 1 plan with defaults applied', async ({ page }) => {
+  resetStore();
+  await startPlacement(page);
   await expect(page.getByTestId('probe-prompt')).toBeVisible();
   await answerA1Stage(page, 3);
 
   await expect(page.getByTestId('placement-result')).toContainText('starting at A1');
-  // Skipping dialect defaults to Hochdeutsch.
-  await expect(page.getByTestId('profile-summary')).toContainText('hochdeutsch');
+  // No choices were forced: the summary names the defaults.
+  await expect(page.getByTestId('profile-summary')).toContainText('Hochdeutsch');
 
   await page.getByTestId('start-day-1').click();
   await expect(page).toHaveURL(/\/today/);
@@ -47,8 +49,13 @@ test('complete onboarding lands on the Day 1 plan', async ({ page }) => {
   }
 });
 
-test('voice samples play through the media adapter with captions', async ({ page }) => {
-  await page.goto('/');
+test('voice samples play in Settings through the media adapter with captions', async ({ page }) => {
+  resetStore();
+  await startPlacement(page);
+  await answerA1Stage(page, 3);
+  await expect(page.getByTestId('placement-result')).toBeVisible();
+
+  await page.goto('/settings');
   await page.getByTestId('play-voice-sample-warm-1').click();
   // Placeholder audio always requires captions; their presence proves the
   // asset came from the adapter, not a direct media call.
@@ -56,7 +63,8 @@ test('voice samples play through the media adapter with captions', async ({ page
 });
 
 test('a strong A1 stage escalates to the A2 probes', async ({ page }) => {
-  await chooseVoiceAndSkipDialect(page);
+  resetStore();
+  await startPlacement(page);
   await answerA1Stage(page, 5);
   await expect(page.getByRole('heading', { name: /Placement check: A2/ })).toBeVisible();
 });

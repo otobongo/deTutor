@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { VocabularyWord } from '@/lib/db/curriculum';
 import { REVIEW_RATINGS, type ReviewRating } from '@/lib/fsrs/scheduler';
+import { Button } from './ui';
 
 // Interactive warm-up (GT-105 UI contract): one card at a time, answer
 // hidden until the learner commits, then the four FSRS ratings. Ratings are
@@ -50,7 +51,7 @@ export function WarmupReview({
 
   return (
     <div className="flex flex-col gap-4" data-testid="warmup-review">
-      <p className="text-sm text-ink-muted" data-testid="warmup-progress">
+      <p className="text-sm text-ink-muted" aria-live="polite" data-testid="warmup-progress">
         Card {index + 1} of {words.length}
       </p>
       <div className="flex flex-col gap-2 rounded-lg border bg-surface p-4">
@@ -70,29 +71,23 @@ export function WarmupReview({
             ) : null}
           </div>
         ) : (
-          <button
-            type="button"
-            className="self-start rounded-md border border-border-default bg-surface px-3 py-1"
-            onClick={() => setRevealed(true)}
-            data-testid="warmup-reveal"
-          >
+          <Button variant="secondary" onClick={() => setRevealed(true)} data-testid="warmup-reveal">
             Show answer
-          </button>
+          </Button>
         )}
       </div>
       {revealed ? (
         <div className="flex gap-2" role="group" aria-label="How well did you recall this word?">
           {REVIEW_RATINGS.map((rating) => (
-            <button
+            <Button
               key={rating}
-              type="button"
-              className="rounded-md border border-border-default bg-surface px-3 py-2 hover:bg-surface-2 disabled:opacity-40"
+              variant="secondary"
               disabled={saving}
               onClick={() => void rate(rating)}
               data-testid={`warmup-rate-${rating}`}
             >
               {RATING_LABELS[rating]}
-            </button>
+            </Button>
           ))}
         </div>
       ) : null}
