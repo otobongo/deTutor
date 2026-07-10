@@ -32,6 +32,9 @@ const envSchema = z.object({
   GEMINI_API_KEY: z.string().min(1),
   MEDIA_PROVIDER: z.enum(MEDIA_PROVIDERS).default('placeholder'),
   DATA_STORE: z.enum(DATA_STORES).default('firestore'),
+  // The dev-file store's backing file. e2e points this at its own file so
+  // test runs never touch (or wipe) the owner's local learner data.
+  DEV_STORE_FILE: z.string().min(1).default('.dev-data/store.json'),
   GEMINI_MODEL_FAST: z.string().min(1).default(DEFAULT_MODEL_FAST),
   GEMINI_MODEL_DEEP: z.string().min(1).default(DEFAULT_MODEL_DEEP),
   GEMINI_MODEL_LIVE: z.string().min(1).default(DEFAULT_MODEL_LIVE),
@@ -48,6 +51,7 @@ export interface AppConfig {
   readonly geminiApiKey: string;
   readonly mediaProvider: MediaProviderName;
   readonly dataStore: DataStoreName;
+  readonly devStoreFile: string;
   readonly models: {
     readonly fast: string;
     readonly deep: string;
@@ -84,6 +88,7 @@ export function loadConfig(env: Record<string, string | undefined>): AppConfig {
     geminiApiKey: e.GEMINI_API_KEY,
     mediaProvider: e.MEDIA_PROVIDER,
     dataStore: e.DATA_STORE,
+    devStoreFile: e.DEV_STORE_FILE,
     models: {
       fast: e.GEMINI_MODEL_FAST,
       deep: e.GEMINI_MODEL_DEEP,

@@ -90,7 +90,7 @@ export function WordWorkspace({
             {word.ipa ? (
               <span className="font-mono text-sm text-ink-subtle">/{word.ipa}/</span>
             ) : null}
-            <AudioPlayer asset={audio} label="Hear it" />
+            <AudioPlayer asset={audio} label="Hear it" variant="icon" />
           </div>
         </div>
 
@@ -120,7 +120,7 @@ export function WordWorkspace({
           >
             <p lang="de">{extras.example.text}</p>
             {word.exampleEn ? <p className="text-sm text-ink-muted">{word.exampleEn}</p> : null}
-            <AudioPlayer asset={extras.example.audio} label="Hear the sentence" />
+            <AudioPlayer asset={extras.example.audio} label="Hear the sentence" variant="icon" />
           </div>
         ) : null}
         {extras?.note ? (
@@ -129,7 +129,7 @@ export function WordWorkspace({
             data-testid="context-note"
           >
             <p className="text-sm">{extras.note.text}</p>
-            <AudioPlayer asset={extras.note.audio} label="Hear the explanation" />
+            <AudioPlayer asset={extras.note.audio} label="Hear the explanation" variant="icon" />
           </div>
         ) : null}
 
@@ -179,7 +179,11 @@ export function WordWorkspace({
                         </p>
                       ) : null}
                       {neighborAudio[neighbor.id] ? (
-                        <AudioPlayer asset={neighborAudio[neighbor.id]!} label="Hear it" />
+                        <AudioPlayer
+                          asset={neighborAudio[neighbor.id]!}
+                          label="Hear it"
+                          variant="icon"
+                        />
                       ) : null}
                       <p className="text-xs text-ink-subtle">
                         {addedIds.has(neighbor.id)

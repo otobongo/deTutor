@@ -5,7 +5,9 @@ import path from 'node:path';
 // Shared journey helpers (GT-401). Each journey owns its state: resetStore
 // wipes the dev-file store so no journey inherits another's learner.
 
-const storeFile = path.resolve(__dirname, '../../.dev-data/store.json');
+// e2e owns its own store file (matches DEV_STORE_FILE in playwright.config);
+// the owner's local learner data in store.json is never touched by tests.
+const storeFile = path.resolve(__dirname, '../../.dev-data/e2e-store.json');
 
 export function resetStore(entries: Record<string, unknown> = {}): void {
   mkdirSync(path.dirname(storeFile), { recursive: true });

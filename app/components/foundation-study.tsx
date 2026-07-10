@@ -59,7 +59,16 @@ export function FoundationStudy({
     <div className="flex flex-col gap-6" data-testid={`foundation-${topic.id}`}>
       {topic.sections.map((section, sectionIndex) => (
         <section key={sectionIndex} className="flex flex-col gap-3">
-          <h2 className="font-display text-xl font-semibold">{section.heading}</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="font-display text-xl font-semibold">{section.heading}</h2>
+            {exampleAudio[`s${sectionIndex}-intro`] ? (
+              <AudioPlayer
+                asset={exampleAudio[`s${sectionIndex}-intro`]!}
+                label={`Listen to: ${section.heading}`}
+                variant="icon"
+              />
+            ) : null}
+          </div>
           <p className="max-w-prose">{section.body}</p>
           {section.table ? (
             <div className="overflow-x-auto">
@@ -94,19 +103,31 @@ export function FoundationStudy({
               </table>
             </div>
           ) : null}
-          {section.examples?.map((example, exampleIndex) => {
-            const audio = exampleAudio[`s${sectionIndex}-e${exampleIndex}`];
-            return (
-              <div
-                key={exampleIndex}
-                className="flex flex-col gap-1 rounded-lg bg-reading-surface p-3 font-reading text-reading-ink"
-              >
-                <p lang="de">{example.de}</p>
-                <p className="text-sm text-ink-muted">{example.en}</p>
-                {audio ? <AudioPlayer asset={audio} label="Hear it" /> : null}
-              </div>
-            );
-          })}
+          {section.examples && section.examples.length > 0 ? (
+            // Fluid by count: one example breathes across the full width,
+            // two or more arrange as columns on wider screens.
+            <div
+              className={
+                section.examples.length > 1 ? 'grid gap-3 sm:grid-cols-2' : 'flex flex-col gap-3'
+              }
+            >
+              {section.examples.map((example, exampleIndex) => {
+                const audio = exampleAudio[`s${sectionIndex}-e${exampleIndex}`];
+                return (
+                  <div
+                    key={exampleIndex}
+                    className="flex items-start justify-between gap-3 rounded-lg bg-reading-surface p-3 font-reading text-reading-ink"
+                  >
+                    <div className="flex flex-col gap-1">
+                      <p lang="de">{example.de}</p>
+                      <p className="text-sm text-ink-muted">{example.en}</p>
+                    </div>
+                    {audio ? <AudioPlayer asset={audio} label="Hear it" variant="icon" /> : null}
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
         </section>
       ))}
 
