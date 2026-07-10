@@ -5,7 +5,7 @@ import { GoogleGenAI } from '@google/genai';
 import { z } from 'zod';
 import { getConfig } from '@/lib/config';
 import { cumulativeCorpus } from '@/db/seed/seed-vocab';
-import { MEDIA_DIR, readManifest } from './media/manifest';
+import { MEDIA_DIR, readManifest } from '@/lib/media/manifest';
 
 // Image accuracy audit (media tooling, PRD 7.6 family): every generated
 // image goes back through Gemini vision with its expected subject; the model

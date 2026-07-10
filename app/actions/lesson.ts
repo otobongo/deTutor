@@ -164,12 +164,29 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
     .filter((word): word is VocabularyWord => word !== undefined);
 
   const provider = getMediaProvider();
-  const wordAudio: Record<string, AudioAsset> = {};
-  for (const word of dayWords.slice(0, 3)) {
+  // Register every clip first, then fetch concurrently: with on-demand
+  // synthesis the first session of a day mints several clips, and the
+  // bounded generation waits must overlap, not stack.
+  const echoWords = dayWords.slice(0, 3);
+  for (const word of echoWords) {
     const label = word.article ? `${word.article} ${word.german}` : word.german;
     registerPlaceholderClip(`word-${word.id}`, label);
-    wordAudio[word.id] = await provider.getAudio(`word-${word.id}`);
   }
+  const dictationWord = dayWords.find((word) => word.exampleDe !== null);
+  if (dictationWord?.exampleDe) {
+    registerPlaceholderClip(`dict-${dictationWord.id}`, dictationWord.exampleDe);
+  }
+  const [echoAudio, dictationAudio, listeningClip] = await Promise.all([
+    Promise.all(echoWords.map((word) => provider.getAudio(`word-${word.id}`))),
+    dictationWord?.exampleDe
+      ? provider.getAudio(`dict-${dictationWord.id}`)
+      : Promise.resolve(null),
+    provider.getAudio(listeningClipId(unit.id)),
+  ]);
+  const wordAudio: Record<string, AudioAsset> = {};
+  echoWords.forEach((word, index) => {
+    wordAudio[word.id] = echoAudio[index] as AudioAsset;
+  });
 
   const grammarStep = session.steps.find((step) => step.kind === 'grammar-focus');
   const grammarItem =
@@ -198,15 +215,10 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
 
   // Dictation rides the writing slot using a day word's example sentence, so
   // the dictated German is always level-bound corpus material.
-  const dictationWord = dayWords.find((word) => word.exampleDe !== null);
-  let dictation: DictationPayload | null = null;
-  if (dictationWord?.exampleDe) {
-    registerPlaceholderClip(`dict-${dictationWord.id}`, dictationWord.exampleDe);
-    dictation = {
-      text: dictationWord.exampleDe,
-      audio: await provider.getAudio(`dict-${dictationWord.id}`),
-    };
-  }
+  const dictation: DictationPayload | null =
+    dictationWord?.exampleDe && dictationAudio
+      ? { text: dictationWord.exampleDe, audio: dictationAudio }
+      : null;
 
   return {
     session,
@@ -214,7 +226,7 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
     grammarItem,
     dayWords,
     wordAudio,
-    listeningClip: await provider.getAudio(listeningClipId(unit.id)),
+    listeningClip,
     tileItem: TILE_ITEMS[0] as TileItem,
     decayedUnitIds: planning.decayed,
     warmupWords,

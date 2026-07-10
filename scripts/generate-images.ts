@@ -7,7 +7,7 @@ import { imageAssetKey, mediaAssetRefConverter, mediaAssetRefSchema } from '@/li
 import { getDataStore } from '@/lib/db/store';
 import { loadVocabSeedFile } from '@/db/seed/seed-vocab';
 import { slugify } from './ingest/core';
-import { hasImage, MEDIA_DIR, readManifest, writeManifest } from './media/manifest';
+import { hasImage, MEDIA_DIR, readManifest, writeManifest } from '@/lib/media/manifest';
 
 // GT-501: real vocabulary images. Reads picturable words, calls the image
 // model (key from env via config), writes assets keyed {word}:{style} into
