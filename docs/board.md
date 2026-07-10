@@ -50,6 +50,20 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **Word workspace (done 2026-07-10, owner-directed).** The vocab step now presents each
+      word Google Translate style: focus zone (display-size word, article colored and as text,
+      IPA, pronunciation audio), the echo production strip directly beneath, then a context zone
+      (example sentence with audio, a cached brain-written plain-English usage note with audio
+      via the en-US TTS path, distinct senses for multi-meaning words like Karte) and a
+      neighborhood zone of related corpus words (shared-stem family first, then theme neighbors
+      by frequency; pure lib/lesson/related-words.ts). Tapping a neighbor shows its essentials
+      and quietly introduces its FSRS card. Notes cache through the wordNotes store collection
+      (lib/lesson/word-notes.ts); the clip registry is now language-aware (de-DE/en-US). Extras
+      load after first paint and append below the echo strip, so a brain outage or slow load
+      never blocks production and never shifts layout. Also fixed: this Next version's JSX
+      compiler drops the space between an expression and a following word (vocab heading
+      rendered "15in"); heading is a template string now.
+
 - [x] **On-demand audio with disk cache (done 2026-07-10, owner-directed).** The GeminiProvider
       now synthesizes a missing clip the first time a session requests it (lib/media/tts.ts is
       the shared synthesis seam, single or multi-speaker), writes the wav plus manifest entry,

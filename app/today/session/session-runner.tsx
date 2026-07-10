@@ -10,7 +10,7 @@ import { gradeDictation, type DictationResult } from '@/lib/exercises/dictation'
 import type { ReviewRating } from '@/lib/fsrs/scheduler';
 import type { ListeningClip } from '@/app/components/listening-exercise';
 import { ListeningExercise } from '@/app/components/listening-exercise';
-import { EchoFlow } from '@/app/components/echo-flow';
+import { WordWorkspace } from '@/app/components/word-workspace';
 import { VocabCard } from '@/app/components/vocab-card';
 import { WarmupReview } from '@/app/components/warmup-review';
 import { ReadingPanel } from '@/app/components/reading-panel';
@@ -35,6 +35,7 @@ import {
   getScenarioForTodayAction,
   scenarioTurnAction,
 } from '@/app/actions/scenario';
+import { getWordExtrasAction } from '@/app/actions/vocab';
 
 // The daily session runner (GT-220): walks the five GT-108 steps in order,
 // persisting after each so an interrupted session resumes at its step. Every
@@ -158,16 +159,19 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
     const imageItem = payload.imageId[imageIdIndex];
     return (
       <section className="flex flex-col gap-4" data-testid="step-vocab-view">
+        {/* One template string: this Next version's JSX compiler drops the
+            space between an expression and a following word. */}
         <h2 className="text-xl font-medium">
-          New vocabulary: {step.theme} ({Math.min(echoIndex + 1, echoWords.length)} of{' '}
-          {echoWords.length} echoed, {payload.dayWords.length} in today&apos;s set)
+          {`New vocabulary: ${step.theme} (${Math.min(echoIndex + 1, echoWords.length)} of ${echoWords.length} echoed, ${payload.dayWords.length} in today's set)`}
         </h2>
         {word && payload.wordAudio[word.id] ? (
-          <EchoFlow
+          <WordWorkspace
             key={word.id}
             word={word}
             audio={payload.wordAudio[word.id]!}
-            onDone={() => setEchoIndex((index) => index + 1)}
+            loadExtras={getWordExtrasAction}
+            addToDeck={introduceWordsAction}
+            onEchoDone={() => setEchoIndex((index) => index + 1)}
           />
         ) : imageItem ? (
           <div className="flex flex-col gap-3" data-testid="vocab-image-id">

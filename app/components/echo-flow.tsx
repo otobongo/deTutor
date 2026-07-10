@@ -15,10 +15,14 @@ export function EchoFlow({
   word,
   audio,
   onDone,
+  // The word workspace renders its own focus card; standalone uses keep the
+  // classic card.
+  showCard = true,
 }: {
   word: VocabularyWord;
   audio: AudioAsset;
   onDone: (production: string) => void;
+  showCard?: boolean;
 }) {
   const [state, setState] = useState<EchoState>(startEcho());
   const [production, setProduction] = useState('');
@@ -29,7 +33,7 @@ export function EchoFlow({
 
   return (
     <div className="flex flex-col gap-4" data-testid={`echo-${word.id}`}>
-      <VocabCard word={word} />
+      {showCard ? <VocabCard word={word} /> : null}
 
       {state.stage === 'present-1' || state.stage === 'present-2' ? (
         <div className="flex flex-col gap-2">
