@@ -46,6 +46,40 @@ export function pcmToWav(pcm: Buffer, sampleRate = 24_000): Buffer {
 
 export const DEFAULT_TTS_VOICE = 'Kore';
 
+// The learner's voice profile (onboarding/Settings) maps to one Gemini
+// prebuilt voice, shared by generated TTS clips and the Live session so the
+// tutor sounds like one person everywhere.
+export const VOICE_NAME_BY_PROFILE: Readonly<Record<string, string>> = {
+  'warm-1': 'Sulafat',
+  'neutral-1': 'Kore',
+  'energetic-1': 'Puck',
+};
+
+export function voiceForProfile(profileVoice: string): string {
+  return VOICE_NAME_BY_PROFILE[profileVoice] ?? DEFAULT_TTS_VOICE;
+}
+
+// Single-narrator speaker list for a learner profile; the common case for
+// word, sentence, and explanation clips.
+export function narratorFor(profileVoice: string): [TtsSpeaker] {
+  return [{ name: 'Sprecher', voiceName: voiceForProfile(profileVoice) }];
+}
+
+// Audio cache key: the default single narrator keeps the bare clipId (the
+// batch pre-warmer's keys and every clip generated before voice preferences
+// stay valid); any other voice mix suffixes the voices, so changing the
+// Settings voice mints fresh clips instead of serving the old sound.
+export function audioCacheKey(clipId: string, speakers: readonly TtsSpeaker[] | null): string {
+  if (
+    !speakers ||
+    speakers.length === 0 ||
+    (speakers.length === 1 && speakers[0]?.voiceName === DEFAULT_TTS_VOICE)
+  ) {
+    return clipId;
+  }
+  return `${clipId}@${speakers.map((speaker) => speaker.voiceName).join('+')}`;
+}
+
 let sdk: GoogleGenAI | null = null;
 
 export const sdkTtsSynthesizer: TtsSynthesizer = async (request) => {

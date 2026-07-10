@@ -8,6 +8,7 @@ import { loadOrCreateWordNote } from '@/lib/lesson/word-notes';
 import { getGeminiClient } from '@/lib/gemini/client';
 import { getMediaProvider, type AudioAsset } from '@/lib/media';
 import { registerPlaceholderClip } from '@/lib/media/placeholder-clips';
+import { narratorFor } from '@/lib/media/tts';
 
 // Word workspace extras (owner-directed 2026-07-10): everything around the
 // focus word that is worth a second glance. Loaded after the card renders so
@@ -33,9 +34,14 @@ export async function getWordExtrasAction(wordId: string): Promise<WordExtrasPay
   const related = relatedWordsFor(word, levelCorpus);
 
   const provider = getMediaProvider();
+  const narrator = narratorFor(profile.settings.voice);
   const note = await loadOrCreateWordNote(store, getGeminiClient(), word);
-  if (note) registerPlaceholderClip(`note-${word.id}`, note.note, { lang: 'en-US' });
-  if (word.exampleDe) registerPlaceholderClip(`ex-${word.id}`, word.exampleDe);
+  if (note) {
+    registerPlaceholderClip(`note-${word.id}`, note.note, { lang: 'en-US', speakers: narrator });
+  }
+  if (word.exampleDe) {
+    registerPlaceholderClip(`ex-${word.id}`, word.exampleDe, { speakers: narrator });
+  }
 
   const [noteAudio, exampleAudio] = await Promise.all([
     note ? provider.getAudio(`note-${word.id}`) : Promise.resolve(null),

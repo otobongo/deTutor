@@ -23,6 +23,7 @@ import { evaluateListening, type ListeningEvaluation } from '@/lib/exercises/lis
 import { GeminiError, getGeminiClient } from '@/lib/gemini/client';
 import { getMediaProvider, type AudioAsset, type ImageAsset } from '@/lib/media';
 import { registerPlaceholderClip } from '@/lib/media/placeholder-clips';
+import { narratorFor } from '@/lib/media/tts';
 import { TILE_ITEMS, type TileItem } from '@/lib/exercises/word-tiles';
 import { buildRecognitionExercise, type RecognitionExercise } from '@/lib/exercises/image-id';
 import { resolveImageStyle } from '@/lib/exercises/image-style';
@@ -162,13 +163,16 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
   // synthesis the first session of a day mints several clips, and the
   // bounded generation waits must overlap, not stack.
   const echoWords = dayWords.slice(0, 3);
+  const narrator = narratorFor(profile.data.settings.voice);
   for (const word of echoWords) {
     const label = word.article ? `${word.article} ${word.german}` : word.german;
-    registerPlaceholderClip(`word-${word.id}`, label);
+    registerPlaceholderClip(`word-${word.id}`, label, { speakers: narrator });
   }
   const dictationWord = dayWords.find((word) => word.exampleDe !== null);
   if (dictationWord?.exampleDe) {
-    registerPlaceholderClip(`dict-${dictationWord.id}`, dictationWord.exampleDe);
+    registerPlaceholderClip(`dict-${dictationWord.id}`, dictationWord.exampleDe, {
+      speakers: narrator,
+    });
   }
   const [echoAudio, dictationAudio] = await Promise.all([
     Promise.all(echoWords.map((word) => provider.getAudio(`word-${word.id}`))),

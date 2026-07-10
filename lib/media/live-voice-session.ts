@@ -8,6 +8,7 @@ import type {
   VoiceSessionListener,
 } from './provider';
 import { MediaProviderError } from './provider';
+import { voiceForProfile } from './tts';
 
 // Gemini Live voice session (GT-503). Emits the exact event contract the
 // fallback session defined at GT-007, so scenario logic, corrections, and
@@ -32,12 +33,6 @@ export type LiveTransportFactory = (
   handlers: LiveHandlers,
 ) => Promise<LiveConnection>;
 
-const VOICE_NAME_BY_PROFILE: Readonly<Record<string, string>> = {
-  'warm-1': 'Sulafat',
-  'neutral-1': 'Kore',
-  'energetic-1': 'Puck',
-};
-
 export const sdkLiveTransport: LiveTransportFactory = async (config, handlers) => {
   const appConfig = getConfig();
   const ai = new GoogleGenAI({ apiKey: appConfig.geminiApiKey });
@@ -51,7 +46,7 @@ export const sdkLiveTransport: LiveTransportFactory = async (config, handlers) =
       speechConfig: {
         languageCode: 'de-DE',
         voiceConfig: {
-          prebuiltVoiceConfig: { voiceName: VOICE_NAME_BY_PROFILE[config.voice] ?? 'Kore' },
+          prebuiltVoiceConfig: { voiceName: voiceForProfile(config.voice) },
         },
       },
       inputAudioTranscription: {},
