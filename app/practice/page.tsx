@@ -8,7 +8,7 @@ const SKILLS = [
   {
     skill: 'listening',
     description:
-      'Graded clips with captions, replay, and slower playback. Runs in the daily session.',
+      'The dialogue lab: spoken two-person conversations with word identification, comprehension, and replay. Runs in the daily session (listening days).',
     href: null,
   },
   {

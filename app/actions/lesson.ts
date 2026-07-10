@@ -2,7 +2,6 @@
 
 import { seedGrammarItems, seedUnits } from '@/db/seed/units';
 import { loadVocabSeedFile } from '@/db/seed/seed-vocab';
-import { listeningClipId, UNIT_LISTENING_CLIPS } from '@/db/seed/listening-clips';
 import {
   fsrsCardStateSchema,
   learnerPaths,
@@ -34,10 +33,6 @@ import type { ReviewRating } from '@/lib/fsrs/scheduler';
 // return categorized failures as data, never crashes, so placeholder mode
 // without a Gemini key stays fully walkable.
 
-for (const [unitId, text] of Object.entries(UNIT_LISTENING_CLIPS)) {
-  registerPlaceholderClip(listeningClipId(unitId), text);
-}
-
 export interface ImageIdPayload {
   readonly word: VocabularyWord;
   readonly exercise: RecognitionExercise;
@@ -55,7 +50,6 @@ export interface TodaySessionPayload {
   readonly grammarItem: GrammarItem;
   readonly dayWords: readonly VocabularyWord[];
   readonly wordAudio: Readonly<Record<string, AudioAsset>>;
-  readonly listeningClip: AudioAsset;
   readonly tileItem: TileItem;
   readonly decayedUnitIds: readonly string[];
   // Warm-up display data for the step's queueWordIds, in queue order. Cards
@@ -176,12 +170,11 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
   if (dictationWord?.exampleDe) {
     registerPlaceholderClip(`dict-${dictationWord.id}`, dictationWord.exampleDe);
   }
-  const [echoAudio, dictationAudio, listeningClip] = await Promise.all([
+  const [echoAudio, dictationAudio] = await Promise.all([
     Promise.all(echoWords.map((word) => provider.getAudio(`word-${word.id}`))),
     dictationWord?.exampleDe
       ? provider.getAudio(`dict-${dictationWord.id}`)
       : Promise.resolve(null),
-    provider.getAudio(listeningClipId(unit.id)),
   ]);
   const wordAudio: Record<string, AudioAsset> = {};
   echoWords.forEach((word, index) => {
@@ -226,7 +219,6 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
     grammarItem,
     dayWords,
     wordAudio,
-    listeningClip,
     tileItem: TILE_ITEMS[0] as TileItem,
     decayedUnitIds: planning.decayed,
     warmupWords,

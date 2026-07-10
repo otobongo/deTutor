@@ -34,7 +34,7 @@ export async function getWordExtrasAction(wordId: string): Promise<WordExtrasPay
 
   const provider = getMediaProvider();
   const note = await loadOrCreateWordNote(store, getGeminiClient(), word);
-  if (note) registerPlaceholderClip(`note-${word.id}`, note.note, 'en-US');
+  if (note) registerPlaceholderClip(`note-${word.id}`, note.note, { lang: 'en-US' });
   if (word.exampleDe) registerPlaceholderClip(`ex-${word.id}`, word.exampleDe);
 
   const [noteAudio, exampleAudio] = await Promise.all([

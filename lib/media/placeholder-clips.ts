@@ -2,15 +2,27 @@
 // storage; placeholder audio is keyed by the same clipId and resolves to the
 // clip's text so browsers can speak it (SpeechSynthesis) and captions can
 // always render. Clips are German by default; explanation clips (word
-// workspace) register as English. Lesson content registers its clips when
+// workspace) register as English; dialogue clips name one voice per speaker
+// for multi-speaker synthesis. Lesson content registers its clips when
 // seeded (Phase 1); unknown clips degrade to a silent, captioned asset,
 // never an error.
 
 export type ClipLang = 'de-DE' | 'en-US';
 
+export interface ClipSpeaker {
+  readonly name: string;
+  readonly voiceName: string;
+}
+
 export interface ClipEntry {
   readonly text: string;
   readonly lang: ClipLang;
+  readonly speakers: readonly ClipSpeaker[] | null;
+}
+
+export interface ClipOptions {
+  readonly lang?: ClipLang;
+  readonly speakers?: readonly ClipSpeaker[];
 }
 
 const clips = new Map<string, ClipEntry>();
@@ -18,9 +30,13 @@ const clips = new Map<string, ClipEntry>();
 export function registerPlaceholderClip(
   clipId: string,
   text: string,
-  lang: ClipLang = 'de-DE',
+  options: ClipOptions = {},
 ): void {
-  clips.set(clipId, { text, lang });
+  clips.set(clipId, {
+    text,
+    lang: options.lang ?? 'de-DE',
+    speakers: options.speakers ?? null,
+  });
 }
 
 export function lookupPlaceholderClip(clipId: string): string | undefined {

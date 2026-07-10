@@ -8,8 +8,7 @@ import { gradeTileOrder } from '@/lib/exercises/word-tiles';
 import { gradeRecognition, type RecognitionResult } from '@/lib/exercises/image-id';
 import { gradeDictation, type DictationResult } from '@/lib/exercises/dictation';
 import type { ReviewRating } from '@/lib/fsrs/scheduler';
-import type { ListeningClip } from '@/app/components/listening-exercise';
-import { ListeningExercise } from '@/app/components/listening-exercise';
+import { DialogueLab } from '@/app/components/dialogue-lab';
 import { WordWorkspace } from '@/app/components/word-workspace';
 import { VocabCard } from '@/app/components/vocab-card';
 import { WarmupReview } from '@/app/components/warmup-review';
@@ -36,6 +35,7 @@ import {
   scenarioTurnAction,
 } from '@/app/actions/scenario';
 import { getWordExtrasAction } from '@/app/actions/vocab';
+import { getDialogueLabAction, recordListeningScoreAction } from '@/app/actions/dialogue';
 
 // The daily session runner (GT-220): walks the five GT-108 steps in order,
 // persisting after each so an interrupted session resumes at its step. Every
@@ -56,8 +56,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
   const [tileFeedback, setTileFeedback] = useState<string | null>(null);
   const [writingStage, setWritingStage] = useState<'tiles' | 'dictation'>('tiles');
   const [dictationResult, setDictationResult] = useState<DictationResult | null>(null);
-  const [listeningFeedback, setListeningFeedback] = useState<string | null>(null);
-  const [evaluating, setEvaluating] = useState(false);
+  const [listeningScore, setListeningScore] = useState<number | null>(null);
   const [readingScore, setReadingScore] = useState<number | null>(null);
   const [scenarioScore, setScenarioScore] = useState<number | null>(null);
   const [errorTally, setErrorTally] = useState<Partial<Record<GrammarErrorCategory, number>>>({});
@@ -92,7 +91,10 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
         warmupRatings: [...(extra?.ratings ?? warmupRatings)],
         imageIdResults: [...imageIdResults],
         scenarioScore: extra?.scenarioScore !== undefined ? extra.scenarioScore : scenarioScore,
-        skillScores: readingScore === null ? {} : { reading: readingScore },
+        skillScores: {
+          ...(readingScore === null ? {} : { reading: readingScore }),
+          ...(listeningScore === null ? {} : { listening: listeningScore }),
+        },
         errorsByCategory: errorTally,
       });
       setDone(true);
@@ -277,46 +279,18 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
 
   if (step.kind === 'skill-practice') {
     if (step.slot === 'listening') {
-      const clip: ListeningClip = { full: payload.listeningClip, segments: [] };
       return (
         <section className="flex flex-col gap-4" data-testid="step-skill-view">
           <h2 className="text-xl font-medium">Skill practice: listening</h2>
-          <ListeningExercise
-            clip={clip}
-            submitting={evaluating}
-            onSubmit={(response) => {
-              setEvaluating(true);
-              void evaluateListeningAction({
-                clipText: payload.listeningClip.captionText,
-                learnerResponse: response,
-                level: payload.unit.level,
-              }).then((outcome) => {
-                setEvaluating(false);
-                setListeningFeedback(
-                  outcome.ok
-                    ? outcome.evaluation.verdict.feedback
-                    : 'The evaluation brain is not connected yet (' +
-                        outcome.category +
-                        '). Compare your answer with the captions above and continue.',
-                );
-              });
+          <DialogueLab
+            load={getDialogueLabAction}
+            evaluate={evaluateListeningAction}
+            recordScore={recordListeningScoreAction}
+            onDone={(score) => {
+              setListeningScore(score);
+              void advance();
             }}
           />
-          {listeningFeedback ? (
-            <div className="flex flex-col gap-2">
-              <p role="status" data-testid="listening-feedback">
-                {listeningFeedback}
-              </p>
-              <button
-                type="button"
-                className="self-start rounded-md bg-action px-4 py-2 text-action-inverse"
-                onClick={() => void advance()}
-                data-testid="skill-continue"
-              >
-                Continue
-              </button>
-            </div>
-          ) : null}
         </section>
       );
     }

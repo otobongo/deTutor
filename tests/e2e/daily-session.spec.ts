@@ -77,15 +77,24 @@ test('four daily sessions rotate through all skill slots with real exercises', a
   await page.goto('/today');
   await page.getByTestId('start-session').click();
 
-  // Session 1: listening. Evaluation degrades to a recoverable state
-  // without a Gemini key; the learner self-checks with captions.
+  // Session 1: listening runs the dialogue lab. Placeholder mode falls back
+  // to a curated conversation with the transcript visible (captions
+  // contract); identification scores deterministically and the explanation
+  // degrades to a recoverable state without a Gemini key.
   await completeWarmup(page);
   await completeVocab(page);
   await completeGrammar(page, 'Ich lerne heute Deutsch.');
   await expect(page.locator('h2', { hasText: 'Skill practice' })).toContainText('listening');
-  await page.getByTestId('listening-response').fill('Someone introduces themselves.');
-  await page.getByTestId('listening-submit').click();
-  await expect(page.getByTestId('listening-feedback')).toBeVisible({ timeout: BRAIN_TIMEOUT });
+  await expect(page.getByTestId('dialogue-lab')).toBeVisible({ timeout: BRAIN_TIMEOUT });
+  await page.getByTestId('dialogue-to-identify').click();
+  await page.locator('button[data-testid^="identify-"]').first().click();
+  await page.getByTestId('identify-check').click();
+  await expect(page.getByTestId('identify-score')).toBeVisible();
+  await page.getByTestId('dialogue-to-explain').click();
+  await page.getByTestId('explain-input').fill('Two people talk about everyday things.');
+  await page.getByTestId('explain-submit').click();
+  await expect(page.getByTestId('explain-feedback')).toBeVisible({ timeout: BRAIN_TIMEOUT });
+  await page.getByTestId('dialogue-to-transcript').click();
   await page.getByTestId('skill-continue').click();
   await finishWrapUp(page);
   await page.getByTestId('back-to-today').click();

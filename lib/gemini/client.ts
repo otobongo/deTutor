@@ -35,6 +35,7 @@ export type GeminiCallSite =
   | 'scenario-turn'
   | 'echo-assessment'
   | 'reading-generation'
+  | 'dialogue-generation'
   | 'listening-evaluation'
   | 'listening-nuance-b1'
   | 'writing-correction'
@@ -47,6 +48,8 @@ export const ESCALATION_MAP: Readonly<Record<GeminiCallSite, GeminiTier>> = {
   'scenario-turn': 'fast',
   'echo-assessment': 'fast',
   'reading-generation': 'fast',
+  // Dialogue-lab conversations are envelope-checked in code like reading.
+  'dialogue-generation': 'fast',
   'listening-evaluation': 'fast',
   // B1 nuance explanation weighs idiom, register, and implied meaning (GT-206).
   'listening-nuance-b1': 'deep',
