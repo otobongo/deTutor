@@ -1,6 +1,6 @@
 'use server';
 
-import { cumulativeCorpus, loadVocabSeedFile } from '@/db/seed/seed-vocab';
+import { loadVocabSeedFile, lookupCorpus } from '@/db/seed/seed-vocab';
 import { getDataStore } from '@/lib/db/store';
 import { loadLearnerProfile } from '@/lib/db/profile';
 import { relatedWordsFor, type RelatedWord } from '@/lib/lesson/related-words';
@@ -25,7 +25,7 @@ export async function getWordExtrasAction(wordId: string): Promise<WordExtrasPay
   const store = getDataStore();
   const profile = await loadLearnerProfile(store);
   if (!profile) return null;
-  const word = cumulativeCorpus('B1').find((candidate) => candidate.id === wordId);
+  const word = lookupCorpus().find((candidate) => candidate.id === wordId);
   if (!word) return null;
 
   // Neighborhood stays at the learner's level: an A1 profile only ever sees

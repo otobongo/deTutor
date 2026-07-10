@@ -36,6 +36,7 @@ import {
 } from '@/app/actions/scenario';
 import { getWordExtrasAction } from '@/app/actions/vocab';
 import { getDialogueLabAction, recordListeningScoreAction } from '@/app/actions/dialogue';
+import { getWordAudioAction } from '@/app/actions/learn';
 
 // The daily session runner (GT-220): walks the five GT-108 steps in order,
 // persisting after each so an interrupted session resumes at its step. Every
@@ -173,6 +174,7 @@ export function SessionRunner({ payload }: { payload: TodaySessionPayload }) {
             audio={payload.wordAudio[word.id]!}
             loadExtras={getWordExtrasAction}
             addToDeck={introduceWordsAction}
+            loadNeighborAudio={getWordAudioAction}
             onEchoDone={() => setEchoIndex((index) => index + 1)}
           />
         ) : imageItem ? (

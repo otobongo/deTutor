@@ -28,6 +28,10 @@ test('axe finds no WCAG A/AA violations on core flows', async ({ page }) => {
   await expectNoViolations(page, 'settings');
   await page.goto('/practice/speaking');
   await expectNoViolations(page, 'speaking practice');
+  await page.goto('/learn');
+  await expectNoViolations(page, 'learn overview');
+  await page.goto('/learn/foundations/pronouns');
+  await expectNoViolations(page, 'foundation study');
 });
 
 test('a session step completes with keyboard only', async ({ page }) => {

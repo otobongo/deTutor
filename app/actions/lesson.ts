@@ -1,9 +1,10 @@
 'use server';
 
 import { seedGrammarItems, seedUnits } from '@/db/seed/units';
-import { loadVocabSeedFile } from '@/db/seed/seed-vocab';
+import { loadVocabSeedFile, lookupCorpus } from '@/db/seed/seed-vocab';
 import {
   fsrsCardStateSchema,
+  learnedWordSchema,
   learnerPaths,
   learnerProfileSchema,
   lessonSessionConverter,
@@ -118,13 +119,22 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
   const sessionId = `session-${now.toISOString().slice(0, 10)}`;
   const existing = await loadActiveSession(sessionId);
   const corpus = loadVocabSeedFile(profile.data.level);
-  const rawCards = await store.list(learnerPaths.cards());
+  const [rawCards, rawLearned] = await Promise.all([
+    store.list(learnerPaths.cards()),
+    store.list(learnerPaths.learnedWords()),
+  ]);
   const cards = rawCards
     .map((data) => fsrsCardStateSchema.safeParse(data))
     .flatMap((parsed): FsrsCardState[] => (parsed.success ? [parsed.data] : []));
-  // Words already carrying a card were introduced in an earlier session and
-  // must not reappear as "new".
-  const learnedWordIds = new Set(cards.map((card) => card.wordId));
+  // Words already carrying a card were introduced in an earlier session, and
+  // words marked learned in the Learn section are known; neither reappears
+  // as "new".
+  const learnedWordIds = new Set([
+    ...cards.map((card) => card.wordId),
+    ...rawLearned
+      .map((data) => learnedWordSchema.safeParse(data))
+      .flatMap((parsed) => (parsed.success ? [parsed.data.wordId] : [])),
+  ]);
   const planning = await planningInputs();
   const remediationItems = seedGrammarItems.filter((item) =>
     planning.poorGrammarItemIds.includes(item.id),
@@ -191,9 +201,12 @@ export async function getTodaySession(): Promise<TodaySessionPayload | null> {
       (item) => grammarStep?.kind === 'grammar-focus' && item.id === grammarStep.grammarItemId,
     ) ?? (seedGrammarItems[0] as GrammarItem);
 
+  // Warm-up display spans everything a card can reference, including the
+  // foundation entries (numbers, pronouns) learned in the Learn section.
   const warmupStep = session.steps.find((step) => step.kind === 'warm-up');
+  const lookupById = new Map(lookupCorpus().map((word) => [word.id, word]));
   const warmupWords = (warmupStep?.kind === 'warm-up' ? warmupStep.queueWordIds : [])
-    .map((id) => wordsById.get(id))
+    .map((id) => lookupById.get(id))
     .filter((word): word is VocabularyWord => word !== undefined);
 
   // Image identification inside the vocab step (PRD 4.3): up to two

@@ -50,6 +50,21 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **Learn before testing (done 2026-07-10, owner-directed; plan in
+      docs/clarifyask-plan-learn.md).** New /learn section: Foundations shelf (12 curated study
+      topics in db/seed/foundations.ts covering numbers, pronouns, accusative, dative, and every
+      A1 grammar item, each with tables, audible examples, and a scored, graded self-check kept
+      as best score) and Word groups (theme-mapped shelves plus the split "general" theme;
+      numbers and pronouns are new curated card entries in db/seed/foundation-vocab.ts). The
+      Learn flow marks a word learned and advances (skip/unmark supported); marking introduces
+      the FSRS card (joins warm-ups, verified in e2e) and removes the word from future day
+      sets. Progress is measured per learner (learnedWords + foundationProgress collections,
+      store seam gained delete()) with percent and A-E grades on /learn and /progress. Nothing
+      gates: Learn and /test both stay open, both scored. Word workspace is now responsive
+      (two-column desktop, stacked mobile), echo optional outside sessions, and neighbor chips
+      open with their own play button. 22 Playwright checks incl. 3 Learn journeys; axe covers
+      /learn and a foundation page.
+
 - [x] **Voice preference wired to all audio (done 2026-07-10, owner-reported robotic voice).**
       Root cause of the robotic voice: MEDIA_PROVIDER=placeholder in the owner's .env.local, so
       the app only ever used browser speech synthesis; flipped to gemini. The Settings/onboarding

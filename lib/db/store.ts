@@ -11,6 +11,9 @@ import { getConfig } from '@/lib/config';
 export interface StoredDocument {
   set(data: DocumentData): Promise<void>;
   get(): Promise<DocumentData | null>;
+  // Removing a document is a real operation (un-marking a learned word);
+  // deleting a missing document is a no-op, never an error.
+  delete(): Promise<void>;
 }
 
 export interface StoredCollection {
@@ -42,6 +45,10 @@ class FirestoreStore implements DocumentStore {
           const { getDb } = await import('@/lib/firebase');
           const snapshot = await getDb().collection(collectionPath).doc(id).get();
           return snapshot.exists ? (snapshot.data() ?? null) : null;
+        },
+        delete: async () => {
+          const { getDb } = await import('@/lib/firebase');
+          await getDb().collection(collectionPath).doc(id).delete();
         },
       }),
     };
@@ -88,6 +95,12 @@ export class DevFileStore implements DocumentStore {
             return Promise.resolve();
           },
           get: () => Promise.resolve(this.read()[key] ?? null),
+          delete: () => {
+            const all = this.read();
+            delete all[key];
+            this.write(all);
+            return Promise.resolve();
+          },
         };
       },
     };

@@ -164,6 +164,25 @@ export const unitProgressSchema = z.object({
 });
 export type UnitProgressDoc = z.infer<typeof unitProgressSchema>;
 
+// Learn-before-testing progress (owner-directed 2026-07-10). A learned word
+// is a learner declaration made after reading, reciting, and understanding
+// it in context; foundation topics additionally carry their best self-check
+// score. Nothing gates on either; both are measured and graded.
+export const learnedWordSchema = z.object({
+  wordId: z.string().min(1),
+  learnedAt: isoDateTime,
+});
+export type LearnedWord = z.infer<typeof learnedWordSchema>;
+
+export const foundationProgressSchema = z.object({
+  topicId: z.string().min(1),
+  marked: z.boolean(),
+  bestScore: z.number().min(0).max(100).nullable(),
+  attempts: z.number().int().nonnegative(),
+  updatedAt: isoDateTime,
+});
+export type FoundationProgress = z.infer<typeof foundationProgressSchema>;
+
 // Every learner document lives under this tree; there is no learner data
 // anywhere else (GT-004 acceptance criteria).
 export const learnerPaths = {
@@ -179,6 +198,9 @@ export const learnerPaths = {
     `learners/${learnerId}/weeklySummaries`,
   sessions: (learnerId: string = DEFAULT_LEARNER_ID) => `learners/${learnerId}/sessions`,
   unitProgress: (learnerId: string = DEFAULT_LEARNER_ID) => `learners/${learnerId}/unitProgress`,
+  learnedWords: (learnerId: string = DEFAULT_LEARNER_ID) => `learners/${learnerId}/learnedWords`,
+  foundationProgress: (learnerId: string = DEFAULT_LEARNER_ID) =>
+    `learners/${learnerId}/foundationProgress`,
 } as const;
 
 export const learnerProfileConverter = zodConverter(learnerProfileSchema);
@@ -190,3 +212,5 @@ export const sessionReportConverter = zodConverter(sessionReportSchema);
 export const weeklySummaryConverter = zodConverter(weeklySummarySchema);
 export const lessonSessionConverter = zodConverter(lessonSessionSchema);
 export const unitProgressConverter = zodConverter(unitProgressSchema);
+export const learnedWordConverter = zodConverter(learnedWordSchema);
+export const foundationProgressConverter = zodConverter(foundationProgressSchema);

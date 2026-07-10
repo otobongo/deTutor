@@ -193,7 +193,7 @@ test('the image catalog renders with its audit summary', async ({ page }) => {
 
 test('mobile viewport renders without horizontal scroll', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 700 });
-  for (const path of ['/practice', '/progress']) {
+  for (const path of ['/practice', '/progress', '/learn', '/learn/foundations/numbers']) {
     await page.goto(path);
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
