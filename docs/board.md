@@ -50,6 +50,16 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **On-demand audio with disk cache (done 2026-07-10, owner-directed).** The GeminiProvider
+      now synthesizes a missing clip the first time a session requests it (lib/media/tts.ts is
+      the shared synthesis seam, single or multi-speaker), writes the wav plus manifest entry,
+      and serves from cache forever after. Bounded wait (4s) per request: slow synthesis serves
+      the captioned placeholder now and the real clip next time; any failure opens a 10-minute
+      cooldown so a dead quota never stalls pages. Daily sessions need 10 to 20 new clips, which
+      fits the free TTS tier; npm run generate:audio remains the optional bulk pre-warmer and now
+      shares the same synthesizer. Manifest utilities moved to lib/media/manifest.ts. Session and
+      speaking-practice audio fetches parallelized so day-one waits overlap.
+
 - [x] **A1 skill surfaces in the daily flow (done 2026-07-10, owner-directed).** Interactive
       warm-up reviews (FSRS ratings persisted per card; introduction on vocab completion),
       image-ID in the vocab step, tiles+dictation writing slot, reading slot with curated A1

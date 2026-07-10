@@ -40,12 +40,13 @@ export default async function SpeakingPracticePage() {
   const words = [...corpus, ...corpus].slice(start, start + TARGETS_PER_VISIT);
 
   const provider = getMediaProvider();
-  const targets = [];
   for (const word of words) {
     const label = word.article ? `${word.article} ${word.german}` : word.german;
     registerPlaceholderClip(`word-${word.id}`, label);
-    targets.push({ word, audio: await provider.getAudio(`word-${word.id}`) });
   }
+  // Concurrent fetch so on-demand synthesis waits overlap instead of stacking.
+  const audios = await Promise.all(words.map((word) => provider.getAudio(`word-${word.id}`)));
+  const targets = words.map((word, index) => ({ word, audio: audios[index]! }));
 
   return (
     <main className="mx-auto flex min-h-screen w-full readable-width flex-col gap-6 p-8">

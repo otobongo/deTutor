@@ -1,38 +1,20 @@
 import './load-env';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { GoogleGenAI } from '@google/genai';
 import { getConfig } from '@/lib/config';
 import { mediaAssetRefConverter, mediaAssetRefSchema } from '@/lib/db/curriculum';
 import { getDataStore } from '@/lib/db/store';
 import { loadVocabSeedFile } from '@/db/seed/seed-vocab';
 import { listeningClipId, UNIT_LISTENING_CLIPS } from '@/db/seed/listening-clips';
-import { hasAudio, MEDIA_DIR, readManifest, writeManifest } from './media/manifest';
+import { hasAudio, MEDIA_DIR, readManifest, writeManifest } from '@/lib/media/manifest';
+import { DEFAULT_TTS_VOICE, sdkTtsSynthesizer } from '@/lib/media/tts';
 
 // GT-502: native de-DE audio for lesson clips and vocabulary pronunciations,
 // keyed by the exact clipIds the placeholder provider uses. Same contract as
 // GT-501: idempotent (ledger skip), resumable, per-level batching, capped
 // failures. Caption text is retained in the seed data for accessibility.
-
-// Gemini TTS returns 16-bit PCM at 24kHz; wrap it in a RIFF header so
-// browsers can play it natively.
-function pcmToWav(pcm: Buffer, sampleRate = 24_000): Buffer {
-  const header = Buffer.alloc(44);
-  header.write('RIFF', 0);
-  header.writeUInt32LE(36 + pcm.length, 4);
-  header.write('WAVE', 8);
-  header.write('fmt ', 12);
-  header.writeUInt32LE(16, 16);
-  header.writeUInt16LE(1, 20);
-  header.writeUInt16LE(1, 22);
-  header.writeUInt32LE(sampleRate, 24);
-  header.writeUInt32LE(sampleRate * 2, 28);
-  header.writeUInt16LE(2, 32);
-  header.writeUInt16LE(16, 34);
-  header.write('data', 36);
-  header.writeUInt32LE(pcm.length, 40);
-  return Buffer.concat([header, pcm]);
-}
+// Synthesis lives in lib/media/tts, shared with the on-demand provider path;
+// this script remains the optional bulk pre-warmer.
 
 interface ClipJob {
   readonly clipId: string;
@@ -49,7 +31,6 @@ function isQuotaExhausted(error: unknown): boolean {
 
 async function main(): Promise<void> {
   const config = getConfig();
-  const ai = new GoogleGenAI({ apiKey: config.geminiApiKey });
   const store = getDataStore();
 
   const levelFlag = process.argv.indexOf('--level');
@@ -83,34 +64,21 @@ async function main(): Promise<void> {
       continue;
     }
     try {
-      let response;
+      const request = {
+        text: job.text,
+        speakers: [{ name: 'Sprecher', voiceName: DEFAULT_TTS_VOICE }],
+      };
+      let wav;
       try {
-        response = await ai.models.generateContent({
-          model: config.models.tts,
-          contents: `Sprich klar und natürlich auf Deutsch: ${job.text}`,
-          config: {
-            responseModalities: ['AUDIO'],
-            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } },
-          },
-        });
+        wav = await sdkTtsSynthesizer(request);
       } catch (firstError) {
         if (isQuotaExhausted(firstError)) throw firstError;
         // Transient rate limit or network blip: one paced retry.
         await sleep(15_000);
-        response = await ai.models.generateContent({
-          model: config.models.tts,
-          contents: `Sprich klar und natürlich auf Deutsch: ${job.text}`,
-          config: {
-            responseModalities: ['AUDIO'],
-            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } },
-          },
-        });
+        wav = await sdkTtsSynthesizer(request);
       }
-      const data = response.candidates?.[0]?.content?.parts?.find((part) => part.inlineData?.data)
-        ?.inlineData?.data;
-      if (!data) throw new Error('no audio data in response');
       const fileName = `audio/${job.clipId}.wav`;
-      writeFileSync(path.join(MEDIA_DIR, fileName), pcmToWav(Buffer.from(data, 'base64')));
+      writeFileSync(path.join(MEDIA_DIR, fileName), wav);
       manifest.audio[job.clipId] = fileName;
       writeManifest(manifest);
       await store
