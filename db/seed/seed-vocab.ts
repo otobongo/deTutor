@@ -1,4 +1,5 @@
 import { vocabularyWordConverter, vocabularyWordSchema, type Level } from '@/lib/db/curriculum';
+import { foundationVocabulary } from './foundation-vocab';
 import type { SeedTarget } from './seed-curriculum';
 import a1Words from './vocab/a1.json';
 import a2Words from './vocab/a2.json';
@@ -25,6 +26,13 @@ export function cumulativeCorpus(level: Level): ReturnType<typeof loadVocabSeedF
   const levels: Level[] =
     level === 'A1' ? ['A1'] : level === 'A2' ? ['A1', 'A2'] : ['A1', 'A2', 'B1'];
   return levels.flatMap((each) => loadVocabSeedFile(each));
+}
+
+// Display lookup across everything a card id can reference: the full corpus
+// plus the foundation entries (numbers, pronouns). Use for warm-up display
+// and word detail; NEVER for day-set selection or generation envelopes.
+export function lookupCorpus(): ReturnType<typeof loadVocabSeedFile> {
+  return [...cumulativeCorpus('B1'), ...foundationVocabulary];
 }
 
 export async function seedVocabulary(db: SeedTarget, level: Level): Promise<number> {

@@ -1,6 +1,6 @@
 'use server';
 
-import { cumulativeCorpus } from '@/db/seed/seed-vocab';
+import { lookupCorpus } from '@/db/seed/seed-vocab';
 import type { VocabularyWord } from '@/lib/db/curriculum';
 import {
   fsrsCardStateConverter,
@@ -71,7 +71,7 @@ export async function rateCardAction(wordId: string, rating: ReviewRating): Prom
 export async function wordsForIds(
   wordIds: readonly string[],
 ): Promise<Record<string, VocabularyWord>> {
-  const byId = new Map(cumulativeCorpus('B1').map((word) => [word.id, word]));
+  const byId = new Map(lookupCorpus().map((word) => [word.id, word]));
   const found: Record<string, VocabularyWord> = {};
   for (const wordId of wordIds) {
     const word = byId.get(wordId);

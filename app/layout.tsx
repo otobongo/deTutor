@@ -60,6 +60,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <Link className="text-ink-muted hover:text-ink" href="/today" data-testid="nav-today">
               Today
             </Link>
+            <Link className="text-ink-muted hover:text-ink" href="/learn" data-testid="nav-learn">
+              Learn
+            </Link>
             <Link
               className="text-ink-muted hover:text-ink"
               href="/practice"
