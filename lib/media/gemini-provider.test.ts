@@ -96,6 +96,7 @@ describe('on-demand audio synthesis and cache', () => {
     expect(synth).toHaveBeenCalledWith({
       text: 'der Hund',
       speakers: [{ name: 'Sprecher', voiceName: 'Kore' }],
+      lang: 'de-DE',
     });
     rmSync(scratch, { recursive: true, force: true });
   });

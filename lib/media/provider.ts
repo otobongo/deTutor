@@ -37,7 +37,12 @@ export interface AudioAsset {
 }
 
 export type AudioSource =
-  | { readonly type: 'speech-synthesis'; readonly text: string; readonly lang: 'de-DE' }
+  | {
+      readonly type: 'speech-synthesis';
+      readonly text: string;
+      // German content clips speak de-DE; explanation clips speak en-US.
+      readonly lang: 'de-DE' | 'en-US';
+    }
   | { readonly type: 'url'; readonly url: string }
   | { readonly type: 'silent' };
 

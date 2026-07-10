@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import type { AudioAsset, ImageAsset, MediaProvider, VoiceConfig, VoiceSession } from './provider';
 import { buildPlaceholderImageAsset } from './placeholder-images';
-import { lookupPlaceholderClip } from './placeholder-clips';
+import { lookupPlaceholderClipEntry } from './placeholder-clips';
 import { MEDIA_DIR, readManifest, writeManifest } from './manifest';
 import { DEFAULT_TTS_VOICE, sdkTtsSynthesizer, type TtsSynthesizer } from './tts';
 import {
@@ -53,12 +53,13 @@ export class GeminiProvider implements MediaProvider {
   }
 
   async getAudio(clipId: string): Promise<AudioAsset> {
-    const captionText = lookupPlaceholderClip(clipId) ?? '';
+    const entry = lookupPlaceholderClipEntry(clipId);
+    const captionText = entry?.text ?? '';
     const served = this.servedAsset(clipId, captionText);
     if (served) return served;
 
-    if (captionText.length > 0 && Date.now() >= this.cooldownUntil) {
-      const generation = this.generateClip(clipId, captionText);
+    if (entry && Date.now() >= this.cooldownUntil) {
+      const generation = this.generateClip(clipId, entry.text, entry.lang);
       // Bounded wait: serve the fresh clip when synthesis is quick, or fall
       // back now and let the background generation land it for next time.
       const done = await Promise.race([
@@ -73,10 +74,9 @@ export class GeminiProvider implements MediaProvider {
 
     return {
       clipId,
-      source:
-        captionText.length > 0
-          ? { type: 'speech-synthesis', text: captionText, lang: 'de-DE' }
-          : { type: 'silent' },
+      source: entry
+        ? { type: 'speech-synthesis', text: entry.text, lang: entry.lang }
+        : { type: 'silent' },
       captionsRequired: true,
       captionText: captionText || `[No placeholder text registered for clip "${clipId}"]`,
     };
@@ -97,7 +97,7 @@ export class GeminiProvider implements MediaProvider {
 
   // One synthesis per clip at a time; resolves true when the clip landed on
   // disk. Failures open the cooldown and resolve false, never throw.
-  private generateClip(clipId: string, text: string): Promise<boolean> {
+  private generateClip(clipId: string, text: string, lang: 'de-DE' | 'en-US'): Promise<boolean> {
     const existing = this.inFlight.get(clipId);
     if (existing) return existing;
     const generation = (async (): Promise<boolean> => {
@@ -105,6 +105,7 @@ export class GeminiProvider implements MediaProvider {
         const wav = await this.synthesize({
           text,
           speakers: [{ name: 'Sprecher', voiceName: DEFAULT_TTS_VOICE }],
+          lang,
         });
         mkdirSync(path.join(this.mediaDir, 'audio'), { recursive: true });
         const fileName = `audio/${clipId}.wav`;

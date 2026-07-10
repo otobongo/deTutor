@@ -17,6 +17,8 @@ export interface TtsRequest {
   // Exactly one voice for narration/word clips; two or more for dialogues
   // whose text lines are prefixed "Name:".
   readonly speakers: readonly TtsSpeaker[];
+  // German content is the default; explanation clips speak English.
+  readonly lang?: 'de-DE' | 'en-US';
 }
 
 // Returns a browser-playable WAV buffer.
@@ -66,12 +68,15 @@ export const sdkTtsSynthesizer: TtsSynthesizer = async (request) => {
             })),
           },
         };
+  const instruction =
+    request.lang === 'en-US'
+      ? `Read this explanation clearly and warmly in English: ${request.text}`
+      : request.speakers.length <= 1
+        ? `Sprich klar und natürlich auf Deutsch: ${request.text}`
+        : `Sprich dieses Gespräch klar und natürlich auf Deutsch:\n${request.text}`;
   const response = await sdk.models.generateContent({
     model: config.models.tts,
-    contents:
-      request.speakers.length <= 1
-        ? `Sprich klar und natürlich auf Deutsch: ${request.text}`
-        : `Sprich dieses Gespräch klar und natürlich auf Deutsch:\n${request.text}`,
+    contents: instruction,
     config: { responseModalities: ['AUDIO'], speechConfig },
   });
   const data = response.candidates?.[0]?.content?.parts?.find((part) => part.inlineData?.data)
