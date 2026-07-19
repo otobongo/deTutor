@@ -5,6 +5,42 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 
 ## State of the build
 
+**2026-07-19 (later), Claude (Fable 5), builder.** The app is deployed, live, and backed up.
+GT-D3 made the VPS/Postgres path the real default: `DATA_STORE` defaults to `postgres`, and each
+store's credentials are required only when that store is selected, so production no longer carries
+invented placeholder Firebase values purely to satisfy the schema (`AppConfig.firebase` is
+`| undefined`, so the type system forbids passing empty strings). GT-D4 fixed an owner-reported
+bug where `/` rendered onboarding unconditionally and walked placed learners back into the
+placement ladder; the root now redirects to `/today` when a profile exists, and the header
+wordmark became a real home link pointing at `/today` rather than `/`. GT-D5 and GT-D6 restructured
+Practice (skills lead as tiles, reference surfaces demoted to rows) and Today (per-step minute
+estimates beside a sticky summary panel; the old hardcoded "15 to 20 minutes" is now derived from
+the actual plan via the pure, unit-tested `lib/lesson/session-estimate.ts`).
+
+`npm run ci` green at 29 e2e plus the unit suite. Live at
+`http://detutor.65.109.12.203.sslip.io`, auto-deployed from `main` by webhook; note Coolify has no
+health gate before cutover, so a build that succeeds but crashes at runtime is still served — run
+the gate before pushing.
+
+**Infrastructure, previously missing:** the production database had NO backups at all. There is now
+a nightly `pg_dump` at 03:17 via `/usr/local/bin/detutor-backup.sh` (14-day retention, exits
+non-zero rather than leaving a useless file if the container is down, the dump is implausibly
+small, or the `documents` table is absent). Restore was verified, not assumed: the dump was loaded
+into a scratch database and matched the source exactly. **Remaining gap: those dumps live on the
+same host as the database**, so they survive a bad deploy or an accidental drop but not loss of the
+VPS. Coolify's own scheduled-backup feature (with S3) is still unconfigured and is the owner's to
+enable, since it needs storage credentials.
+
+Three browse-style UI directions were shown to the owner as HTML replicas; two shipped (GT-D5,
+GT-D6). The third, a category-rail word catalogue for Learn, was recommended against and
+deliberately not built: a card grid suits visually distinct listings, and over 694 words it
+degrades into near-identical typographic tiles that scan worse than a list, while its rating-style
+metric would misrepresent recall as a rating. Revisit only if browsing Learn proves painful in real
+use.
+
+Next, by owner decision: Phase 6 auth (GT-601-603) and any further content generation remain
+deferred. A1 content only.
+
 **2026-07-19, Claude (Opus 4.8), builder.** GT-D2 adds a Postgres learner-state store so the
 platform can be self-hosted without a Firebase project, unblocking deployment (and the Phase 6
 credential dependency) on the owner's VPS. `DATA_STORE` now accepts `firestore | postgres |
@@ -51,11 +87,16 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 - [ ] **Enable pay-as-you-go billing for the Gemini API key** (AI Studio -> plan/billing), then
       run `npm run generate:audio` (defaults to A1 only; quota-aware and resumable). Audio stands
-      at 55 of 656 A1 clips. **By owner decision (2026-07-09), A2 and B1 audio are deferred**
-      until the learner approaches those levels; generate them then with `-- --level A2|B1`.
+      at **100 of 656 A1 clips** (counted on disk 2026-07-19; this entry previously said 55, which
+      had drifted). Note this is now less urgent than it was: since GT-D2/GT-D6 the app generates
+      TTS on demand and caches it, so a missing clip is a first-play delay rather than a gap.
+      Pre-generating is a latency optimisation, not a correctness requirement.
+      **By owner decision (2026-07-09), A2 and B1 audio are deferred** until the learner
+      approaches those levels; generate them then with `-- --level A2|B1`.
 
-- [ ] Create the real Firebase project and drop its config values into `.env.local`
-      (Phase 0 builds and tests against dummy values and converters only).
+- [x] ~~Create the real Firebase project~~ — **obsolete as of GT-D3 (2026-07-19).** Production
+      runs on Coolify Postgres, and `FIREBASE_*` is now required only when `DATA_STORE=firestore`.
+      No Firebase project is needed unless someone deliberately selects that store.
 - [x] GEMINI_API_KEY supplied 2026-07-09 (lives in .env.local only; never committed).
 - [x] Text model ids verified live 2026-07-09 (gemini-2.5-flash and gemini-2.5-pro both respond);
       Live and image identifiers still need verification at Phase 5 (GT-501/503).
