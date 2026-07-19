@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Inter_Tight, JetBrains_Mono } from 'next/font/google';
-import { NavLinks } from './components/nav-links';
+import { NavLinks, NavWordmark } from './components/nav-links';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-ui-loaded' });
@@ -61,7 +61,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             aria-label="Main"
             className="shell-width mx-auto flex min-h-[var(--header-h)] flex-wrap items-center gap-4 px-6 text-sm"
           >
-            <span className="font-display text-base font-semibold tracking-tight">deTutor</span>
+            <NavWordmark />
             <NavLinks />
           </nav>
         </header>

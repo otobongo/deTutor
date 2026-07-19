@@ -208,6 +208,10 @@ test('the shell navigation reaches every section by keyboard', async ({ page }) 
   // First focusable is the skip link (a11y pass 2026-07-10); nav follows.
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused();
+  // The wordmark is a real home link (GT-D4), so it takes focus before the
+  // section links; it goes to Today rather than the onboarding route.
+  await page.keyboard.press('Tab');
+  await expect(page.getByTestId('nav-home')).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(page.getByTestId('nav-today')).toBeFocused();
   await page.keyboard.press('Enter');
