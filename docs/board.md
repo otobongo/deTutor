@@ -63,6 +63,21 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **GT-D5: Practice hub hierarchy (done 2026-07-19, owner-directed).** Chosen from three
+      browse-style UI directions shown to the owner as HTML replicas. The page previously gave
+      four skills and the reference links roughly equal visual weight, so nothing said what to do
+      first. The four skills now lead as tiles in a two-column grid, each with its German name
+      (Hören, Lesen, Schreiben, Sprechen), a short summary line, and its B1 exam score where a
+      sitting exists; the image catalogue and exam simulation drop to compact rows under an
+      "Also here" label. Real data only: a skill with no exam result shows no chip rather than a
+      fabricated zero. Every existing testid was preserved (`skill-*`, `practice-speaking-link`,
+      `catalog-link`); `practice-exam-link` is new. The added e2e test asserts hierarchy by
+      measured height rather than DOM order, since ordering alone would pass even if the tiles
+      and rows looked identical. The two heavier directions (a category-rail word catalogue for
+      Learn, and a sticky session-summary panel for Today) were NOT built: the catalogue's card
+      grid suits visually distinct listings and would degrade to near-identical typographic tiles
+      over 694 words, and its rating-style metric would misrepresent recall as a rating.
+
 - [x] **GT-D4: top navigation organization and the onboarding-return bug (done 2026-07-19,
       owner-reported).** Reported as "somehow I can see the Landing page again when I click
       Today". Today itself was fine; the real fault was that `/` rendered the onboarding wizard

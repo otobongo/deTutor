@@ -175,6 +175,27 @@ test('Practice lists all four skills and links echo practice', async ({ page }) 
   await expect(page.getByTestId('speaking-echo-panel')).toBeVisible();
 });
 
+test('Practice leads with the skills and keeps reference surfaces secondary (GT-D5)', async ({
+  page,
+}) => {
+  await page.goto('/practice');
+  // The four skills are the reason to open this page, so each carries its
+  // German name; the reference rows below are links, not tiles.
+  await expect(page.getByTestId('skill-listening')).toContainText('Hören');
+  await expect(page.getByTestId('skill-speaking')).toContainText('Sprechen');
+
+  const skillsBox = await page.getByTestId('skill-reading').boundingBox();
+  const catalogBox = await page.getByTestId('catalog-link').boundingBox();
+  expect(skillsBox).not.toBeNull();
+  expect(catalogBox).not.toBeNull();
+  // Hierarchy is the whole point of this layout: a skill tile must be
+  // visibly larger than a reference row, not merely ordered above it.
+  expect(skillsBox!.height).toBeGreaterThan(catalogBox!.height);
+
+  await page.getByTestId('practice-exam-link').click();
+  await expect(page).toHaveURL(/\/exam/);
+});
+
 test('the speaking echo loop confirms an exact echo without the brain', async ({ page }) => {
   resetStore();
   await completeOnboarding(page);
