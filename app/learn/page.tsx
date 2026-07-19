@@ -21,7 +21,7 @@ export default async function LearnPage() {
   if (!profile) {
     return (
       <main className="mx-auto flex min-h-screen w-full readable-width flex-col gap-4 p-8">
-        <h1 className="text-3xl font-semibold">Learn</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">Learn</h1>
         <p>
           No learner profile yet.{' '}
           <Link className="text-ink underline" href="/">
@@ -58,7 +58,7 @@ export default async function LearnPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full shell-width flex-col gap-8 p-4 sm:p-8">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold">Learn</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">Learn</h1>
         <p className="text-ink-muted" data-testid="learn-summary">
           {totalLearned} of {totalWords} A1 words learned ({overallPercent}%, grade{' '}
           <StatusChip tone="accent">{gradeFor(overallPercent)}</StatusChip>). Study anything in any

@@ -31,8 +31,12 @@ const PREHYDRATION_THEME_SCRIPT = `
       mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     document.documentElement.classList.add('lid-mode-' + mode);
+    // Whitelisted rather than passed through: this value goes straight into
+    // a DOM attribute, and localStorage is user-writable. Every theme in
+    // THEMES (theme-controls.tsx) must appear here or it silently flashes
+    // the default on first paint.
     var theme = localStorage.getItem('lid-theme');
-    if (theme === 'monochrome-stark') {
+    if (theme === 'monochrome-stark' || theme === 'schiefer') {
       document.documentElement.setAttribute('data-lid-theme', theme);
     }
   } catch (e) {}

@@ -104,6 +104,33 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **GT-D8: Schiefer theme, and themes become a picker (done 2026-07-19, owner-directed).**
+      Four palettes were shown to the owner as HTML replicas and approved in general terms, but
+      none had ever been implemented; the app still shipped only Papier plus `monochrome-stark`.
+      Schiefer (cool blue-grey neutrals, muted teal accent) now exists as a full token set in both
+      light and dark. It was chosen because a single accent must serve three jobs here (progress
+      track, exam timer's low state, selected chips) and teal clears AA in all three without the
+      special-case treatment gold needed. All 21 pairings across both modes were measured before
+      the CSS was written, including the three article colours that carry grammatical gender.
+      The control changed shape: a two-way toggle cannot express three themes, so
+      `theme-controls.tsx` now renders a `Chip` picker driven by an exported `THEMES` list, and
+      the old `theme-toggle` testid became `theme-picker` plus `theme-{id}`. **Trap worth
+      remembering: the pre-hydration script in `layout.tsx` whitelists theme ids explicitly (it
+      writes straight to a DOM attribute from user-writable localStorage), so any new theme must
+      be added there too or it silently flashes the default on every load.** The added e2e test
+      covers exactly that by reloading and re-asserting.
+
+- [x] **GT-D9: close the visual seam left by GT-D5/D6 (done 2026-07-19, owner-directed).**
+      Shipping two of three UI directions left Today and Practice speaking a different visual
+      language from the rest of the app. Progress was the worst of it: plain `text-3xl`/`text-xl`
+      headings and its headline figures buried inside a sentence on a page that gets scanned, not
+      read. Progress now leads with three large tabular figures (words learned, percent with
+      grade, foundations marked) over a `ProgressBar`, inside a bordered surface matching the
+      Practice tiles. The original sentence is retained as `sr-only`, so the e2e assertion and
+      screen readers keep the full statement while sighted users get the scan aid. Remaining
+      plain `<h1>`s across Learn, Catalog, Words, and Today's no-profile fallback were moved onto
+      the display face. Learn's card grids already matched and were left alone.
+
 - [x] **GT-D6: Today session summary panel (done 2026-07-19, owner-directed).** The second of the
       three browse-style directions, and the one recommended if only one shipped. Today's plan
       became numbered rows carrying a per-step minute estimate, beside a panel that sticks to the
