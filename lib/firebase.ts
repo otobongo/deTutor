@@ -13,6 +13,15 @@ function getApp(): App {
   const existing = getApps()[0];
   if (existing) return existing;
   const { firebase } = getConfig();
+  if (!firebase) {
+    // Reachable only by importing this module under a non-firestore store,
+    // which is a wiring mistake: the config schema requires these keys
+    // whenever DATA_STORE=firestore.
+    throw new Error(
+      'Firebase credentials are absent. Set DATA_STORE=firestore with FIREBASE_* ' +
+        'variables, or use the postgres/dev-file store instead.',
+    );
+  }
   return initializeApp({
     credential: cert({
       projectId: firebase.projectId,

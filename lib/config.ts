@@ -13,6 +13,13 @@ export type MediaProviderName = (typeof MEDIA_PROVIDERS)[number];
 export const DATA_STORES = ['firestore', 'postgres', 'dev-file'] as const;
 export type DataStoreName = (typeof DATA_STORES)[number];
 
+// Named once so the schema and its refinement cannot drift apart.
+const FIREBASE_KEYS = [
+  'FIREBASE_PROJECT_ID',
+  'FIREBASE_CLIENT_EMAIL',
+  'FIREBASE_PRIVATE_KEY',
+] as const;
+
 // Verified live 2026-07-09 against the models API, env-overridable.
 // gemini-2.5-flash began returning intermittent sunset 404s mid-batch, so
 // fast pins the newest GA flash and deep tracks the pro alias (no GA
@@ -28,12 +35,18 @@ const DEFAULT_MODEL_TTS = 'gemini-3.1-flash-tts-preview';
 
 const envSchema = z
   .object({
-    FIREBASE_PROJECT_ID: z.string().min(1),
-    FIREBASE_CLIENT_EMAIL: z.string().min(1),
-    FIREBASE_PRIVATE_KEY: z.string().min(1),
+    // Only read when DATA_STORE=firestore, so they are optional here and
+    // required by the refinement below. A postgres or dev-file deployment
+    // that carried three mandatory placeholder secrets invited the habit of
+    // inventing fake credentials to satisfy a schema (GT-D3).
+    FIREBASE_PROJECT_ID: z.string().min(1).optional(),
+    FIREBASE_CLIENT_EMAIL: z.string().min(1).optional(),
+    FIREBASE_PRIVATE_KEY: z.string().min(1).optional(),
     GEMINI_API_KEY: z.string().min(1),
     MEDIA_PROVIDER: z.enum(MEDIA_PROVIDERS).default('placeholder'),
-    DATA_STORE: z.enum(DATA_STORES).default('firestore'),
+    // Postgres is the deployed default (Coolify/VPS, GT-D3); firestore stays
+    // fully supported for anyone pointing at a Firebase project instead.
+    DATA_STORE: z.enum(DATA_STORES).default('postgres'),
     // The dev-file store's backing file. e2e points this at its own file so
     // test runs never touch (or wipe) the owner's local learner data.
     DEV_STORE_FILE: z.string().min(1).default('.dev-data/store.json'),
@@ -45,8 +58,9 @@ const envSchema = z
     IMAGE_MODEL: z.string().min(1).default(DEFAULT_MODEL_IMAGE),
     GEMINI_MODEL_TTS: z.string().min(1).default(DEFAULT_MODEL_TTS),
   })
-  // A postgres store with no connection string fails at first write, deep
-  // inside a request. Fail at config load instead, like every other key.
+  // Each store's credentials are required only when that store is selected.
+  // Either way the failure lands at config load rather than deep inside a
+  // request on first write.
   .superRefine((env, ctx) => {
     if (env.DATA_STORE === 'postgres' && !env.DATABASE_URL) {
       ctx.addIssue({
@@ -55,14 +69,30 @@ const envSchema = z
         message: 'DATABASE_URL is required when DATA_STORE=postgres.',
       });
     }
+    if (env.DATA_STORE === 'firestore') {
+      for (const key of FIREBASE_KEYS) {
+        if (!env[key]) {
+          ctx.addIssue({
+            code: 'custom',
+            path: [key],
+            message: `${key} is required when DATA_STORE=firestore.`,
+          });
+        }
+      }
+    }
   });
 
 export interface AppConfig {
-  readonly firebase: {
-    readonly projectId: string;
-    readonly clientEmail: string;
-    readonly privateKey: string;
-  };
+  // Present only when dataStore is 'firestore'; the schema guarantees it.
+  // Optional on purpose, so a postgres deployment cannot silently hand
+  // Firebase a set of empty-string credentials (GT-D3).
+  readonly firebase:
+    | {
+        readonly projectId: string;
+        readonly clientEmail: string;
+        readonly privateKey: string;
+      }
+    | undefined;
   readonly geminiApiKey: string;
   readonly mediaProvider: MediaProviderName;
   readonly dataStore: DataStoreName;
@@ -95,13 +125,17 @@ export function loadConfig(env: Record<string, string | undefined>): AppConfig {
     throw new ConfigError(vars);
   }
   const e = parsed.data;
+  const firebase =
+    e.FIREBASE_PROJECT_ID && e.FIREBASE_CLIENT_EMAIL && e.FIREBASE_PRIVATE_KEY
+      ? {
+          projectId: e.FIREBASE_PROJECT_ID,
+          clientEmail: e.FIREBASE_CLIENT_EMAIL,
+          // .env files store the PEM newlines escaped; restore them for the SDK.
+          privateKey: e.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        }
+      : undefined;
   return {
-    firebase: {
-      projectId: e.FIREBASE_PROJECT_ID,
-      clientEmail: e.FIREBASE_CLIENT_EMAIL,
-      // .env files store the PEM newlines escaped; restore them for the SDK.
-      privateKey: e.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    },
+    firebase,
     geminiApiKey: e.GEMINI_API_KEY,
     mediaProvider: e.MEDIA_PROVIDER,
     dataStore: e.DATA_STORE,

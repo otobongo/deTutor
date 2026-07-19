@@ -63,6 +63,21 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **GT-D3: Postgres/VPS as the default deployment target (done 2026-07-19, owner-directed).**
+      The app deployed to the VPS on Postgres (GT-D2) but the codebase still defaulted to
+      `DATA_STORE=firestore` and required all three `FIREBASE_*` variables non-empty under every
+      store, so the live deployment carried invented placeholder credentials purely to satisfy
+      the schema. Changed: `DATA_STORE` now defaults to `postgres`; `FIREBASE_*` is optional in
+      the base schema and required by the refinement only when `DATA_STORE=firestore`, mirroring
+      how `DATABASE_URL` is handled for postgres; `AppConfig.firebase` became
+      `| undefined` so the type system forbids handing Firebase empty strings, with
+      `lib/firebase.ts` throwing a named wiring error instead; `.env.example` rewritten
+      store-by-store, defaulting local development to `dev-file` (no credentials at all) and
+      documenting that placeholder values must not be invented to satisfy the schema.
+      Firestore remains fully supported. Note for future config work: zod short-circuits before
+      refinements when a base field is missing, so a fully empty environment reports
+      `GEMINI_API_KEY` alone rather than every store credential at once.
+
 - [x] **Exam canvas redesign (done 2026-07-10, owner design brief).** Audit findings: no sense
       of exam mode, no stimulus/question/answer hierarchy, options that did not look
       answerable, checklist-as-form, content sharing the chrome's type voice. Direction: a
