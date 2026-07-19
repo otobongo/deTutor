@@ -6,7 +6,8 @@ import { ExamModuleRunner } from '@/app/components/exam-module-runner';
 
 // One B1 exam module: content generates on demand (deep tier) the first
 // time this page opens and is cached forever; the deterministic filler
-// covers brain outages so a sitting is always possible.
+// covers brain outages so a sitting is always possible. The page stays a
+// thin shell: the runner's exam canvas carries the visual mode.
 
 export const dynamic = 'force-dynamic';
 
@@ -41,13 +42,10 @@ export default async function ExamModulePage({ params }: { params: Promise<{ ski
   const payload = await getExamModuleAction(parsed.data);
 
   return (
-    <main className="mx-auto flex min-h-screen w-full readable-width flex-col gap-6 p-4 sm:p-8">
-      <div className="flex flex-col gap-1">
-        <h1 className="font-display text-3xl font-semibold">
-          {MODULE_LABELS[parsed.data]} ({spec.minutes} minutes)
-        </h1>
-        <p className="text-ink-muted">Goethe-Zertifikat B1 simulation, official structure.</p>
-      </div>
+    <main className="mx-auto flex min-h-screen w-full readable-width flex-col p-4 sm:p-8">
+      <h1 className="text-sm font-medium text-ink-muted">
+        Goethe-Zertifikat B1 · {MODULE_LABELS[parsed.data]} · {spec.minutes} Minuten
+      </h1>
       <ExamModuleRunner
         skill={parsed.data}
         module={payload.module}

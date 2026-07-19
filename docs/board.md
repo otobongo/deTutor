@@ -50,6 +50,19 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **Exam canvas redesign (done 2026-07-10, owner design brief).** Audit findings: no sense
+      of exam mode, no stimulus/question/answer hierarchy, options that did not look
+      answerable, checklist-as-form, content sharing the chrome's type voice. Direction: a
+      dedicated exam canvas within the existing tokens. Sticky exam bar (module, percent done,
+      always-visible monospace timer: gold chip under 5 minutes, error tint under 1, with text
+      twins) over a gold segmented progress track; centered max-w-2xl column; Teil/Frage
+      eyebrow; stimulus on the reading serif surface with a gold accent edge; question in
+      display type; answers as full-width lettered A/B/C option cards. Production tasks are
+      numbered task cards with word-budget chips (parsed from "circa NN Wörter"), coverage
+      chips, and clickable checklist rows that tint green when done. Overview is a 2x2 module
+      card grid leading with the German module names. All testids preserved; 25 Playwright
+      checks green.
+
 - [x] **B1 exam content wired and generated (done 2026-07-10, owner-directed; completes
       GT-307).** Each Goethe module generates on demand (new deep call site
       b1-exam-generation, fifth justified deep site) into the code-owned blueprint, validated
