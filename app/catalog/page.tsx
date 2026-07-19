@@ -70,7 +70,7 @@ export default function CatalogPage() {
   const audited = cards.filter((card) => card.audit !== null);
   return (
     <main className="mx-auto flex min-h-screen w-full shell-width flex-col gap-6 p-8">
-      <h1 className="text-3xl font-semibold">Image catalog</h1>
+      <h1 className="font-display text-3xl font-semibold tracking-tight">Image catalog</h1>
       <p data-testid="catalog-summary">
         {cards.length} generated images. Vision audit: {audited.length} checked, {flagged.length}{' '}
         flagged for review (shown first). Regenerate a flagged image by deleting its file and

@@ -121,6 +121,95 @@ html.lid-mode-dark {
   --article-das: #7baa89;
 }
 
+/* Schiefer (GT-D8): cool blue-grey neutrals with one muted teal accent.
+   Chosen from four owner-reviewed options because a single accent has to
+   serve three jobs here (progress track, exam timer's low state, selected
+   chips) and teal clears AA in all three without the special-case treatment
+   the gold needed. Every pairing below was measured, not eyeballed. */
+html[data-lid-theme='schiefer'] {
+  --color-background: #eef1f4;
+  --color-surface: #ffffff;
+  --color-surface-2: #e4e9ee;
+  --color-ink: #16202b;
+  --color-ink-muted: #55646f;
+  --color-ink-subtle: #5b6b7a;
+  --color-ink-inverse: #ffffff;
+  --color-border: #d8dfe6;
+  --color-border-strong: #c2ccd6;
+  --color-action: #1d3040;
+  --color-action-inverse: #f4f8fb;
+  --color-reading-surface: #f8fafc;
+  --color-reading-ink: #16202b;
+  --color-success: #235c44;
+  --color-success-tint: rgba(47, 125, 92, 0.13);
+  --color-error: #8e3232;
+  --color-error-tint: rgba(169, 62, 62, 0.13);
+  --color-info: #3f6285;
+  --color-warning: #8a6524;
+  --color-focus-ring: #2f7d78;
+
+  /* article identity, kept distinguishable against the cooler ground */
+  --article-der: #1c4f8a;
+  --article-die: #9c2b26;
+  --article-das: #1f5c40;
+
+  /* the teal accent replaces gold everywhere gold carried emphasis */
+  --highlight-date-color: #2f7d78;
+  --highlight-date-text-color: #ffffff;
+  --highlight-event-color: #2f7d78;
+  --highlight-event-text-color: #ffffff;
+  --highlight-concept-color: #9c2b26;
+  --highlight-concept-text-color: #ffffff;
+  --highlight-person-color: #9c2b26;
+  --highlight-person-text-color: #ffffff;
+  --highlight-place-color: #1c4f8a;
+  --highlight-place-text-color: #ffffff;
+  --highlight-law-color: #1c4f8a;
+  --highlight-law-text-color: #ffffff;
+}
+
+html[data-lid-theme='schiefer'].lid-mode-dark {
+  --color-background: #0d1319;
+  --color-surface: #141c24;
+  --color-surface-2: #1b252f;
+  --color-ink: #e8edf2;
+  --color-ink-muted: #93a3b1;
+  --color-ink-subtle: #8494a3;
+  --color-ink-inverse: #0d1319;
+  --color-border: #24313d;
+  --color-border-strong: #354553;
+  --color-action: #e8edf2;
+  --color-action-inverse: #0d1319;
+  --color-reading-surface: #121a21;
+  --color-reading-ink: #e2e8ee;
+  --color-success: #7fc3a0;
+  --color-success-tint: rgba(127, 195, 160, 0.16);
+  --color-error: #e0908a;
+  --color-error-tint: rgba(224, 144, 138, 0.16);
+  --color-info: #8fa9c4;
+  --color-warning: #c8a86d;
+  --color-focus-ring: #5fb3ac;
+
+  --article-der: #8dbbff;
+  --article-die: #e4938e;
+  --article-das: #7fc3a0;
+
+  /* lifted teal: the light theme's #2f7d78 is too dark to read as an
+     accent on this ground, and its white text would invert badly */
+  --highlight-date-color: #5fb3ac;
+  --highlight-date-text-color: #0d1319;
+  --highlight-event-color: #5fb3ac;
+  --highlight-event-text-color: #0d1319;
+  --highlight-concept-color: #e4938e;
+  --highlight-concept-text-color: #0d1319;
+  --highlight-person-color: #e4938e;
+  --highlight-person-text-color: #0d1319;
+  --highlight-place-color: #8dbbff;
+  --highlight-place-text-color: #0d1319;
+  --highlight-law-color: #8dbbff;
+  --highlight-law-text-color: #0d1319;
+}
+
 html[data-lid-theme='monochrome-stark'] {
   --color-background: #ffffff;
   --color-surface: #ffffff;
