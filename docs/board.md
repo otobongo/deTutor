@@ -63,6 +63,21 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **GT-D4: top navigation organization and the onboarding-return bug (done 2026-07-19,
+      owner-reported).** Reported as "somehow I can see the Landing page again when I click
+      Today". Today itself was fine; the real fault was that `/` rendered the onboarding wizard
+      unconditionally, with no profile check, so any return to the site root (browser Back, a
+      bookmark, a reload of `/`) put a placed learner back into the placement ladder. Compounding
+      it, the header wordmark was a plain `<span>`, so the app had no home link at all and no
+      obvious way back to the plan. Fixed: `/` redirects to `/today` when a valid learner profile
+      exists and stays onboarding only while none does (re-running placement remains a deliberate
+      action from Settings); the wordmark became a real link to `/today`, not `/`; the header
+      split into the four daily learning surfaces with Settings opposite them as account, so it
+      reads as two groups rather than five equal items. Three e2e tests pin the behaviour, and
+      the keyboard-order test was updated because the wordmark is now focusable ahead of the
+      section links. Note: the smoke test previously inherited whatever profile a prior test
+      left behind; it now resets the store so it exercises a genuine first visit.
+
 - [x] **GT-D3: Postgres/VPS as the default deployment target (done 2026-07-19, owner-directed).**
       The app deployed to the VPS on Postgres (GT-D2) but the codebase still defaulted to
       `DATA_STORE=firestore` and required all three `FIREBASE_*` variables non-empty under every
