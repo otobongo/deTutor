@@ -73,4 +73,34 @@ describe('loadConfig (GT-002)', () => {
     expect(config.firebase.privateKey).toContain('\n');
     expect(config.firebase.privateKey).not.toContain('\\n');
   });
+
+  it('defaults DATA_STORE to firestore and rejects unknown stores (GT-D2)', () => {
+    expect(loadConfig(validEnv).dataStore).toBe('firestore');
+    expect(() => loadConfig({ ...validEnv, DATA_STORE: 'mysql' })).toThrow(ConfigError);
+  });
+
+  it('accepts postgres with a DATABASE_URL (GT-D2)', () => {
+    const config = loadConfig({
+      ...validEnv,
+      DATA_STORE: 'postgres',
+      DATABASE_URL: 'postgresql://user:pw@localhost:5432/detutor',
+    });
+    expect(config.dataStore).toBe('postgres');
+    expect(config.databaseUrl).toBe('postgresql://user:pw@localhost:5432/detutor');
+  });
+
+  it('rejects postgres without a DATABASE_URL rather than failing at first write (GT-D2)', () => {
+    let caught: unknown;
+    try {
+      loadConfig({ ...validEnv, DATA_STORE: 'postgres' });
+    } catch (error) {
+      caught = error;
+    }
+    expect(caught).toBeInstanceOf(ConfigError);
+    expect((caught as ConfigError).missingOrInvalid).toContain('DATABASE_URL');
+  });
+
+  it('leaves DATABASE_URL optional for the other stores (GT-D2)', () => {
+    expect(loadConfig({ ...validEnv, DATA_STORE: 'dev-file' }).databaseUrl).toBeUndefined();
+  });
 });

@@ -25,7 +25,8 @@ Built by Claude via Claude Code. The runtime brain is Gemini.
 ## Stack
 
 - Next.js (App Router) + TypeScript strict, npm
-- Firebase Firestore (server-side only; a local dev-file store runs everything without credentials)
+- Firestore or Postgres for learner state (server-side only; a local dev-file store runs
+  everything without credentials)
 - Gemini text models (runtime brain), Gemini Live (voice, Phase 5), Nano Banana 2 (images, Phase 5)
 - ts-fsrs for spaced repetition
 - Vitest (unit and component), Playwright (journeys)
@@ -51,6 +52,10 @@ Copy `.env.local.template` to `.env.local` (gitignored) and paste your values:
   and content generation.
 - `FIREBASE_*`: a service account from your Firebase project. Then set `DATA_STORE=firestore`
   to switch learner state from the local dev file to Firestore. No data shape changes.
+- `DATABASE_URL`: a Postgres connection string. With `DATA_STORE=postgres`, learner state lives
+  in a database you host instead of Firestore — the adapter creates its own table on first use,
+  so an empty database is enough, and the `FIREBASE_*` values can stay dummy. No data shape
+  changes either way.
 - Model identifiers default in `lib/config.ts` and can be overridden per env var.
 
 ### Seeding (needs Firestore or runs against the emulator)

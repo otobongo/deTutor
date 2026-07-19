@@ -3,10 +3,11 @@ import path from 'node:path';
 import type { DocumentData } from 'firebase-admin/firestore';
 import { getConfig } from '@/lib/config';
 
-// The learner-state store seam (GT-107). Production is Firestore; dev-file
-// backs the same converter-validated write path with a local JSON file so
-// placeholder mode runs end to end before real Firebase credentials exist
-// (deviation logged in board.md). Flipping stores is one env change.
+// The learner-state store seam (GT-107). Production is Firestore or Postgres
+// (GT-D2, for self-hosted deployments); dev-file backs the same
+// converter-validated write path with a local JSON file so placeholder mode
+// runs end to end before real credentials exist (deviations logged in
+// board.md). Flipping stores is one env change.
 
 export interface StoredDocument {
   set(data: DocumentData): Promise<void>;
@@ -105,12 +106,63 @@ export class DevFileStore implements DocumentStore {
   }
 }
 
+// Defers loading pg (and opening a pool) until a store call actually happens,
+// the same reason FirestoreStore imports firebase-admin dynamically: dev-file
+// and firestore deployments must not pay for a driver they never use.
+class LazyPostgresStore implements DocumentStore {
+  private delegate: Promise<DocumentStore> | undefined;
+
+  constructor(private readonly connectionString: string) {}
+
+  private load(): Promise<DocumentStore> {
+    this.delegate ??= import('./postgres-store').then(
+      ({ PostgresStore }) => new PostgresStore({ connectionString: this.connectionString }),
+    );
+    return this.delegate;
+  }
+
+  async list(collectionPath: string): Promise<DocumentData[]> {
+    return (await this.load()).list(collectionPath);
+  }
+
+  collection(collectionPath: string): StoredCollection {
+    const load = () => this.load();
+    return {
+      doc: (id: string): StoredDocument => ({
+        set: async (data: DocumentData) =>
+          (await load()).collection(collectionPath).doc(id).set(data),
+        get: async () => (await load()).collection(collectionPath).doc(id).get(),
+        delete: async () => (await load()).collection(collectionPath).doc(id).delete(),
+      }),
+    };
+  }
+}
+
 let cachedStore: DocumentStore | undefined;
+
+function createStore(): DocumentStore {
+  const config = getConfig();
+  switch (config.dataStore) {
+    case 'dev-file':
+      return new DevFileStore();
+    case 'postgres': {
+      // Required by the config schema when dataStore is postgres, so a missing
+      // URL here is a programming error, not a user misconfiguration.
+      const { databaseUrl } = config;
+      if (!databaseUrl) {
+        throw new Error('DATABASE_URL missing despite DATA_STORE=postgres.');
+      }
+      return new LazyPostgresStore(databaseUrl);
+    }
+    case 'firestore':
+      return new FirestoreStore();
+  }
+}
 
 export function getDataStore(): DocumentStore {
   if (typeof window !== 'undefined') {
     throw new Error('getDataStore() must never run in the browser.');
   }
-  cachedStore ??= getConfig().dataStore === 'dev-file' ? new DevFileStore() : new FirestoreStore();
+  cachedStore ??= createStore();
   return cachedStore;
 }
