@@ -63,6 +63,25 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 
 ## Discovered work (not yet in the plan)
 
+- [x] **GT-D6: Today session summary panel (done 2026-07-19, owner-directed).** The second of the
+      three browse-style directions, and the one recommended if only one shipped. Today's plan
+      became numbered rows carrying a per-step minute estimate, beside a panel that sticks to the
+      viewport on large screens so the commitment and the start button stay together while the
+      plan is read. The panel states total minutes, review-card count, new-word count, grammar
+      focus, and skill slot. The page previously claimed a hardcoded "15 to 20 minutes"
+      regardless of the actual plan; the figure is now derived.
+      New pure module `lib/lesson/session-estimate.ts` (7 unit tests) holds the arithmetic, per
+      the no-I/O-in-scoring convention. Two correctness points worth keeping: the total is summed
+      from raw seconds rather than from per-step rounded minutes, so it cannot drift by five
+      rounding errors; and both the estimate and the warm-up row count `warmupItems` rather than
+      the step's own `queueWordIds`, because due retests ride the warm-up disguised as reviews
+      (GT-304) and would otherwise be invisible to the estimate, promising a shorter session than
+      the learner actually gets. `stepEstimates`/`StepEstimate` were written and then removed
+      before commit once nothing consumed them (no dead code). Estimates are presented as
+      approximate and derived from plan shape, not from measured telemetry, which does not exist
+      yet. Note for future e2e work: `completeOnboarding` stops at the placement result and does
+      not navigate to Today; tests needing the Day view must hop there explicitly.
+
 - [x] **GT-D5: Practice hub hierarchy (done 2026-07-19, owner-directed).** Chosen from three
       browse-style UI directions shown to the owner as HTML replicas. The page previously gave
       four skills and the reference links roughly equal visual weight, so nothing said what to do
