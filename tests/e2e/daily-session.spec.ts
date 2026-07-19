@@ -175,6 +175,40 @@ test('Practice lists all four skills and links echo practice', async ({ page }) 
   await expect(page.getByTestId('speaking-echo-panel')).toBeVisible();
 });
 
+test('the Today panel states the commitment and keeps the action reachable (GT-D6)', async ({
+  page,
+}) => {
+  resetStore();
+  await completeOnboarding(page);
+  // completeOnboarding stops at the placement result; Today is a separate hop.
+  await page.goto('/today');
+
+  const summary = page.getByTestId('session-summary');
+  await expect(summary).toBeVisible();
+
+  // The headline number must be a real estimate, not a hardcoded range.
+  const minutes = Number(await page.getByTestId('session-minutes').innerText());
+  expect(Number.isFinite(minutes)).toBe(true);
+  expect(minutes).toBeGreaterThan(0);
+
+  // The panel's review count and the plan's warm-up row describe the same
+  // cards, so they must not contradict each other on screen.
+  const warmupRow = await page.getByTestId('step-warm-up').innerText();
+  const summaryText = await summary.innerText();
+  const rowMatch = warmupRow.match(/(\d+) review cards/);
+  if (rowMatch) {
+    expect(summaryText).toContain(rowMatch[1]!);
+  }
+
+  // Every step carries its own estimate.
+  for (const kind of ['warm-up', 'new-vocabulary', 'grammar-focus', 'wrap-up']) {
+    await expect(page.getByTestId(`step-${kind}`)).toContainText(/\d+ min/);
+  }
+
+  await page.getByTestId('start-session').click();
+  await expect(page).toHaveURL(/\/today\/session/);
+});
+
 test('Practice leads with the skills and keeps reference surfaces secondary (GT-D5)', async ({
   page,
 }) => {
