@@ -5,6 +5,19 @@ Statuses: open | in-progress | blocked | done. Every status change lands with th
 
 ## State of the build
 
+**2026-07-19, Claude (Opus 4.8), builder.** GT-D2 adds a Postgres learner-state store so the
+platform can be self-hosted without a Firebase project, unblocking deployment (and the Phase 6
+credential dependency) on the owner's VPS. `DATA_STORE` now accepts `firestore | postgres |
+dev-file`; postgres additionally requires `DATABASE_URL`, enforced at config load rather than at
+first write. `lib/db/postgres-store.ts` implements the existing GT-107 `DocumentStore` interface
+against a single key/JSONB table it creates on first use, preserving Firestore's semantics
+including the direct-children-only `list()` filter; `pg` is imported lazily so firestore and
+dev-file deployments never load the driver. `npm run ci` green: lint, format, typecheck, 4 guards,
+372 unit/component tests (11 new: 7 Postgres integration, 4 config). Verified end to end against a
+real Postgres through `getDataStore()` — a learner profile written by the converter path lands as
+JSONB and reads back intact. Firestore and dev-file paths are untouched. Next: deployment to
+Coolify, then Phase 6 auth.
+
 **2026-07-10, Claude (Fable 5), builder.** A1 skill surfaces are live in the daily flow
 (owner directive 2026-07-10: build effectiveness first, A1 content only). The session runner
 now runs real exercises in every slot: interactive card-by-card warm-up with the four FSRS
@@ -222,6 +235,10 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
       IPA and example sentences (npm run enrich:vocab, idempotent, resumable).
 - [ ] **GT-D1b: Pending translations and article review.** Enrich db/seed/translation-pending.json
       entries with translations and re-run ingestion; resolve db/seed/article-review.json.
+- [x] **GT-D2: Postgres learner-state store (done 2026-07-19).** Third DocumentStore adapter
+      (`lib/db/postgres-store.ts`) behind the existing seam, so a self-hosted deployment owns its
+      learner data without a Firebase project. `DATA_STORE=postgres` plus `DATABASE_URL`; the
+      adapter creates its own key/JSONB table on first use. Firestore and dev-file are untouched.
 
 ## Deviations log
 
@@ -238,6 +255,9 @@ and the owner's Firebase credentials for the DATA_STORE flip. GT-D1b (230 pendin
 | 2026-07-09 | GT-D1 | Default models moved to gemini-3.5-flash (fast) and gemini-pro-latest (deep) | gemini-2.5-flash began returning intermittent sunset 404s mid-batch during enrichment; successors verified live against the models API. Env overrides unchanged. |
 | 2026-07-09 | GT-403 | No token streaming for brain responses | Every runtime call is JSON-mode with schema validation (strategy Section 8); validated JSON cannot stream token by token. Pending states cover perceived latency; revisit if free-prose turns are added. Details in docs/perf.md. |
 | 2026-07-09 | GT-501 | IMAGE_MODEL default is gemini-3.1-flash-image | The PRD's "Nano Banana 2" name has no live identifier; the flash image model is the current GA equivalent (the pro/4K tier is out of scope per PRD Section 8). Verified with a live sample batch. |
+| 2026-07-19 | GT-D2 | Third store adapter (postgres) alongside firestore and dev-file | Owner deploys to a self-hosted VPS (Coolify) and wants to own the learner data rather than depend on a Firebase project; Phase 6 was blocked on those credentials. The GT-107 seam already existed, so this is one adapter plus one enum value, no change to the converter-validated write path. |
+| 2026-07-19 | GT-D2 | Documents stored as one key/JSONB table, not normalised per-entity tables | The seam hands the adapter whole documents keyed by `collectionPath/id`; a key/value table reproduces Firestore semantics exactly. Normalising would require teaching the adapter every learner schema, which is what the seam exists to prevent. |
+| 2026-07-19 | GT-D2 | Postgres tests are integration tests gated on TEST_DATABASE_URL, skipped without it | The adapter's whole value is SQL behaviour (upsert, the direct-children list filter, JSONB round-trip); a mocked pool would assert nothing. Skipping keeps a checkout without Postgres green. |
 
 ## Phase 0: Foundation
 
